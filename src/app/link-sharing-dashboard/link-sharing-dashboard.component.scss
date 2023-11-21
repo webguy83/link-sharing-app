@@ -1,0 +1,39 @@
+.dashboard-container {
+  display: grid;
+  grid-template-rows: auto 1fr; /* Header size set by content, remaining space for aside and main */
+  grid-template-columns: 1fr 1.4fr; /* Aside takes 1 part, main content 3 parts */
+  grid-template-areas:
+    "header header"
+    "aside main";
+  min-height: 100vh;
+  max-width: 111rem;
+  margin: auto;
+  gap: 2.4rem;
+  padding: 2.4rem;
+  background-color: var(-dark-white);
+}
+
+.dashboard-header,
+.dashboard-aside,
+.dashboard-main {
+  border-radius: 1.2rem;
+  /* Apply padding or other styles as needed */
+  padding: 1rem; /* Example padding */
+  background-color: var(--white);
+}
+
+.dashboard-header {
+  grid-area: header;
+  /* Additional styles for the header */
+}
+
+.dashboard-aside {
+  grid-area: aside;
+  /* Additional styles for the aside */
+}
+
+.dashboard-main {
+  grid-area: main;
+  overflow: auto; /* Scrollable if content overflows */
+  /* Additional styles for the main content area */
+}
