@@ -1,0 +1,76 @@
+<form (ngSubmit)="onSubmit(createAccountForm)" [formGroup]="createAccountForm">
+  <div class="form-group" [ngClass]="{ error: showEmailError() }" appFormStyle>
+    <label>Email address</label>
+    <div class="input-container">
+      <img
+        src="../../assets/images/icon-email.svg"
+        alt="Email Icon"
+        class="icon"
+      />
+      <div class="error-text">
+        {{ showEmailError() }}
+      </div>
+      <input
+        type="email"
+        placeholder="e.g. alex@email.com"
+        class="input"
+        formControlName="email"
+      />
+    </div>
+  </div>
+  <div
+    class="form-group"
+    [ngClass]="{ error: getPasswordError() }"
+    appFormStyle
+  >
+    <label>Create Password</label>
+    <div class="input-container">
+      <img
+        src="../../assets/images/icon-password.svg"
+        alt="Password Icon"
+        class="icon"
+      />
+      <div class="error-text">
+        {{ getPasswordError() }}
+      </div>
+      <input
+        type="password"
+        placeholder="At least 8 characters"
+        class="input"
+        formControlName="createPassword"
+      />
+    </div>
+  </div>
+  <div
+    class="form-group"
+    [ngClass]="{ error: getPasswordError() }"
+    appFormStyle
+  >
+    <label>Confirm Password</label>
+    <div class="input-container">
+      <img
+        src="../../assets/images/icon-password.svg"
+        alt="Password Icon"
+        class="icon"
+      />
+      <div class="error-text">
+        {{ getPasswordError() }}
+      </div>
+      <input
+        type="password"
+        placeholder="At least 8 characters"
+        class="input"
+        formControlName="confirmPassword"
+      />
+    </div>
+  </div>
+  <p class="create-account-info">Password must contain at least 8 characters</p>
+  <button
+    [disabled]="isLoggingIn"
+    appPrimaryBtn
+    type="submit"
+    class="login-button"
+  >
+    {{ isLoggingIn ? "Creating account..." : "Create new account" }}
+  </button>
+</form>

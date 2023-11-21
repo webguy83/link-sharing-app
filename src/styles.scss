@@ -1,1 +1,153 @@
-/* You can add global styles to this file, and also import other style files */
+
+// Custom Theming for Angular Material
+// For more information: https://material.angular.io/guide/theming
+@use '@angular/material' as mat;
+// Plus imports for other components in your app.
+
+// Include the common styles for Angular Material. We include this here so that you only
+// have to load a single css file for Angular Material in your app.
+// Be sure that you only ever include this mixin once!
+@include mat.core();
+
+// Define the palettes for your theme using the Material Design palettes available in palette.scss
+// (imported above). For each palette, you can optionally specify a default, lighter, and darker
+// hue. Available color palettes: https://material.io/design/color/
+$link-sharing-app-primary: mat.define-palette(mat.$indigo-palette);
+$link-sharing-app-accent: mat.define-palette(mat.$pink-palette, A200, A100, A400);
+
+// The warn palette is optional (defaults to red).
+$link-sharing-app-warn: mat.define-palette(mat.$red-palette);
+
+// Create the theme object. A theme consists of configurations for individual
+// theming systems such as "color" or "typography".
+$link-sharing-app-theme: mat.define-light-theme((
+  color: (
+    primary: $link-sharing-app-primary,
+    accent: $link-sharing-app-accent,
+    warn: $link-sharing-app-warn,
+  )
+));
+
+// Include theme styles for core and each component used in your app.
+// Alternatively, you can import and @include the theme mixins for each component
+// that you are using.
+@include mat.all-component-themes($link-sharing-app-theme);
+
+@import "normalize.css";
+@import url("https://fonts.googleapis.com/css2?family=Instrument+Sans:wght@400;700&display=swap");
+
+:root {
+  --primary: #633cff;
+  --secondary: #beadff;
+  --light-purple: #efebff;
+  --dark-gray: #333333;
+  --med-gray: #737373;
+  --light-gray: #d9d9d9;
+  --dark-white: #fafafa;
+  --white: #ffffff;
+  --red: #ff3939;
+}
+
+body {
+  font-family: "Instrument Sans", sans-serif;
+  background-color: var(--dark-white);
+}
+
+html {
+  font-size: 62.5%; // 1rem = 10px, 10px/16px = 62.5%
+  box-sizing: border-box;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
+*,
+*:before,
+*:after {
+  box-sizing: inherit;
+}
+
+.custom-form-group-style {
+  label {
+    font-size: 1.2rem;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 150%;
+    color: var(--dark-gray);
+  }
+
+  .input-container {
+    position: relative;
+    margin-top: 0.4rem;
+    margin-bottom: 1.2rem;
+  }
+
+  .icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    left: 1.6rem;
+  }
+
+  .input {
+    width: 100%;
+    box-sizing: border-box;
+    padding: 1.2rem 1.6rem;
+    border: 1px solid var(--light-gray);
+    border-radius: 0.8rem;
+    font-size: 1.6rem;
+    padding-left: 4.4rem;
+    transition: border-color 0.3s ease, outline 0.3s ease; /* Add a smooth transition effect for both border color and outline */
+
+    /* Add the following styles for focus */
+    &:focus {
+      border-color: var(--primary);
+      outline: 0.01rem solid var(--primary); /* Set the outline to simulate the focus color */
+      box-shadow: 0px 0px 3.2rem 0px rgba(99, 60, 255, 0.25);
+    }
+  }
+
+  .error-text {
+    position: absolute;
+    right: 1.6rem;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 1.2rem;
+    font-weight: 400;
+    line-height: 150%;
+    color: var(--red);
+    opacity: 1;
+    transition: opacity 0.3s ease; /* Add a smooth transition effect for opacity */
+  }
+
+  /* Show error text when there is an error */
+  .error .error-text {
+    opacity: 1;
+  }
+
+  &.error {
+    label {
+      color: var(--red);
+      transition: all 0.3s ease;
+    }
+
+    .input {
+      border-color: var(--red);
+      outline: none;
+      box-shadow: none;
+    }
+
+    &.mobile-xsmall {
+      .error-text {
+        visibility: hidden;
+      }
+    }
+  }
+}
+
+html, body { height: 100%; }
+body { margin: 0; font-family: Roboto, "Helvetica Neue", sans-serif; }

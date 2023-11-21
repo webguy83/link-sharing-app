@@ -1,0 +1,43 @@
+<!-- login.component.html -->
+
+<div
+  class="container"
+  [ngClass]="{
+    mobile: responsiveService.isMobile | async,
+    tablet: responsiveService.isTablet | async,
+    desktop: responsiveService.isDesktop | async,
+    'custom-max-500': responsiveService.isCustomMax500 | async
+  }"
+>
+  <img
+    src="../../assets/images/logo-devlinks-large.svg"
+    alt="DevLinks Logo"
+    class="logo"
+  />
+
+  <div class="inner-container">
+    <h1 class="heading">
+      {{ isCreateAccountState ? "Create account" : "Login" }}
+    </h1>
+    <p class="sub-heading" *ngIf="isCreateAccountState">
+      Let's get you started sharing your links!
+    </p>
+    <p class="sub-heading" *ngIf="!isCreateAccountState">
+      Add your details below to get back into the app
+    </p>
+    <app-signin-form *ngIf="!isCreateAccountState"></app-signin-form>
+    <app-create-account-form
+      *ngIf="isCreateAccountState"
+    ></app-create-account-form>
+    <p class="create-account-text">
+      <span
+        >{{ isCreateAccountState ? "Already" : "Don't" }} have an account?
+      </span>
+      <a
+        class="create-account-link"
+        [routerLink]="isCreateAccountState ? '/' : '/create-account'"
+        >{{ isCreateAccountState ? "Login" : "Create Account" }}</a
+      >
+    </p>
+  </div>
+</div>

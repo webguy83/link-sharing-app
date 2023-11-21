@@ -1,0 +1,52 @@
+<form (ngSubmit)="onSubmit(signInForm)" [formGroup]="signInForm">
+  <div class="form-group" [ngClass]="{ error: showEmailError() }" appFormStyle>
+    <label>Email address</label>
+    <div class="input-container">
+      <img
+        src="../../assets/images/icon-email.svg"
+        alt="Email Icon"
+        class="icon"
+      />
+      <div class="error-text">
+        {{ showEmailError() }}
+      </div>
+      <input
+        type="email"
+        placeholder="e.g. alex@email.com"
+        class="input"
+        formControlName="email"
+      />
+    </div>
+  </div>
+  <div
+    class="form-group"
+    [ngClass]="{ error: showPasswordError() }"
+    appFormStyle
+  >
+    <label>Password</label>
+    <div class="input-container">
+      <img
+        src="../../assets/images/icon-password.svg"
+        alt="Password Icon"
+        class="icon"
+      />
+      <div class="error-text">
+        {{ showPasswordError() }}
+      </div>
+      <input
+        type="password"
+        placeholder="Enter your password"
+        class="input"
+        formControlName="password"
+      />
+    </div>
+  </div>
+  <button
+    [disabled]="isLoggingIn"
+    appPrimaryBtn
+    type="submit"
+    class="login-button"
+  >
+    {{ isLoggingIn ? "Logging in..." : "Login" }}
+  </button>
+</form>
