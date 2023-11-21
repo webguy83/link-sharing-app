@@ -18,7 +18,7 @@
 .dashboard-main {
   border-radius: 1.2rem;
   /* Apply padding or other styles as needed */
-  padding: 1rem; /* Example padding */
+  padding: 2.4rem;
   background-color: var(--white);
 }
 
@@ -36,4 +36,8 @@
   grid-area: main;
   overflow: auto; /* Scrollable if content overflows */
   /* Additional styles for the main content area */
+}
+
+.logo {
+  height: 3.2rem;
 }
