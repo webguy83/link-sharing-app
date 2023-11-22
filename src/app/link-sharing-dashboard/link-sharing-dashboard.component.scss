@@ -23,6 +23,8 @@
 }
 
 .dashboard-header {
+  display: flex;
+  align-items: center;
   grid-area: header;
   /* Additional styles for the header */
 }
@@ -40,4 +42,9 @@
 
 .logo {
   height: 3.2rem;
+}
+
+.icon {
+  width: 2rem;
+  height: 2rem;
 }
