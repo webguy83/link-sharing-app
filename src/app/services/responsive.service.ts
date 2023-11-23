@@ -1,5 +1,4 @@
 // responsive.service.ts
-
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -18,14 +17,18 @@ export class ResponsiveService {
     new BehaviorSubject<boolean>(false);
   private isCustomMax400Subject: BehaviorSubject<boolean> =
     new BehaviorSubject<boolean>(false);
+  private isCustomMax700Subject: BehaviorSubject<boolean> =
+    new BehaviorSubject<boolean>(false);
 
   isMobile: Observable<boolean> = this.isMobileSubject.asObservable();
   isTablet: Observable<boolean> = this.isTabletSubject.asObservable();
   isDesktop: Observable<boolean> = this.isDesktopSubject.asObservable();
   isCustomMax500: Observable<boolean> =
-    this.isCustomMax400Subject.asObservable();
+    this.isCustomMax500Subject.asObservable();
   isCustomMax400: Observable<boolean> =
     this.isCustomMax400Subject.asObservable();
+  isCustomMax700: Observable<boolean> =
+    this.isCustomMax700Subject.asObservable();
 
   constructor(private breakpointObserver: BreakpointObserver) {
     this.setupBreakpointObservers();
@@ -52,7 +55,6 @@ export class ResponsiveService {
       this.isDesktopSubject.next(result.matches);
     });
 
-    // Add custom max-width 500px breakpoint observer
     this.breakpointObserver
       .observe(['(max-width: 500px)'])
       .subscribe((result) => {
@@ -63,6 +65,12 @@ export class ResponsiveService {
       .observe(['(max-width: 400px)'])
       .subscribe((result) => {
         this.isCustomMax400Subject.next(result.matches);
+      });
+
+    this.breakpointObserver
+      .observe(['(max-width: 700px)'])
+      .subscribe((result) => {
+        this.isCustomMax700Subject.next(result.matches);
       });
   }
 }

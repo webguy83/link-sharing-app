@@ -24,9 +24,9 @@
 
 .dashboard-header {
   display: flex;
+  justify-content: space-between;
   align-items: center;
   grid-area: header;
-  /* Additional styles for the header */
 }
 
 .dashboard-aside {
@@ -47,4 +47,21 @@
 .icon {
   width: 2rem;
   height: 2rem;
+}
+
+.eye-icon {
+  display: none;
+}
+
+.mobile {
+  .btn-text {
+    display: none;
+  }
+  .eye-icon {
+    display: block;
+  }
+
+  .eye-btn {
+    padding: 1.1rem 1.6rem;
+  }
 }

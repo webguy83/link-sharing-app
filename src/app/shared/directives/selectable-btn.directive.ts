@@ -5,18 +5,35 @@ import {
   Input,
   HostListener,
   OnInit,
+  OnChanges,
+  SimpleChanges,
 } from '@angular/core';
 
 @Directive({
   selector: '[appSelectableButton]',
 })
-export class SelectableButtonDirective implements OnInit {
+export class SelectableButtonDirective implements OnInit, OnChanges {
   @Input() isSelected: boolean = false;
 
   constructor(private el: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.applyDefaultStyles();
+    this.applyStylesBasedOnSelection();
+  }
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['isSelected']) {
+      this.applyStylesBasedOnSelection();
+    }
+  }
+
+  private applyStylesBasedOnSelection(): void {
+    if (this.isSelected) {
+      this.applySelectedStyles();
+    } else {
+      this.applyDefaultStyles();
+    }
   }
 
   private setIconColor(color: string): void {
@@ -24,8 +41,8 @@ export class SelectableButtonDirective implements OnInit {
     if (icon) {
       const path = icon.querySelector('path');
       if (path) {
-        this.renderer.setStyle(path, 'transition', 'fill 0.3s ease'); // Set transition
-        this.renderer.setStyle(path, 'fill', color); // Set fill color
+        this.renderer.setStyle(path, 'transition', 'fill 0.3s ease');
+        this.renderer.setStyle(path, 'fill', color);
       }
     }
   }
@@ -39,7 +56,7 @@ export class SelectableButtonDirective implements OnInit {
       padding: '1.1rem 2.7rem',
       backgroundColor: 'transparent',
       border: 'none',
-      cursor: this.isSelected ? 'default' : 'pointer', // Cursor depends on the selected state
+      cursor: 'pointer',
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
@@ -62,7 +79,7 @@ export class SelectableButtonDirective implements OnInit {
     const styles: { [key: string]: string } = {
       backgroundColor: 'var(--light-purple)',
       color: 'var(--primary)',
-      cursor: 'default', // Cursor should be default when selected
+      cursor: 'default',
     };
     this.setStyles(styles);
     this.setIconColor('var(--primary)');
@@ -81,18 +98,10 @@ export class SelectableButtonDirective implements OnInit {
   }
 
   @HostListener('mouseout') onMouseOut() {
-    // Only apply default styles if the button is not selected
-    if (!this.isSelected) {
-      this.applyDefaultStyles();
-    }
+    this.applyStylesBasedOnSelection();
   }
 
   @HostListener('click') onClick() {
-    // Only allow selection, not deselection
-    if (!this.isSelected) {
-      this.isSelected = true;
-      this.applySelectedStyles();
-      // Emit an event or call a method to notify other components to update
-    }
+    // Emit an event or call a method to notify other components to update
   }
 }
