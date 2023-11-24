@@ -5,20 +5,37 @@ import {
   Input,
   HostListener,
   OnInit,
-  OnChanges,
+  OnDestroy,
   SimpleChanges,
+  OnChanges,
 } from '@angular/core';
+import { Subscription } from 'rxjs';
+import { ResponsiveService } from '../../services/responsive.service';
 
 @Directive({
   selector: '[appSelectableButton]',
 })
-export class SelectableButtonDirective implements OnInit, OnChanges {
+export class SelectableButtonDirective implements OnInit, OnDestroy, OnChanges {
   @Input() isSelected: boolean = false;
+  private isMax350 = false;
+  private subscription: Subscription;
 
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  constructor(
+    private el: ElementRef,
+    private renderer: Renderer2,
+    private responsiveService: ResponsiveService
+  ) {
+    this.subscription = new Subscription();
+  }
 
   ngOnInit(): void {
-    this.applyDefaultStyles();
+    this.subscription.add(
+      this.responsiveService.isCustomMax350.subscribe((isMax350) => {
+        this.isMax350 = isMax350;
+        this.applyStylesBasedOnSelection();
+      })
+    );
+
     this.applyStylesBasedOnSelection();
   }
 
@@ -28,61 +45,74 @@ export class SelectableButtonDirective implements OnInit, OnChanges {
     }
   }
 
-  private applyStylesBasedOnSelection(): void {
-    if (this.isSelected) {
-      this.applySelectedStyles();
-    } else {
-      this.applyDefaultStyles();
-    }
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
   }
 
-  private setIconColor(color: string): void {
-    const icon = this.el.nativeElement.querySelector('.icon');
-    if (icon) {
-      const path = icon.querySelector('path');
-      if (path) {
-        this.renderer.setStyle(path, 'transition', 'fill 0.3s ease');
-        this.renderer.setStyle(path, 'fill', color);
-      }
-    }
+  private applyStylesBasedOnSelection(): void {
+    this.isSelected ? this.applySelectedStyles() : this.applyDefaultStyles();
   }
 
   private applyDefaultStyles(): void {
-    const styles: { [key: string]: string } = {
+    this.setButtonStyles(
+      'var(--med-gray)',
+      'transparent',
+      'pointer',
+      this.isMax350 ? '1.1rem' : '1.1rem 2.7rem'
+    );
+  }
+
+  private applyHoverStyles(): void {
+    this.setButtonStyles(
+      'var(--primary)',
+      'transparent',
+      'pointer',
+      this.isMax350 ? '1.1rem' : '1.1rem 2.7rem'
+    );
+  }
+
+  private applySelectedStyles(): void {
+    this.setButtonStyles(
+      'var(--primary)',
+      'var(--light-purple)',
+      'default',
+      this.isMax350 ? '1.1rem' : '1.1rem 2.7rem'
+    );
+  }
+
+  private setButtonStyles(
+    color: string,
+    backgroundColor: string,
+    cursor: string,
+    padding: string
+  ): void {
+    const styles = {
       borderRadius: '.8rem',
       fontSize: '1.6rem',
       fontWeight: '600',
-      color: 'var(--med-gray)',
-      padding: '1.1rem 2.7rem',
-      backgroundColor: 'transparent',
+      color,
+      padding,
+      backgroundColor,
       border: 'none',
-      cursor: 'pointer',
+      cursor,
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
       gap: '0.8rem',
       transition: 'color 0.3s ease, background-color 0.3s ease',
     };
+
     this.setStyles(styles);
-    this.setIconColor('var(--med-gray)');
+    this.setIconColor(color);
   }
 
-  private applyHoverStyles(): void {
-    const styles: { [key: string]: string } = {
-      color: 'var(--primary)',
-    };
-    this.setStyles(styles);
-    this.setIconColor('var(--primary)');
-  }
-
-  private applySelectedStyles(): void {
-    const styles: { [key: string]: string } = {
-      backgroundColor: 'var(--light-purple)',
-      color: 'var(--primary)',
-      cursor: 'default',
-    };
-    this.setStyles(styles);
-    this.setIconColor('var(--primary)');
+  private setIconColor(color: string): void {
+    const icon = this.el.nativeElement.querySelector('.icon');
+    const path = icon?.querySelector('path');
+    if (path) {
+      this.renderer.setStyle(path, 'transition', 'fill 0.3s ease');
+      this.renderer.setStyle(path, 'fill', color);
+    }
   }
 
   private setStyles(styles: { [key: string]: string }): void {
@@ -91,17 +121,13 @@ export class SelectableButtonDirective implements OnInit, OnChanges {
     });
   }
 
-  @HostListener('mouseover') onMouseOver() {
+  @HostListener('mouseover') onMouseOver(): void {
     if (!this.isSelected) {
       this.applyHoverStyles();
     }
   }
 
-  @HostListener('mouseout') onMouseOut() {
+  @HostListener('mouseout') onMouseOut(): void {
     this.applyStylesBasedOnSelection();
-  }
-
-  @HostListener('click') onClick() {
-    // Emit an event or call a method to notify other components to update
   }
 }

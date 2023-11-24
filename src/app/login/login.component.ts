@@ -51,17 +51,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     );
     this.subscription.add(
       this.responsiveService.isCustomMax500.subscribe((isCustomMax500) => {
-        if (isCustomMax500) {
-          this.responsiveService.setBodyStyle(
-            'background-color',
-            'var(--white)'
-          );
-        } else {
-          this.responsiveService.setBodyStyle(
-            'background-color',
-            'var(--dark-white)'
-          );
-        }
+        const newBackgroundColor = isCustomMax500
+          ? 'var(--white)'
+          : 'var(--dark-white)';
+        document.body.style.backgroundColor = newBackgroundColor;
       })
     );
   }

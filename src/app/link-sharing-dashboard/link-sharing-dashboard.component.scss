@@ -40,8 +40,12 @@
   /* Additional styles for the main content area */
 }
 
-.logo {
+.large-logo {
   height: 3.2rem;
+}
+
+.small-logo {
+  display: none;
 }
 
 .icon {
@@ -63,5 +67,13 @@
 
   .eye-btn {
     padding: 1.1rem 1.6rem;
+  }
+
+  .large-logo {
+    display: none;
+  }
+
+  .small-logo {
+    display: inline-block;
   }
 }

@@ -1,76 +1,84 @@
-// responsive.service.ts
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+
+interface BreakpointsDictionary {
+  handset: string;
+  tablet: string;
+  web: string;
+  max350: string;
+  max400: string;
+  max500: string;
+  max700: string;
+}
 
 @Injectable({
   providedIn: 'root',
 })
 export class ResponsiveService {
-  private isMobileSubject: BehaviorSubject<boolean> =
-    new BehaviorSubject<boolean>(false);
-  private isTabletSubject: BehaviorSubject<boolean> =
-    new BehaviorSubject<boolean>(false);
-  private isDesktopSubject: BehaviorSubject<boolean> =
-    new BehaviorSubject<boolean>(false);
-  private isCustomMax500Subject: BehaviorSubject<boolean> =
-    new BehaviorSubject<boolean>(false);
-  private isCustomMax400Subject: BehaviorSubject<boolean> =
-    new BehaviorSubject<boolean>(false);
-  private isCustomMax700Subject: BehaviorSubject<boolean> =
-    new BehaviorSubject<boolean>(false);
+  private breakpoints: BreakpointsDictionary = {
+    handset: Breakpoints.Handset,
+    tablet: Breakpoints.Tablet,
+    web: Breakpoints.Web,
+    max350: '(max-width: 350px)',
+    max400: '(max-width: 400px)',
+    max500: '(max-width: 500px)',
+    max700: '(max-width: 700px)',
+  };
 
-  isMobile: Observable<boolean> = this.isMobileSubject.asObservable();
-  isTablet: Observable<boolean> = this.isTabletSubject.asObservable();
-  isDesktop: Observable<boolean> = this.isDesktopSubject.asObservable();
-  isCustomMax500: Observable<boolean> =
-    this.isCustomMax500Subject.asObservable();
-  isCustomMax400: Observable<boolean> =
-    this.isCustomMax400Subject.asObservable();
-  isCustomMax700: Observable<boolean> =
-    this.isCustomMax700Subject.asObservable();
+  private breakpointSubjects: {
+    [K in keyof BreakpointsDictionary]: BehaviorSubject<boolean>;
+  } = {} as any;
 
   constructor(private breakpointObserver: BreakpointObserver) {
+    this.initializeBreakpointSubjects();
     this.setupBreakpointObservers();
   }
 
-  setBodyStyle(property: string, value: string): void {
-    (document.body.style as any)[property] = value;
+  private initializeBreakpointSubjects(): void {
+    (
+      Object.keys(this.breakpoints) as Array<keyof BreakpointsDictionary>
+    ).forEach((key) => {
+      this.breakpointSubjects[key] = new BehaviorSubject<boolean>(false);
+    });
+  }
+
+  get isMobile(): Observable<boolean> {
+    return this.breakpointSubjects['handset'].asObservable();
+  }
+
+  get isTablet(): Observable<boolean> {
+    return this.breakpointSubjects['tablet'].asObservable();
+  }
+
+  get isDesktop(): Observable<boolean> {
+    return this.breakpointSubjects['web'].asObservable();
+  }
+
+  get isCustomMax350(): Observable<boolean> {
+    return this.breakpointSubjects['max350'].asObservable();
+  }
+
+  get isCustomMax400(): Observable<boolean> {
+    return this.breakpointSubjects['max400'].asObservable();
+  }
+
+  get isCustomMax500(): Observable<boolean> {
+    return this.breakpointSubjects['max500'].asObservable();
+  }
+
+  get isCustomMax700(): Observable<boolean> {
+    return this.breakpointSubjects['max700'].asObservable();
   }
 
   private setupBreakpointObservers(): void {
-    this.breakpointObserver
-      .observe([Breakpoints.Handset])
-      .subscribe((result) => {
-        this.isMobileSubject.next(result.matches);
+    (
+      Object.keys(this.breakpoints) as Array<keyof BreakpointsDictionary>
+    ).forEach((key) => {
+      const breakpoint = this.breakpoints[key];
+      this.breakpointObserver.observe([breakpoint]).subscribe((result) => {
+        this.breakpointSubjects[key].next(result.matches);
       });
-
-    this.breakpointObserver
-      .observe([Breakpoints.Tablet])
-      .subscribe((result) => {
-        this.isTabletSubject.next(result.matches);
-      });
-
-    this.breakpointObserver.observe([Breakpoints.Web]).subscribe((result) => {
-      this.isDesktopSubject.next(result.matches);
     });
-
-    this.breakpointObserver
-      .observe(['(max-width: 500px)'])
-      .subscribe((result) => {
-        this.isCustomMax500Subject.next(result.matches);
-      });
-
-    this.breakpointObserver
-      .observe(['(max-width: 400px)'])
-      .subscribe((result) => {
-        this.isCustomMax400Subject.next(result.matches);
-      });
-
-    this.breakpointObserver
-      .observe(['(max-width: 700px)'])
-      .subscribe((result) => {
-        this.isCustomMax700Subject.next(result.matches);
-      });
   }
 }

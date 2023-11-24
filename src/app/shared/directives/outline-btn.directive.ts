@@ -13,7 +13,6 @@ import { ResponsiveService } from '../../services/responsive.service';
   selector: '[appOutlineBtn]',
 })
 export class OutlineBtnDirective implements OnInit, OnDestroy {
-  private isMax700 = false;
   private subscription = new Subscription();
 
   constructor(
@@ -23,7 +22,7 @@ export class OutlineBtnDirective implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    this.applyDefaultStyles();
+    this.setupStyles();
     this.setupResponsiveStyles();
   }
 
@@ -31,14 +30,12 @@ export class OutlineBtnDirective implements OnInit, OnDestroy {
     this.subscription.unsubscribe();
   }
 
-  private applyDefaultStyles(): void {
-    const styles: { [key: string]: string } = {
+  private setupStyles(): void {
+    const baseStyles = {
       borderColor: 'var(--primary)',
       color: 'var(--primary)',
       fontWeight: '600',
       fontSize: '1.6rem',
-      // Default padding, will be overridden by responsive styles if needed
-      padding: '1.1rem 2.7rem',
       borderRadius: '0.8rem',
       borderStyle: 'solid',
       borderWidth: '1px',
@@ -49,16 +46,7 @@ export class OutlineBtnDirective implements OnInit, OnDestroy {
       alignItems: 'center',
       justifyContent: 'center',
     };
-    this.setStyles(styles);
-  }
-
-  private applyHoverStyles(): void {
-    const hoverStyles: { [key: string]: string } = {
-      backgroundColor: '#EFEBFF',
-      // Responsive padding
-      padding: this.isMax700 ? '1.1rem 1.6rem' : '1.1rem 2.7rem',
-    };
-    this.setStyles(hoverStyles);
+    this.setStyles(baseStyles);
   }
 
   private setStyles(styles: { [key: string]: string }): void {
@@ -68,21 +56,23 @@ export class OutlineBtnDirective implements OnInit, OnDestroy {
   }
 
   private setupResponsiveStyles(): void {
-    const responsiveSubscription =
+    this.subscription.add(
       this.responsiveService.isCustomMax700.subscribe((isMax700) => {
-        this.isMax700 = isMax700;
         const padding = isMax700 ? '1.1rem 1.6rem' : '1.1rem 2.7rem';
         this.renderer.setStyle(this.el.nativeElement, 'padding', padding);
-      });
-
-    this.subscription.add(responsiveSubscription);
+      })
+    );
   }
 
   @HostListener('mouseover') onMouseOver() {
-    this.applyHoverStyles();
+    this.renderer.setStyle(this.el.nativeElement, 'backgroundColor', '#EFEBFF');
   }
 
   @HostListener('mouseout') onMouseOut() {
-    this.applyDefaultStyles();
+    this.renderer.setStyle(
+      this.el.nativeElement,
+      'backgroundColor',
+      'transparent'
+    );
   }
 }
