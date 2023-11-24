@@ -9,11 +9,17 @@ import {
 } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
-
+import { LinksComponent } from '../links/links.component';
+import { ProfileDetailsComponent } from '../profile-details/profile-details.component';
 @Component({
   selector: 'app-link-sharing-dashboard',
   standalone: true,
-  imports: [CommonModule, SharedModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    LinksComponent,
+    ProfileDetailsComponent,
+  ],
   templateUrl: './link-sharing-dashboard.component.html',
   styleUrls: ['./link-sharing-dashboard.component.scss'],
 })

@@ -72,6 +72,16 @@
       <span class="btn-text">Preview</span>
     </button>
   </header>
-  <aside class="dashboard-aside">Aside content here</aside>
-  <main class="dashboard-main">Main content here</main>
+  <aside class="dashboard-aside">
+    <img
+      src="../../assets/images/illustration-phone-mockup.svg"
+      alt="phone mockup"
+    />
+  </aside>
+  <main class="dashboard-main">
+    <app-links *ngIf="isLinksSelected; else profileDetails"></app-links>
+    <ng-template #profileDetails>
+      <app-profile-details *ngIf="isProfileSelected"></app-profile-details>
+    </ng-template>
+  </main>
 </div>
