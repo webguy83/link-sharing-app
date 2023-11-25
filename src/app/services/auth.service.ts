@@ -4,25 +4,29 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword,
   signOut,
+  Auth,
   UserCredential,
 } from 'firebase/auth';
-import { from, switchMap } from 'rxjs';
+import { from, Observable, scheduled, asyncScheduler, of } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
 import { LocalStorageService } from './local-storage.service';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AuthService {
-  private auth = getAuth();
+  private auth: Auth;
   private static readonly AUTH_KEY = 'authToken';
 
-  constructor(private localStorageService: LocalStorageService) {}
+  constructor(private localStorageService: LocalStorageService) {
+    this.auth = getAuth();
+  }
 
   isAuthenticated(): boolean {
     const token = this.localStorageService.getItem<string>(
       AuthService.AUTH_KEY
     );
-    return !!token;
+    return Boolean(token);
   }
 
   saveAuthToken(token: string): void {
@@ -36,19 +40,21 @@ export class AuthService {
   private handleUserCredential(userCredential: UserCredential) {
     return from(userCredential.user.getIdToken()).pipe(
       switchMap((token) => {
-        this.saveAuthToken(token); // Save the token
-        return [userCredential]; // Return the original UserCredential
+        this.saveAuthToken(token);
+        return from([userCredential]);
       })
     );
   }
 
   signIn(email: string, password: string) {
+    // Use 'from' to convert the promise returned by signInWithEmailAndPassword into an observable
     return from(signInWithEmailAndPassword(this.auth, email, password)).pipe(
       switchMap((userCredential) => this.handleUserCredential(userCredential))
     );
   }
 
   signUp(email: string, password: string) {
+    // Use 'from' to convert the promise returned by createUserWithEmailAndPassword into an observable
     return from(
       createUserWithEmailAndPassword(this.auth, email, password)
     ).pipe(
@@ -57,9 +63,11 @@ export class AuthService {
   }
 
   signOut() {
-    const signOutPromise = signOut(this.auth).then(() => {
-      this.clearAuthToken(); // Clear the token when signing out
-    });
-    return from(signOutPromise);
+    return from(signOut(this.auth)).pipe(
+      switchMap(() => {
+        this.clearAuthToken();
+        return from([null]);
+      })
+    );
   }
 }

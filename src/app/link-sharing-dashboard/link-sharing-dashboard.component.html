@@ -1,5 +1,5 @@
 <!-- dashboard.component.html -->
-<div class="dashboard-container">
+<div class="dashboard-container" [ngClass]="{'mobile': (isMobile$ | async)}">
   <header class="dashboard-header">
     <img
       src="../../assets/images/logo-devlinks-large.svg"
@@ -15,7 +15,7 @@
       <button
         type="button"
         appSelectableButton
-        [isSelected]="isLinksSelected"
+        [isSelected]="selectedSection === 'links'"
         (click)="toggleSelection('links')"
       >
         <svg
@@ -36,7 +36,7 @@
       <button
         type="button"
         appSelectableButton
-        [isSelected]="isProfileSelected"
+        [isSelected]="selectedSection === 'profile'"
         (click)="toggleSelection('profile')"
       >
         <svg
@@ -79,9 +79,7 @@
     />
   </aside>
   <main class="dashboard-main">
-    <app-links *ngIf="isLinksSelected; else profileDetails"></app-links>
-    <ng-template #profileDetails>
-      <app-profile-details *ngIf="isProfileSelected"></app-profile-details>
-    </ng-template>
+    <app-links *ngIf="selectedSection === 'links'"></app-links>
+    <app-profile-details *ngIf="selectedSection === 'profile'"></app-profile-details>
   </main>
 </div>
