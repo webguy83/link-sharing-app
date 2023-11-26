@@ -57,6 +57,7 @@ $link-sharing-app-theme: mat.define-light-theme(
 body {
   font-family: "Instrument Sans", sans-serif;
   background-color: var(--dark-white);
+  color: var(--dark-gray);
 }
 
 html {
@@ -157,8 +158,8 @@ body {
 
 body {
   margin: 0;
-  font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 button {
   font-family: "Instrument Sans", sans-serif;
+  font-weight: 600;
 }

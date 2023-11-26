@@ -1,7 +1,7 @@
 .dashboard-container {
   display: grid;
   grid-template-rows: auto 1fr; /* Header size set by content, remaining space for aside and main */
-  grid-template-columns: 1fr 1.4fr; /* Aside takes 1 part, main content 3 parts */
+  grid-template-columns: 1fr 1.7fr; /* Aside takes 1 part, main content 3 parts */
   grid-template-areas:
     "header header"
     "aside main";
@@ -17,7 +17,6 @@
 .dashboard-main {
   border-radius: 1.2rem;
   /* Apply padding or other styles as needed */
-  padding: 2.4rem;
   background-color: var(--white);
 }
 
@@ -26,17 +25,17 @@
   justify-content: space-between;
   align-items: center;
   grid-area: header;
+  padding: 2.4rem;
 }
 
 .dashboard-aside {
   grid-area: aside;
-  /* Additional styles for the aside */
+  padding: 2.4rem;
 }
 
 .dashboard-main {
   grid-area: main;
   overflow: auto; /* Scrollable if content overflows */
-  /* Additional styles for the main content area */
 }
 
 .large-logo {

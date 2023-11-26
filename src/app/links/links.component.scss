@@ -1,0 +1,56 @@
+.links-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+
+  &-header h2 {
+    font-size: 3.2rem;
+  }
+}
+
+.container {
+  margin: 4rem 4rem 0;
+}
+
+.phone-container-block {
+  flex-grow: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  margin: 0;
+  border-radius: 1.2rem;
+  background-color: var(--dark-white);
+  padding: 2rem;
+  margin: 0 4rem 4rem;
+}
+
+.instructions {
+  font-size: 1.6rem;
+  color: var(--med-gray);
+}
+
+.add-link-btn {
+  margin: 4rem 0 2.4rem;
+  width: 100%;
+}
+
+.started-txt {
+  font-size: 3.2rem;
+  font-weight: 700;
+  margin: 4rem 0 2.4rem;
+  text-align: center;
+
+  & + .instructions {
+    max-width: 48rem;
+    text-align: center;
+  }
+}
+
+.footer {
+  display: flex;
+  justify-content: end;
+  padding: 2.4rem 4rem;
+  border-top: 0.1rem solid var(--light-gray);
+}

@@ -1,4 +1,10 @@
-import { Directive, ElementRef, Renderer2, OnInit, HostListener } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  Renderer2,
+  OnInit,
+  HostListener,
+} from '@angular/core';
 
 @Directive({
   selector: '[appPrimaryBtn]',
@@ -12,7 +18,7 @@ export class PrimaryBtnDirective implements OnInit {
   }
 
   public resetButtonStyles(): void {
-    this.setDefaults()
+    this.setDefaults();
   }
 
   private setDefaults() {
@@ -32,7 +38,7 @@ export class PrimaryBtnDirective implements OnInit {
       backgroundColor: 'var(--primary)',
       border: 'none',
       borderRadius: '0.8rem',
-      padding: '1.2rem',
+      padding: '1.1rem 2.7rem',
       transition: 'all 0.3s ease',
       cursor: 'pointer',
     };
@@ -52,7 +58,7 @@ export class PrimaryBtnDirective implements OnInit {
       this.renderer.setStyle(this.el.nativeElement, 'opacity', '0.25');
       this.renderer.setStyle(this.el.nativeElement, 'cursor', 'default');
     } else {
-      this.setDefaults()
+      this.setDefaults();
     }
   }
 
