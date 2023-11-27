@@ -6,6 +6,7 @@
 
   &-header h2 {
     font-size: 3.2rem;
+    margin-top: 0;
   }
 }
 
@@ -32,7 +33,7 @@
 }
 
 .add-link-btn {
-  margin: 4rem 0 2.4rem;
+  margin: 2rem 0 2.4rem;
   width: 100%;
 }
 
@@ -53,4 +54,27 @@
   justify-content: end;
   padding: 2.4rem 4rem;
   border-top: 0.1rem solid var(--light-gray);
+}
+
+.max700 {
+  .container {
+    margin: 2.4rem 2.4rem 0;
+  }
+
+  .phone-container-block {
+    margin: 0 2.4rem 2.4rem;
+  }
+
+  .footer {
+    padding: 1.6rem;
+  }
+
+  .save-btn {
+    flex-grow: 1;
+  }
+
+  .started-txt,
+  .links-section-header h2 {
+    font-size: 2.4rem;
+  }
 }

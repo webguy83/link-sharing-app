@@ -61,7 +61,7 @@
   align-items: center;
 }
 
-.mobile {
+.max700 {
   .btn-text {
     display: none;
   }
@@ -79,5 +79,15 @@
 
   .small-logo {
     display: inline-block;
+  }
+}
+
+.max900 {
+  grid-template-areas:
+    "header header"
+    "main main";
+
+  .dashboard-aside {
+    display: none;
   }
 }

@@ -1,5 +1,11 @@
 <!-- dashboard.component.html -->
-<div class="dashboard-container" [ngClass]="{'mobile': (isMobile$ | async)}">
+<div
+  class="dashboard-container"
+  [ngClass]="{
+    max700: (isMaxWidth700$ | async),
+    max900: (isMaxWidth900$ | async)
+  }"
+>
   <header class="dashboard-header">
     <img
       src="../../assets/images/logo-devlinks-large.svg"
@@ -80,6 +86,8 @@
   </aside>
   <main class="dashboard-main">
     <app-links *ngIf="selectedSection === 'links'"></app-links>
-    <app-profile-details *ngIf="selectedSection === 'profile'"></app-profile-details>
+    <app-profile-details
+      *ngIf="selectedSection === 'profile'"
+    ></app-profile-details>
   </main>
 </div>

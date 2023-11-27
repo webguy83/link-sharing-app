@@ -1,4 +1,10 @@
-<section aria-labelledby="links-section" class="links-section">
+<section
+  aria-labelledby="links-section"
+  class="links-section"
+  [ngClass]="{
+    max700: (isMaxWidth500$ | async)
+  }"
+>
   <div class="container">
     <header class="links-section-header">
       <h2>Customize your links</h2>
@@ -31,6 +37,6 @@
     </p>
   </figure>
   <footer class="footer">
-    <button appPrimaryBtn type="button">Save</button>
+    <button class="save-btn" disabled appPrimaryBtn type="button">Save</button>
   </footer>
 </section>

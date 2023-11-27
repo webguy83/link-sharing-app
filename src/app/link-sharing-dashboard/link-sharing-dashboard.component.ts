@@ -18,7 +18,8 @@ import { ProfileDetailsComponent } from '../profile-details/profile-details.comp
 })
 export class LinkSharingDashboardComponent {
   selectedSection = 'links';
-  isMobile$ = this.responsiveService.isCustomMax700;
+  isMaxWidth700$ = this.responsiveService.isCustomMax700;
+  isMaxWidth900$ = this.responsiveService.isCustomMax900;
 
   constructor(private responsiveService: ResponsiveService) {}
 

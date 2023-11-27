@@ -58,6 +58,8 @@ body {
   font-family: "Instrument Sans", sans-serif;
   background-color: var(--dark-white);
   color: var(--dark-gray);
+  min-width: 32rem;
+  margin: 0;
 }
 
 html {
@@ -156,9 +158,6 @@ body {
   }
 }
 
-body {
-  margin: 0;
-}
 button {
   font-family: "Instrument Sans", sans-serif;
   font-weight: 600;

@@ -10,6 +10,7 @@ interface BreakpointsDictionary {
   max400: string;
   max500: string;
   max700: string;
+  max900: string;
 }
 
 @Injectable({
@@ -24,6 +25,7 @@ export class ResponsiveService {
     max400: '(max-width: 400px)',
     max500: '(max-width: 500px)',
     max700: '(max-width: 700px)',
+    max900: '(max-width: 900px)',
   };
 
   private breakpointSubjects: {
@@ -69,6 +71,10 @@ export class ResponsiveService {
 
   get isCustomMax700(): Observable<boolean> {
     return this.breakpointSubjects['max700'].asObservable();
+  }
+
+  get isCustomMax900(): Observable<boolean> {
+    return this.breakpointSubjects['max900'].asObservable();
   }
 
   private setupBreakpointObservers(): void {
