@@ -1,6 +1,8 @@
-<section
+<form
   aria-labelledby="links-section"
   class="links-section"
+  [formGroup]="linksForm"
+  (ngSubmit)="onSubmit()"
   [ngClass]="{
     max700: (isMaxWidth500$ | async)
   }"
@@ -19,12 +21,13 @@
       class="add-link-btn"
       appOutlineBtn
       type="button"
+      (click)="addLink()"
       aria-label="Add new link"
     >
       + Add new link
     </button>
   </div>
-  <figure class="phone-container-block">
+  <figure class="phone-container-block" *ngIf="links.controls.length < 1">
     <img
       src="../../assets/images/illustration-empty.svg"
       alt="Illustration of hand pressing a link on a phone screen"
@@ -36,7 +39,27 @@
       profiles with everyone!
     </p>
   </figure>
+  <div formArrayName="links" class="phone-container-block">
+    <div *ngFor="let link of links.controls; let i = index" [formGroupName]="i">
+      <!-- Your link entry form fields here -->
+      <select formControlName="platform">
+        <!-- options -->
+      </select>
+      <input
+        formControlName="url"
+        placeholder="e.g. https://www.github.com/johndoe"
+      />
+      <button type="button" (click)="removeLink(i)">Remove</button>
+    </div>
+  </div>
   <footer class="footer">
-    <button class="save-btn" disabled appPrimaryBtn type="button">Save</button>
+    <button
+      class="save-btn"
+      [disabled]="!links.length"
+      appPrimaryBtn
+      type="button"
+    >
+      Save
+    </button>
   </footer>
-</section>
+</form>
