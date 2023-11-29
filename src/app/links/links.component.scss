@@ -37,6 +37,11 @@
   width: 100%;
 }
 
+.link-controls-container {
+  flex-grow: 1;
+  margin: 0 4rem 4rem;
+}
+
 .started-txt {
   font-size: 3.2rem;
   font-weight: 700;
