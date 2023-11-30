@@ -1,22 +1,16 @@
 <form
-  aria-labelledby="links-section"
-  class="links-section"
   [formGroup]="linksForm"
   (ngSubmit)="onSubmit()"
-  [ngClass]="{
-    max700: (isMaxWidth500$ | async)
-  }"
+  class="links-section"
+  [ngClass]="{ 'max700': (isMaxWidth500$ | async) }"
 >
   <div class="container">
     <header class="links-section-header">
       <h2>Customize your links</h2>
     </header>
-
     <p class="instructions">
-      Add/edit/remove links below and then share all your profiles with the
-      world!
+      Add/edit/remove links below and then share all your profiles with the world!
     </p>
-
     <button
       class="add-link-btn"
       appOutlineBtn
@@ -27,7 +21,8 @@
       + Add new link
     </button>
   </div>
-  <figure class="phone-container-block" *ngIf="links.controls.length < 1">
+
+  <figure class="phone-container-block" *ngIf="linksFormArray.length === 0">
     <img
       src="../../assets/images/illustration-empty.svg"
       alt="Illustration of hand pressing a link on a phone screen"
@@ -39,25 +34,37 @@
       profiles with everyone!
     </p>
   </figure>
-  <div formArrayName="links" class="link-controls-container">
-    <div *ngFor="let link of links.controls; let i = index" [formGroupName]="i">
-      <!-- Your link entry form fields here -->
-      <select formControlName="platform">
-        <!-- options -->
-      </select>
-      <input
-        formControlName="url"
-        placeholder="e.g. https://www.github.com/johndoe"
-      />
-      <button type="button" (click)="removeLink(i)">Remove</button>
+
+  <section class="links-form">
+    <div formArrayName="linkItems" class="link-items">
+      <div *ngFor="let link of linksFormArray.controls; let i = index" class="link-item" [formGroupName]="i">
+        <div class="link-header">
+          <h3 class="link-title">Link #{{ i + 1 }}</h3>
+          <button type="button" class="remove-link" (click)="removeLink(i)">Remove</button>
+        </div>
+        <div class="form-group">
+          <label for="platform-{{ i }}">Platform</label>
+          <select formControlName="platform" id="platform-{{ i }}" appSelectStyle>
+            <option value="">Select a platform</option>
+            <option *ngFor="let option of platformOptions" [value]="option.value">
+              {{ option.label }}
+            </option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="link-{{ i }}">Link</label>
+          <input type="url" formControlName="link" id="link-{{ i }}" placeholder="e.g., https://www.github.com/johndoe" appFormStyle>
+        </div>
+      </div>
     </div>
-  </div>
+  </section>
+
   <footer class="footer">
     <button
       class="save-btn"
-      [disabled]="!links.length"
       appPrimaryBtn
-      type="button"
+      type="submit"
+      [disabled]="linksForm.invalid || linksFormArray.length === 0"
     >
       Save
     </button>

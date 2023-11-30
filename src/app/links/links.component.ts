@@ -2,51 +2,51 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { ResponsiveService } from '../services/responsive.service';
-import {
-  FormArray,
-  FormBuilder,
-  FormGroup,
-  ReactiveFormsModule,
-} from '@angular/forms';
+import { FormBuilder, FormGroup, FormArray, Validators, ReactiveFormsModule } from '@angular/forms';
+import { platformOptions } from '../shared/constants/platform-option';
+
 
 @Component({
   selector: 'app-links',
   standalone: true,
   imports: [CommonModule, SharedModule, ReactiveFormsModule],
   templateUrl: './links.component.html',
-  styleUrl: './links.component.scss',
+  styleUrls: ['./links.component.scss'],
 })
 export class LinksComponent {
-  isMaxWidth500$ = this.responsiveService.isCustomMax500;
   linksForm: FormGroup;
+  platformOptions = platformOptions;
+  isMaxWidth500$ = this.responsiveService.isCustomMax500;
 
-  constructor(
-    private responsiveService: ResponsiveService,
-    private fb: FormBuilder
-  ) {
+  constructor(private fb: FormBuilder, private responsiveService: ResponsiveService) {
+    // Initialize the form here
     this.linksForm = this.fb.group({
-      links: this.fb.array([]),
+      linkItems: this.fb.array([])
     });
+
+    // If you want to start with one link item
+    this.addLink();
   }
 
-  get links(): FormArray {
-    return this.linksForm.get('links') as FormArray;
+  get linksFormArray(): FormArray {
+    return this.linksForm.get('linkItems') as FormArray;
   }
 
   addLink(): void {
-    const linkFormGroup = this.fb.group({
-      platform: [''],
-      url: [''],
+    const linkItem = this.fb.group({
+      platform: ['', Validators.required], // assuming platform is required
+      link: ['', [Validators.required, Validators.pattern(/https?:\/\/.+/)]] // simple URL validation
     });
-    this.links.push(linkFormGroup);
+
+    this.linksFormArray.push(linkItem);
   }
 
   removeLink(index: number): void {
-    this.links.removeAt(index);
+    this.linksFormArray.removeAt(index);
   }
 
   onSubmit(): void {
-    // Process the form data here
+    // Handle form submission
     console.log(this.linksForm.value);
   }
 }
