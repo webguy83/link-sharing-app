@@ -40,6 +40,8 @@
 .links-form {
   flex-grow: 1;
   margin: 0 4rem 4rem;
+  max-height: calc(100vh - 54rem);
+  overflow-y: auto;
 }
 
 .started-txt {
