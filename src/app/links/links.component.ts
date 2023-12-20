@@ -1,32 +1,30 @@
-import { Component } from '@angular/core';
+import { Component, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { ResponsiveService } from '../services/responsive.service';
 import {
   FormBuilder,
-  FormGroup,
   FormArray,
   Validators,
   ReactiveFormsModule,
-  AbstractControl,
 } from '@angular/forms';
 import { platformOptions } from '../shared/constants/platform-option';
-import { LinkBlockComponent } from '../link-block/link-block.component';
+import { Subscription } from 'rxjs';
+import { linkPlatformValidator } from '../validators/validators';
 
 @Component({
   selector: 'app-links',
   standalone: true,
+  imports: [CommonModule, SharedModule, ReactiveFormsModule],
   templateUrl: './links.component.html',
   styleUrls: ['./links.component.scss'],
-  imports: [
-    CommonModule,
-    SharedModule,
-    ReactiveFormsModule,
-    LinkBlockComponent,
-  ],
 })
-export class LinksComponent {
-  linksForm: FormGroup;
+export class LinksComponent implements OnDestroy {
+  private subscription = new Subscription();
+  linksForm = this.fb.group({
+    linkItems: this.fb.array([]),
+  });
+  isFormChanged = false;
   platformOptions = platformOptions;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
 
@@ -34,38 +32,59 @@ export class LinksComponent {
     private fb: FormBuilder,
     private responsiveService: ResponsiveService
   ) {
-    // Initialize the form here
-    this.linksForm = this.fb.group({
-      linkItems: this.fb.array([]),
-    });
-
-    // If you want to start with one link item
-    this.addLink();
+    this.subscribeToFormChanges();
   }
 
-  get linksFormArray(): FormArray {
-    return this.linksForm.get('linkItems') as FormArray;
+  get linkItems() {
+    return this.linksForm.controls['linkItems'] as FormArray;
   }
 
-  addLink(): void {
-    const linkItem = this.fb.group({
-      platform: ['', Validators.required], // assuming platform is required
-      link: ['', [Validators.required, Validators.pattern(/https?:\/\/.+/)]], // simple URL validation
-    });
+  subscribeToFormChanges() {
+    this.subscription.add(
+      this.linksForm.valueChanges.subscribe(() => {
+        this.isFormChanged = true;
+        console.log(this.linkItems.controls);
+      })
+    );
+  }
 
-    this.linksFormArray.push(linkItem);
+  ngOnDestroy(): void {
+    this.subscription.unsubscribe();
+  }
+
+  addLink() {
+    const linkItem = this.fb.group(
+      {
+        platform: ['github', Validators.required],
+        link: ['', Validators.required],
+      },
+      { validators: linkPlatformValidator }
+    ); // Apply the custom validator
+
+    this.linkItems.push(linkItem);
   }
 
   removeLink(index: number): void {
-    this.linksFormArray.removeAt(index);
+    this.linkItems.removeAt(index);
   }
 
-  getFormGroup(control: AbstractControl): FormGroup {
-    return control as FormGroup;
+  onPlatformChange(index: number): void {
+    const linkFormGroup = this.linkItems.at(index);
+    const linkControl = linkFormGroup.get('link');
+    const platformControl = linkFormGroup.get('platform');
+
+    // if (linkControl && platformControl) {
+    //   linkControl.setValidators([
+    //     Validators.required,
+    //     linkPlatformValidator,
+    //   ]);
+    //   linkControl.updateValueAndValidity();
+    // }
   }
 
   onSubmit(): void {
-    // Handle form submission
-    console.log(this.linksForm.value);
+    if (this.linksForm.valid) {
+      this.isFormChanged = false;
+    }
   }
 }

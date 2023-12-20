@@ -7,6 +7,7 @@
   &-header h2 {
     font-size: 3.2rem;
     margin-top: 0;
+    margin-bottom: 2rem;
   }
 }
 
@@ -20,26 +21,37 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  margin: 0;
   border-radius: 1.2rem;
   background-color: var(--dark-white);
-  padding: 2rem;
-  margin: 0 4rem 4rem;
+  padding: 2rem 6rem 4rem;
+  margin-bottom: 0;
+  margin-top: 2rem;
 }
 
 .instructions {
   font-size: 1.6rem;
   color: var(--med-gray);
+  margin: 1rem 0;
 }
 
 .add-link-btn {
   margin: 2rem 0 2.4rem;
   width: 100%;
+  margin-bottom: 0;
+}
+
+.link-header {
+  display: flex;
+  justify-content: space-between;
+}
+
+.link-title {
+  margin: 0;
 }
 
 .links-form {
   flex-grow: 1;
-  margin: 0 4rem 4rem;
+  padding: 0 4rem 4rem;
   max-height: calc(100vh - 54rem);
   overflow-y: auto;
 }
@@ -61,6 +73,12 @@
   justify-content: end;
   padding: 2.4rem 4rem;
   border-top: 0.1rem solid var(--light-gray);
+}
+
+.link-items {
+  padding: 2rem;
+  background-color: var(--dark-white);
+  border-radius: 1.2rem;
 }
 
 .max700 {

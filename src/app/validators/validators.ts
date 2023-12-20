@@ -1,4 +1,10 @@
-import { AbstractControl, FormGroup, ValidationErrors } from '@angular/forms';
+import {
+  AbstractControl,
+  FormGroup,
+  ValidationErrors,
+  ValidatorFn,
+} from '@angular/forms';
+import { platformOptions } from '../shared/constants/platform-option';
 
 export function passwordMatchValidator(
   control: AbstractControl
@@ -14,3 +20,33 @@ export function passwordMatchValidator(
   }
   return null;
 }
+
+export const linkPlatformValidator: ValidatorFn = (
+  control: AbstractControl
+): ValidationErrors | null => {
+  if (!(control instanceof FormGroup)) {
+    return null;
+  }
+
+  const platformControl = control.get('platform');
+  const linkControl = control.get('link');
+
+  if (!platformControl || !linkControl) {
+    return null;
+  }
+
+  const platform = platformControl.value;
+  const link = linkControl.value;
+  const platformOption = platformOptions.find(
+    (option) => option.value === platform
+  );
+
+  if (platformOption && platformOption.urlPattern) {
+    const regex = new RegExp(platformOption.urlPattern);
+    if (!regex.test(link)) {
+      return { invalidLinkPlatform: true };
+    }
+  }
+
+  return null;
+};

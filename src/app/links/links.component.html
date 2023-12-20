@@ -23,7 +23,7 @@
     </button>
   </div>
 
-  <figure class="phone-container-block" *ngIf="linksFormArray.length === 0">
+  <figure class="phone-container-block" *ngIf="linkItems.length === 0">
     <img
       src="../../assets/images/illustration-empty.svg"
       alt="Illustration of hand pressing a link on a phone screen"
@@ -37,33 +37,54 @@
   </figure>
 
   <section class="links-form">
-    <div formArrayName="linkItems" class="link-items">
-      <app-link-block
-        *ngFor="let link of linksFormArray.controls; let i = index"
-        [linkFormGroup]="getFormGroup(link)"
-        [index]="i"
-        (remove)="removeLink(i)"
+    <div
+      formArrayName="linkItems"
+      class="link-items"
+      *ngIf="linkItems.controls.length"
+    >
+      <ng-container
+        *ngFor="let linkItemFormGroup of linkItems.controls; let i = index"
       >
-      </app-link-block>
-      <!-- <div *ngFor="let link of linksFormArray.controls; let i = index" class="link-item" [formGroupName]="i">
-        <div class="link-header">
-          <h3 class="link-title">Link #{{ i + 1 }}</h3>
-          <button type="button" class="remove-link" (click)="removeLink(i)">Remove</button>
+        <div class="link-item" [formGroupName]="i">
+          <div class="link-header">
+            <h3 class="link-title">Link #{{ i }}</h3>
+            <button type="button" class="remove-link" (click)="removeLink(i)">
+              Remove
+            </button>
+          </div>
+          <div class="form-group" appFormStyle>
+            <label for="platform-{{ i }}">Platform</label>
+            <div class="input-container">
+              <select
+                class="input"
+                formControlName="platform"
+                id="platform-{{ i }}"
+                appSelectStyle
+                (change)="onPlatformChange(i)"
+              >
+                <option
+                  *ngFor="let option of platformOptions"
+                  [value]="option.value"
+                >
+                  {{ option.label }}
+                </option>
+              </select>
+            </div>
+          </div>
+          <div class="form-group" appFormStyle>
+            <label for="link-{{ i }}">Link</label>
+            <div class="input-container">
+              <input
+                class="input"
+                type="url"
+                formControlName="link"
+                id="link-{{ i }}"
+                placeholder="e.g., https://www.github.com/johndoe"
+              />
+            </div>
+          </div>
         </div>
-        <div class="form-group">
-          <label for="platform-{{ i }}">Platform</label>
-          <select formControlName="platform" id="platform-{{ i }}" appSelectStyle>
-            <option value="">Select a platform</option>
-            <option *ngFor="let option of platformOptions" [value]="option.value">
-              {{ option.label }}
-            </option>
-          </select>
-        </div>
-        <div class="form-group">
-          <label for="link-{{ i }}">Link</label>
-          <input type="url" formControlName="link" id="link-{{ i }}" placeholder="e.g., https://www.github.com/johndoe" appFormStyle>
-        </div>
-      </div> -->
+      </ng-container>
     </div>
   </section>
 
@@ -72,7 +93,7 @@
       class="save-btn"
       appPrimaryBtn
       type="submit"
-      [disabled]="linksForm.invalid || linksFormArray.length === 0"
+      [disabled]="!isFormChanged"
     >
       Save
     </button>

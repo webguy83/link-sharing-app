@@ -2,17 +2,35 @@ import {
   Directive,
   ElementRef,
   Renderer2,
-  OnInit,
   HostListener,
+  AfterViewInit,
+  OnDestroy,
 } from '@angular/core';
 
 @Directive({
   selector: '[appPrimaryBtn]',
 })
-export class PrimaryBtnDirective implements OnInit {
+export class PrimaryBtnDirective implements AfterViewInit, OnDestroy {
+  private mutationObserver!: MutationObserver;
   constructor(private el: ElementRef, private renderer: Renderer2) {}
+  ngOnDestroy(): void {
+    this.mutationObserver.disconnect();
+  }
+  ngAfterViewInit(): void {
+    this.mutationObserver = new MutationObserver(
+      (mutations: MutationRecord[]) => {
+        mutations.forEach((mutation) => {
+          if (mutation.attributeName === 'disabled') {
+            this.checkAndApplyDisabledStyles();
+          }
+        });
+      }
+    );
+    this.mutationObserver.observe(this.el.nativeElement, {
+      attributes: true,
+      attributeFilter: ['disabled'],
+    });
 
-  ngOnInit(): void {
     this.applyStyles();
     this.checkAndApplyDisabledStyles();
   }
