@@ -68,6 +68,23 @@
   }
 }
 
+.select-box {
+  appearance: none;
+
+  &.open + .dropdown-arrow {
+    transform: translateY(-50%) rotate(180deg); // Rotate arrow when open
+  }
+}
+
+.dropdown-arrow {
+  position: absolute;
+  right: 1.6rem;
+  top: 50%;
+  transform: translateY(-50%); // Center vertically
+  pointer-events: none; // Prevent the arrow from being clickable
+  transition: transform 0.3s ease;
+}
+
 .footer {
   display: flex;
   justify-content: end;

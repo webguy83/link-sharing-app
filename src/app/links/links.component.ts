@@ -8,9 +8,15 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { platformOptions } from '../shared/constants/platform-option';
+import { platformOptions } from '../shared/constants/platform-options';
 import { Subscription } from 'rxjs';
 import { linkPlatformValidator } from '../validators/validators';
+
+interface DropdownInfo {
+  isOpen: boolean;
+  placeholder: string;
+  iconPath: string;
+}
 
 @Component({
   selector: 'app-links',
@@ -21,11 +27,13 @@ import { linkPlatformValidator } from '../validators/validators';
 })
 export class LinksComponent implements OnDestroy {
   private subscription = new Subscription();
+  dropdownsInfo: DropdownInfo[] = [];
   linksForm = this.fb.group({
     linkItems: this.fb.array([]),
   });
   isFormChanged = false;
   platformOptions = platformOptions;
+  isDropdownOpen: boolean = false;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
 
   constructor(
@@ -37,6 +45,15 @@ export class LinksComponent implements OnDestroy {
 
   get linkItems() {
     return this.linksForm.controls['linkItems'] as FormArray;
+  }
+
+  toggleDropdown(index: number): void {
+    // Close all other dropdowns
+    this.dropdownsInfo.forEach((info, i) => {
+      if (i !== index) info.isOpen = false;
+    });
+    // Toggle the specified dropdown
+    this.dropdownsInfo[index].isOpen = !this.dropdownsInfo[index].isOpen;
   }
 
   subscribeToFormChanges() {
@@ -53,33 +70,42 @@ export class LinksComponent implements OnDestroy {
   }
 
   addLink() {
+    const firstPlatformOption = this.platformOptions[0];
     const linkItem = this.fb.group(
       {
-        platform: ['github', Validators.required],
+        platform: [firstPlatformOption.value, Validators.required],
         link: ['', Validators.required],
       },
       { validators: linkPlatformValidator }
-    ); // Apply the custom validator
+    );
 
     this.linkItems.push(linkItem);
+    this.dropdownsInfo.push({
+      isOpen: false,
+      placeholder: firstPlatformOption.placeholder,
+      iconPath: firstPlatformOption.iconPath,
+    });
   }
 
   removeLink(index: number): void {
     this.linkItems.removeAt(index);
   }
 
-  onPlatformChange(index: number): void {
-    const linkFormGroup = this.linkItems.at(index);
-    const linkControl = linkFormGroup.get('link');
-    const platformControl = linkFormGroup.get('platform');
+  onPlatformChange(index: number, event: any): void {
+    const platformControl = this.linkItems.at(index).get('platform');
 
-    // if (linkControl && platformControl) {
-    //   linkControl.setValidators([
-    //     Validators.required,
-    //     linkPlatformValidator,
-    //   ]);
-    //   linkControl.updateValueAndValidity();
-    // }
+    if (platformControl) {
+      const platformValue = event.target.value;
+      const foundPlatform = platformOptions.find(
+        (option) => option.value === platformValue
+      );
+
+      if (foundPlatform) {
+        this.dropdownsInfo[index].iconPath = foundPlatform.iconPath;
+        this.dropdownsInfo[index].placeholder = foundPlatform.placeholder;
+        platformControl.setValue(platformValue); // Safely set the value of the control
+      }
+    }
   }
 
   onSubmit(): void {

@@ -4,4 +4,5 @@ export interface PlatformOption {
   iconPath: string;
   bgColour: string;
   urlPattern: RegExp;
+  placeholder: string;
 }

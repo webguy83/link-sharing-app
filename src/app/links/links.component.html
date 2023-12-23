@@ -55,12 +55,19 @@
           <div class="form-group" appFormStyle>
             <label for="platform-{{ i }}">Platform</label>
             <div class="input-container">
+              <img
+                [src]="dropdownsInfo[i].iconPath"
+                alt="Platform Icon"
+                class="icon"
+              />
               <select
-                class="input"
+                class="input select-box"
                 formControlName="platform"
                 id="platform-{{ i }}"
                 appSelectStyle
-                (change)="onPlatformChange(i)"
+                [class.open]="dropdownsInfo[i].isOpen"
+                (click)="toggleDropdown(i)"
+                (change)="onPlatformChange(i, $event)"
               >
                 <option
                   *ngFor="let option of platformOptions"
@@ -69,17 +76,28 @@
                   {{ option.label }}
                 </option>
               </select>
+              <img
+                class="dropdown-arrow"
+                src="../../assets/images/icon-chevron-down.svg"
+                [class.open]="isDropdownOpen"
+                alt="Dropdown arrow"
+              />
             </div>
           </div>
           <div class="form-group" appFormStyle>
             <label for="link-{{ i }}">Link</label>
             <div class="input-container">
+              <img
+                src="../../assets/images/icon-link.svg"
+                alt=""
+                class="icon"
+              />
               <input
                 class="input"
                 type="url"
                 formControlName="link"
                 id="link-{{ i }}"
-                placeholder="e.g., https://www.github.com/johndoe"
+                [attr.placeholder]="dropdownsInfo[i].placeholder"
               />
             </div>
           </div>

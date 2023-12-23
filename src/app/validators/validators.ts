@@ -4,7 +4,7 @@ import {
   ValidationErrors,
   ValidatorFn,
 } from '@angular/forms';
-import { platformOptions } from '../shared/constants/platform-option';
+import { platformOptions } from '../shared/constants/platform-options';
 
 export function passwordMatchValidator(
   control: AbstractControl
