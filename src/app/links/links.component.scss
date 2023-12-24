@@ -43,17 +43,24 @@
 .link-header {
   display: flex;
   justify-content: space-between;
+  gap: 0.8rem;
+  margin-bottom: 1.2rem;
 }
 
 .link-title {
   margin: 0;
+  color: var(--med-gray);
+  font-size: 1.6rem;
+  font-weight: 700;
 }
 
 .links-form {
   flex-grow: 1;
   padding: 0 4rem 4rem;
-  max-height: calc(100vh - 54rem);
+  max-height: calc(100vh - 49rem);
   overflow-y: auto;
+  min-height: 37rem;
+  margin-top: 2.4rem;
 }
 
 .started-txt {
@@ -92,10 +99,21 @@
   border-top: 0.1rem solid var(--light-gray);
 }
 
-.link-items {
+.link-item {
+  margin-bottom: 2.4rem;
   padding: 2rem;
   background-color: var(--dark-white);
   border-radius: 1.2rem;
+}
+
+.remove-button {
+  background: none;
+  border: none;
+  color: var(--med-gray);
+  cursor: pointer;
+  font-size: 1.6rem;
+  font-weight: 400;
+  margin-left: auto;
 }
 
 .max700 {

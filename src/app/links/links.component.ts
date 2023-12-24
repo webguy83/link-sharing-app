@@ -60,7 +60,6 @@ export class LinksComponent implements OnDestroy {
     this.subscription.add(
       this.linksForm.valueChanges.subscribe(() => {
         this.isFormChanged = true;
-        console.log(this.linkItems.controls);
       })
     );
   }

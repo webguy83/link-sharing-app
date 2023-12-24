@@ -7,7 +7,7 @@ export const platformOptions: PlatformOption[] = [
     value: 'github',
     iconPath: '../../../assets/images/icon-github.svg',
     urlPattern: /^https?:\/\/(www\.)?github\.com(\/.*)?$/,
-    placeholder: 'https://github.com/username/repository'
+    placeholder: 'https://github.com/username/repository',
   },
   {
     bgColour: '#FFFFFF',
@@ -15,7 +15,7 @@ export const platformOptions: PlatformOption[] = [
     value: 'frontend_mentor',
     iconPath: '../../../assets/images/icon-frontend-mentor.svg',
     urlPattern: /^https?:\/\/(www\.)?frontendmentor\.io(\/.*)?$/,
-    placeholder: 'https://www.frontendmentor.io/challenges'
+    placeholder: 'https://www.frontendmentor.io/challenges',
   },
   {
     bgColour: '#43B7E9',
@@ -23,7 +23,7 @@ export const platformOptions: PlatformOption[] = [
     value: 'twitter',
     iconPath: '../../../assets/images/icon-twitter.svg',
     urlPattern: /^https?:\/\/(www\.)?twitter\.com(\/.*)?$/,
-    placeholder: 'https://twitter.com/username'
+    placeholder: 'https://twitter.com/username',
   },
   {
     bgColour: '#2D68FF',
@@ -31,7 +31,7 @@ export const platformOptions: PlatformOption[] = [
     value: 'linkedin',
     iconPath: '../../../assets/images/icon-linkedin.svg',
     urlPattern: /^https?:\/\/(www\.)?linkedin\.com(\/.*)?$/,
-    placeholder: 'https://www.linkedin.com/in/username'
+    placeholder: 'https://www.linkedin.com/in/username',
   },
   {
     bgColour: '#EE3939',
@@ -39,7 +39,7 @@ export const platformOptions: PlatformOption[] = [
     value: 'youtube',
     iconPath: '../../../assets/images/icon-youtube.svg',
     urlPattern: /^https?:\/\/(www\.)?youtube\.com(\/.*)?$/,
-    placeholder: 'https://www.youtube.com/channel/CHANNEL_ID'
+    placeholder: 'https://www.youtube.com/channel/CHANNEL_ID',
   },
   {
     bgColour: '#2442AC',
@@ -47,7 +47,7 @@ export const platformOptions: PlatformOption[] = [
     value: 'facebook',
     iconPath: '../../../assets/images/icon-facebook.svg',
     urlPattern: /^https?:\/\/(www\.)?facebook\.com(\/.*)?$/,
-    placeholder: 'https://www.facebook.com/username'
+    placeholder: 'https://www.facebook.com/username',
   },
   {
     bgColour: '#EE3FC8',
@@ -55,7 +55,7 @@ export const platformOptions: PlatformOption[] = [
     value: 'twitch',
     iconPath: '../../../assets/images/icon-twitch.svg',
     urlPattern: /^https?:\/\/(www\.)?twitch\.tv(\/.*)?$/,
-    placeholder: 'https://www.twitch.tv/username'
+    placeholder: 'https://www.twitch.tv/username',
   },
   {
     bgColour: '#333333',
@@ -63,7 +63,7 @@ export const platformOptions: PlatformOption[] = [
     value: 'dev_to',
     iconPath: '../../../assets/images/icon-devto.svg',
     urlPattern: /^https?:\/\/(www\.)?dev\.to(\/.*)?$/,
-    placeholder: 'https://dev.to/username'
+    placeholder: 'https://dev.to/username',
   },
   {
     bgColour: '#8A1A50',
@@ -71,7 +71,7 @@ export const platformOptions: PlatformOption[] = [
     value: 'codewars',
     iconPath: '../../../assets/images/icon-codewars.svg',
     urlPattern: /^https?:\/\/(www\.)?codewars\.com(\/.*)?$/,
-    placeholder: 'https://www.codewars.com/users/username'
+    placeholder: 'https://www.codewars.com/users/username',
   },
   {
     bgColour: '#1E1F26',
@@ -79,7 +79,7 @@ export const platformOptions: PlatformOption[] = [
     value: 'codepen',
     iconPath: '../../../assets/images/icon-codepen.svg',
     urlPattern: /^https?:\/\/(www\.)?codepen\.io(\/.*)?$/,
-    placeholder: 'https://codepen.io/username'
+    placeholder: 'https://codepen.io/username',
   },
   {
     bgColour: '#302267',
@@ -87,7 +87,7 @@ export const platformOptions: PlatformOption[] = [
     value: 'freecodecamp',
     iconPath: '../../../assets/images/icon-freecodecamp.svg',
     urlPattern: /^https?:\/\/(www\.)?freecodecamp\.org(\/.*)?$/,
-    placeholder: 'https://www.freecodecamp.org/username'
+    placeholder: 'https://www.freecodecamp.org/username',
   },
   {
     bgColour: '#EB4925',
@@ -95,7 +95,7 @@ export const platformOptions: PlatformOption[] = [
     value: 'gitlab',
     iconPath: '../../../assets/images/icon-gitlab.svg',
     urlPattern: /^https?:\/\/(www\.)?gitlab\.com(\/.*)?$/,
-    placeholder: 'https://gitlab.com/username'
+    placeholder: 'https://gitlab.com/username',
   },
   {
     bgColour: '#0330D1',
@@ -103,14 +103,14 @@ export const platformOptions: PlatformOption[] = [
     value: 'hashnode',
     iconPath: '../../../assets/images/icon-hashnode.svg',
     urlPattern: /^https?:\/\/(www\.)?hashnode\.com(\/.*)?$/,
-    placeholder: 'https://hashnode.com/@username'
+    placeholder: 'https://hashnode.com/@username',
   },
   {
     bgColour: '#EC7100',
     label: 'Stack Overflow',
     value: 'stack_overflow',
-    iconPath: '../../../assets/images/icon-stack_overflow.svg',
+    iconPath: '../../../assets/images/icon-stack-overflow.svg',
     urlPattern: /^https?:\/\/(www\.)?stackoverflow\.com(\/.*)?$/,
-    placeholder: 'https://stackoverflow.com/users/userId/username'
-  }
+    placeholder: 'https://stackoverflow.com/users/userId/username',
+  },
 ];

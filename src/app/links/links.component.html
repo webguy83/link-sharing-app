@@ -36,19 +36,20 @@
     </p>
   </figure>
 
-  <section class="links-form">
-    <div
-      formArrayName="linkItems"
-      class="link-items"
-      *ngIf="linkItems.controls.length"
-    >
+  <section class="links-form" *ngIf="linkItems.controls.length">
+    <div formArrayName="linkItems" class="link-items">
       <ng-container
         *ngFor="let linkItemFormGroup of linkItems.controls; let i = index"
       >
         <div class="link-item" [formGroupName]="i">
           <div class="link-header">
+            <img
+              src="../../assets/images/icon-drag-and-drop.svg"
+              alt="Drag Handle"
+              class="drag-handle"
+            />
             <h3 class="link-title">Link #{{ i }}</h3>
-            <button type="button" class="remove-link" (click)="removeLink(i)">
+            <button type="button" class="remove-button" (click)="removeLink(i)">
               Remove
             </button>
           </div>
