@@ -48,7 +48,7 @@
               alt="Drag Handle"
               class="drag-handle"
             />
-            <h3 class="link-title">Link #{{ i }}</h3>
+            <h3 class="link-title">Link #{{ i + 1 }}</h3>
             <button type="button" class="remove-button" (click)="removeLink(i)">
               Remove
             </button>
@@ -85,7 +85,11 @@
               />
             </div>
           </div>
-          <div class="form-group" appFormStyle>
+          <div
+            class="form-group"
+            appFormStyle
+            [ngClass]="{ error: showError(i) }"
+          >
             <label for="link-{{ i }}">Link</label>
             <div class="input-container">
               <img
@@ -93,6 +97,9 @@
                 alt=""
                 class="icon"
               />
+              <div class="error-text" *ngIf="showError(i)">
+                {{ showError(i) }}
+              </div>
               <input
                 class="input"
                 type="url"
