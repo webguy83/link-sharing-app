@@ -11,6 +11,18 @@ import {
 import { platformOptions } from '../shared/constants/platform-options';
 import { Subscription, distinctUntilChanged } from 'rxjs';
 import { linkPlatformValidator } from '../validators/validators';
+import {
+  trigger,
+  state,
+  style,
+  transition,
+  animate,
+} from '@angular/animations';
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
 
 interface DropdownInfo {
   isOpen: boolean;
@@ -21,13 +33,26 @@ interface DropdownInfo {
 @Component({
   selector: 'app-links',
   standalone: true,
-  imports: [CommonModule, SharedModule, ReactiveFormsModule],
+  imports: [CommonModule, SharedModule, ReactiveFormsModule, DragDropModule],
   templateUrl: './links.component.html',
   styleUrls: ['./links.component.scss'],
+  animations: [
+    trigger('linkAnimation', [
+      state('in', style({ height: '*', opacity: 1 })),
+      transition('void => *', [
+        style({ height: 0, opacity: 0 }),
+        animate('0.3s ease-in'),
+      ]),
+      transition('* => void', [
+        animate('0.3s ease-out', style({ height: 0, opacity: 0 })),
+      ]),
+    ]),
+  ],
 })
 export class LinksComponent implements OnDestroy {
   private subscription = new Subscription();
   dropdownsInfo: DropdownInfo[] = [];
+  removingStates: boolean[] = [];
   formSubmitted = false;
   linksForm = this.fb.group({
     linkItems: this.fb.array([]),
@@ -108,11 +133,28 @@ export class LinksComponent implements OnDestroy {
       iconPath: firstPlatformOption.iconPath,
     });
 
+    // Initialize the removing state for the new link
+    this.removingStates.push(false);
+
+    setTimeout(() => {
+      const newItemIndex = this.linkItems.length - 1;
+      const newItem = document.getElementById(`link-item-${newItemIndex}`);
+      if (newItem) {
+        newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    }, 300); // Adjust this duration if necessary
+
     this.formSubmitted = false;
   }
 
   removeLink(index: number): void {
-    this.linkItems.removeAt(index);
+    // Set the removing state to true to trigger the animation
+    this.removingStates[index] = true;
+
+    setTimeout(() => {
+      this.linkItems.removeAt(index);
+      this.removingStates.splice(index, 1); // Remove the state for this item
+    }, 300); // The duration should match your animation time
   }
 
   showError(index: number): string {
@@ -171,5 +213,23 @@ export class LinksComponent implements OnDestroy {
         }
       }
     }
+  }
+
+  drop(event: CdkDragDrop<string[]>): void {
+    moveItemInArray(
+      this.linkItems.controls,
+      event.previousIndex,
+      event.currentIndex
+    );
+    moveItemInArray(
+      this.dropdownsInfo,
+      event.previousIndex,
+      event.currentIndex
+    );
+    moveItemInArray(
+      this.removingStates,
+      event.previousIndex,
+      event.currentIndex
+    );
   }
 }
