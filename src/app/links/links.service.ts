@@ -1,7 +1,16 @@
 import { Injectable } from '@angular/core';
-import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import {
+  AbstractControl,
+  FormArray,
+  FormBuilder,
+  FormGroup,
+  Validators,
+} from '@angular/forms';
 import { platformOptions } from '../shared/constants/platform-options';
-import { PlatformLink } from '../shared/models/platform-options.model';
+import {
+  PlatformLink,
+  PlatformOption,
+} from '../shared/models/platform-options.model';
 import { linkPlatformValidator } from '../validators/validators';
 
 interface DropdownInfo {
@@ -66,5 +75,27 @@ export class LinksService {
         iconFileName: platformLink.iconFileName,
       };
     });
+  }
+
+  updateLinkPlatform(
+    platformControl: AbstractControl,
+    linkControl: AbstractControl,
+    platform: string
+  ): void {
+    platformControl.setValue(platform); // Safely set the value of the control
+    linkControl.reset(); // Reset the link control
+  }
+
+  getDropdownInfoByPlatform(platform: string) {
+    const platformOption = this.findPlatformOption(platform);
+    return {
+      isOpen: false,
+      placeholder: platformOption?.placeholder || '',
+      iconFileName: platformOption?.iconFileName || '',
+    };
+  }
+
+  private findPlatformOption(platform: string): PlatformOption | undefined {
+    return platformOptions.find((option) => option.value === platform);
   }
 }

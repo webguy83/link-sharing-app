@@ -30,7 +30,6 @@ import {
   DragDropModule,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
-import { PlatformLink } from '../shared/models/platform-options.model';
 import { LinksService } from './links.service';
 
 interface DropdownInfo {
@@ -142,33 +141,26 @@ export class LinksComponent implements OnDestroy, OnInit {
   }
 
   addLink() {
-    const firstPlatformOption = this.platformOptions[0];
     const linkItem = this.linksService.createLinkFormGroup();
-    this.addSubscriptionToLinkItem(linkItem);
-
-    this.linkItems.push(linkItem);
-
     const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
 
-    this.dropdownsInfo.push({
-      isOpen: false,
-      placeholder: firstPlatformOption.placeholder,
-      iconFileName: firstPlatformOption.iconFileName,
-    });
+    this.addSubscriptionToLinkItem(linkItem);
+    this.linkItems.push(linkItem);
+    this.dropdownsInfo.push(this.linksService.createInitialDropdownInfo());
 
     this.phoneSvgStateService.updateLinks(mappedItems);
-
-    // Initialize the removing state for the new link
     this.removingStates.push(false);
+    this.scrollToNewLinkAdded();
+    this.formSubmitted = false;
+  }
 
+  scrollToNewLinkAdded() {
     setTimeout(() => {
       const newItemElement = this.linkItemsElements.last?.nativeElement;
       if (newItemElement) {
         newItemElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
       }
     });
-
-    this.formSubmitted = false;
   }
 
   removeLink(index: number): void {
@@ -194,17 +186,14 @@ export class LinksComponent implements OnDestroy, OnInit {
     const linkControl = this.linkItems.at(index).get('link');
 
     if (platformControl && linkControl) {
-      const platformValue = event.target.value;
-      const foundPlatform = this.platformOptions.find(
-        (option) => option.value === platformValue
+      const platformValue: string = event.target.value;
+      this.linksService.updateLinkPlatform(
+        platformControl,
+        linkControl,
+        platformValue
       );
-
-      if (foundPlatform) {
-        this.dropdownsInfo[index].iconFileName = foundPlatform.iconFileName;
-        this.dropdownsInfo[index].placeholder = foundPlatform.placeholder;
-        platformControl.setValue(platformValue); // Safely set the value of the control
-        linkControl.reset(); // Reset the link control
-      }
+      this.dropdownsInfo[index] =
+        this.linksService.getDropdownInfoByPlatform(platformValue);
     }
   }
 
