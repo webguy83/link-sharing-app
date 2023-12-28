@@ -54,6 +54,7 @@
             class="link-item"
             [formGroupName]="i"
             id="link-item-{{ i }}"
+            #linkItem
             cdkDrag
           >
             <div class="link-header">
@@ -101,7 +102,6 @@
                 <img
                   class="dropdown-arrow"
                   src="../../assets/images/icon-chevron-down.svg"
-                  [class.open]="isDropdownOpen"
                   alt="Dropdown arrow"
                 />
               </div>

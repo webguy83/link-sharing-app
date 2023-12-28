@@ -1,17 +1,23 @@
 import { PhoneSvgStateService } from './../services/phone-svg-state.service';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import {
+  Component,
+  ElementRef,
+  OnDestroy,
+  OnInit,
+  QueryList,
+  ViewChildren,
+} from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { ResponsiveService } from '../services/responsive.service';
 import {
   FormBuilder,
   FormArray,
-  Validators,
   ReactiveFormsModule,
+  FormGroup,
 } from '@angular/forms';
 import { platformOptions } from '../shared/constants/platform-options';
 import { Subscription, distinctUntilChanged } from 'rxjs';
-import { linkPlatformValidator } from '../validators/validators';
 import {
   trigger,
   state,
@@ -25,19 +31,13 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import { PlatformLink } from '../shared/models/platform-options.model';
+import { LinksService } from './links.service';
 
 interface DropdownInfo {
   isOpen: boolean;
   placeholder: string;
   iconFileName: string;
 }
-
-interface FormControlValue {
-  platform: string;
-  link: string;
-}
-
-type PlatformOptionsLookup = { [key: string]: PlatformLink };
 
 @Component({
   selector: 'app-links',
@@ -53,41 +53,47 @@ type PlatformOptionsLookup = { [key: string]: PlatformLink };
       ]),
     ]),
   ],
+  providers: [LinksService],
 })
 export class LinksComponent implements OnDestroy, OnInit {
   private subscription = new Subscription();
   dropdownsInfo: DropdownInfo[] = [];
   removingStates: boolean[] = [];
   formSubmitted = false;
-  linksForm = this.fb.group({
-    linkItems: this.fb.array([]),
-  });
+  linksForm!: FormGroup;
   isFormChanged = false;
   platformOptions = platformOptions;
-  platformOptionsLookup: PlatformOptionsLookup = {};
-  isDropdownOpen: boolean = false;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
+
+  @ViewChildren('linkItem') linkItemsElements!: QueryList<ElementRef>;
 
   constructor(
     private fb: FormBuilder,
     private responsiveService: ResponsiveService,
-    private phoneSvgStateService: PhoneSvgStateService
-  ) {
-    this.subscribeToFormChanges();
-  }
+    private phoneSvgStateService: PhoneSvgStateService,
+    private linksService: LinksService
+  ) {}
+
   ngOnInit(): void {
-    this.platformOptionsLookup = platformOptions.reduce((acc, option) => {
-      acc[option.value] = {
-        bgColour: option.bgColour,
-        iconFileName: option.iconFileName,
-        platform: option.label,
-      };
-      return acc;
-    }, {} as PlatformOptionsLookup);
+    this.initializeForm();
+    this.subscribeToFormChanges();
+    this.populateDropdownsInfo();
+  }
+
+  private populateDropdownsInfo() {
+    this.linkItems.controls.forEach(() => {
+      this.dropdownsInfo.push(this.linksService.createInitialDropdownInfo());
+    });
   }
 
   get linkItems() {
     return this.linksForm.controls['linkItems'] as FormArray;
+  }
+
+  private initializeForm(): void {
+    this.linksForm = this.fb.group({
+      linkItems: this.fb.array([]),
+    });
   }
 
   toggleDropdown(index: number): void {
@@ -111,16 +117,7 @@ export class LinksComponent implements OnDestroy, OnInit {
     this.subscription.unsubscribe();
   }
 
-  addLink() {
-    const firstPlatformOption = this.platformOptions[0];
-    const linkItem = this.fb.group(
-      {
-        platform: [firstPlatformOption.value, Validators.required],
-        link: [null, Validators.required],
-      },
-      { validators: linkPlatformValidator }
-    );
-
+  private addSubscriptionToLinkItem(linkItem: FormGroup) {
     this.subscription.add(
       linkItem.valueChanges
         .pipe(
@@ -142,11 +139,16 @@ export class LinksComponent implements OnDestroy, OnInit {
           }
         })
     );
+  }
+
+  addLink() {
+    const firstPlatformOption = this.platformOptions[0];
+    const linkItem = this.linksService.createLinkFormGroup();
+    this.addSubscriptionToLinkItem(linkItem);
 
     this.linkItems.push(linkItem);
 
-    const mappedItems = this.mapToPlatformLinks(this.linkItems);
-    console.log(mappedItems);
+    const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
 
     this.dropdownsInfo.push({
       isOpen: false,
@@ -154,44 +156,25 @@ export class LinksComponent implements OnDestroy, OnInit {
       iconFileName: firstPlatformOption.iconFileName,
     });
 
-    this.phoneSvgStateService.updateLinks([]);
+    this.phoneSvgStateService.updateLinks(mappedItems);
 
     // Initialize the removing state for the new link
     this.removingStates.push(false);
 
-    const newItemIndex = this.linkItems.length - 1;
-    const newItem = document.getElementById(`link-item-${newItemIndex}`);
-    if (newItem) {
-      newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-    }
+    setTimeout(() => {
+      const newItemElement = this.linkItemsElements.last?.nativeElement;
+      if (newItemElement) {
+        newItemElement.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+      }
+    });
 
     this.formSubmitted = false;
   }
 
-  private mapToPlatformLinks(linkItems: FormArray): PlatformLink[] {
-    const formControlsValues: FormControlValue[] = linkItems.getRawValue();
-
-    return formControlsValues.map((control: FormControlValue) => {
-      const platformLink = this.platformOptionsLookup[control.platform];
-
-      // Construct the new PlatformLink object
-      return {
-        platform: platformLink.platform,
-        link: control.link,
-        bgColour: platformLink.bgColour,
-        iconFileName: platformLink.iconFileName,
-      };
-    });
-  }
-
   removeLink(index: number): void {
-    this.removingStates[index] = true; // Start the removal animation
-
-    setTimeout(() => {
-      this.linkItems.removeAt(index);
-      this.removingStates.splice(index, 1);
-      // Also update any other related arrays or states as necessary
-    }, 100); // Duration matching the animation
+    this.removingStates[index] = true;
+    this.linkItems.removeAt(index);
+    this.removingStates.splice(index, 1);
   }
 
   showError(index: number): string {
@@ -236,18 +219,18 @@ export class LinksComponent implements OnDestroy, OnInit {
   }
 
   scrollToFirstInvalidControl() {
-    for (let i = 0; i < this.linkItems.length; i++) {
-      const linkControl = this.linkItems.at(i).get('link');
+    const linkControlsArray = this.linkItemsElements.toArray();
+
+    for (const [index, control] of this.linkItems.controls.entries()) {
+      const linkControl = control.get('link');
       if (linkControl && linkControl.invalid) {
-        // Find the HTML element
-        const invalidControl = document.getElementById(`link-${i}`);
-        if (invalidControl) {
-          invalidControl.scrollIntoView({
-            behavior: 'smooth',
-            block: 'center',
-          });
-          break;
-        }
+        // Use ElementRef to access the native element
+        const invalidControlElement = linkControlsArray[index].nativeElement;
+        invalidControlElement.scrollIntoView({
+          behavior: 'smooth',
+          block: 'center',
+        });
+        break;
       }
     }
   }
@@ -260,5 +243,8 @@ export class LinksComponent implements OnDestroy, OnInit {
     moveItemInArray(this.linkItems.controls, previousIndex, currentIndex);
     moveItemInArray(this.dropdownsInfo, previousIndex, currentIndex);
     moveItemInArray(this.removingStates, previousIndex, currentIndex);
+
+    const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
+    this.phoneSvgStateService.updateLinks(mappedItems);
   }
 }
