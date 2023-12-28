@@ -85,9 +85,9 @@
     />
   </aside>
   <main class="dashboard-main">
-    <app-links *ngIf="selectedSection === 'links'"></app-links>
+    <app-links [hidden]="selectedSection === 'profile'"></app-links>
     <app-profile-details
-      *ngIf="selectedSection === 'profile'"
+      [hidden]="selectedSection === 'links'"
     ></app-profile-details>
   </main>
 </div>

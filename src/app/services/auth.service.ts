@@ -7,7 +7,7 @@ import {
   Auth,
   UserCredential,
 } from 'firebase/auth';
-import { from, Observable, scheduled, asyncScheduler, of } from 'rxjs';
+import { from } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { LocalStorageService } from './local-storage.service';
 
@@ -27,6 +27,13 @@ export class AuthService {
       AuthService.AUTH_KEY
     );
     return Boolean(token);
+  }
+
+  isLoggedIn(): boolean {
+    const token = this.localStorageService.getItem<string>(
+      AuthService.AUTH_KEY
+    );
+    return !!token; // Checks if the token exists
   }
 
   saveAuthToken(token: string): void {

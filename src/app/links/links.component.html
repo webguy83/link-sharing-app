@@ -43,79 +43,96 @@
       cdkDropList
       (cdkDropListDropped)="drop($event)"
     >
-      <div
+      <ng-container
         *ngFor="let linkItemFormGroup of linkItems.controls; let i = index"
-        class="link-item"
-        [formGroupName]="i"
-        [@linkAnimation]="removingStates[i] ? 'out' : 'in'"
-        id="link-item-{{ i }}"
-        cdkDrag
       >
-        <div class="link-header">
-          <img
-            src="../../assets/images/icon-drag-and-drop.svg"
-            alt="Drag Handle"
-            class="drag-handle"
-            cdkDragHandle
-          />
-          <h3 class="link-title">Link #{{ i + 1 }}</h3>
-          <button type="button" class="remove-button" (click)="removeLink(i)">
-            Remove
-          </button>
-        </div>
-        <div class="form-group" appFormStyle>
-          <label for="platform-{{ i }}">Platform</label>
-          <div class="input-container">
-            <img
-              [src]="dropdownsInfo[i].iconPath"
-              alt="Platform Icon"
-              class="icon"
-            />
-            <select
-              class="input select-box"
-              formControlName="platform"
-              id="platform-{{ i }}"
-              appSelectStyle
-              [class.open]="dropdownsInfo[i].isOpen"
-              (click)="toggleDropdown(i)"
-              (change)="onPlatformChange(i, $event)"
-            >
-              <option
-                *ngFor="let option of platformOptions"
-                [value]="option.value"
-              >
-                {{ option.label }}
-              </option>
-            </select>
-            <img
-              class="dropdown-arrow"
-              src="../../assets/images/icon-chevron-down.svg"
-              [class.open]="isDropdownOpen"
-              alt="Dropdown arrow"
-            />
-          </div>
-        </div>
         <div
-          class="form-group"
-          appFormStyle
-          [ngClass]="{ error: showError(i) }"
+          [@removalAnimation]="removingStates[i] ? 'out' : 'in'"
+          class="link-item-container"
         >
-          <label for="link-{{ i }}">Link</label>
-          <div class="input-container">
-            <img src="../../assets/images/icon-link.svg" alt="" class="icon" />
-            <div class="error-text" *ngIf="showError(i)">
-              {{ showError(i) }}
+          <div
+            class="link-item"
+            [formGroupName]="i"
+            id="link-item-{{ i }}"
+            cdkDrag
+          >
+            <div class="link-header">
+              <img
+                src="../../assets/images/icon-drag-and-drop.svg"
+                alt="Drag Handle"
+                class="drag-handle"
+                cdkDragHandle
+              />
+              <h3 class="link-title">Link #{{ i + 1 }}</h3>
+              <button
+                type="button"
+                class="remove-button"
+                (click)="removeLink(i)"
+              >
+                Remove
+              </button>
             </div>
-            <input
-              class="input"
-              type="url"
-              formControlName="link"
-              id="link-{{ i }}"
-              [attr.placeholder]="dropdownsInfo[i].placeholder"
-            />
+            <div class="form-group" appFormStyle>
+              <label for="platform-{{ i }}">Platform</label>
+              <div class="input-container">
+                <img
+                  [src]="
+                    '../../../assets/images/' + dropdownsInfo[i].iconFileName
+                  "
+                  alt="Platform Icon"
+                  class="icon"
+                />
+                <select
+                  class="input select-box"
+                  formControlName="platform"
+                  id="platform-{{ i }}"
+                  appSelectStyle
+                  [class.open]="dropdownsInfo[i].isOpen"
+                  (click)="toggleDropdown(i)"
+                  (change)="onPlatformChange(i, $event)"
+                >
+                  <option
+                    *ngFor="let option of platformOptions"
+                    [value]="option.value"
+                  >
+                    {{ option.label }}
+                  </option>
+                </select>
+                <img
+                  class="dropdown-arrow"
+                  src="../../assets/images/icon-chevron-down.svg"
+                  [class.open]="isDropdownOpen"
+                  alt="Dropdown arrow"
+                />
+              </div>
+            </div>
+            <div
+              class="form-group"
+              appFormStyle
+              [ngClass]="{ error: showError(i) }"
+            >
+              <label for="link-{{ i }}">Link</label>
+              <div class="input-container">
+                <img
+                  src="../../assets/images/icon-link.svg"
+                  alt=""
+                  class="icon"
+                />
+                <div class="error-text" *ngIf="showError(i)">
+                  {{ showError(i) }}
+                </div>
+                <input
+                  class="input"
+                  type="url"
+                  formControlName="link"
+                  id="link-{{ i }}"
+                  [attr.placeholder]="dropdownsInfo[i].placeholder"
+                />
+              </div>
+            </div>
           </div>
         </div>
-      </div>
+      </ng-container>
     </div>
   </section>
 

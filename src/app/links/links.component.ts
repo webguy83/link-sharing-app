@@ -1,4 +1,5 @@
-import { Component, OnDestroy } from '@angular/core';
+import { PhoneSvgStateService } from './../services/phone-svg-state.service';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { ResponsiveService } from '../services/responsive.service';
@@ -23,12 +24,20 @@ import {
   DragDropModule,
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
+import { PlatformLink } from '../shared/models/platform-options.model';
 
 interface DropdownInfo {
   isOpen: boolean;
   placeholder: string;
-  iconPath: string;
+  iconFileName: string;
 }
+
+interface FormControlValue {
+  platform: string;
+  link: string;
+}
+
+type PlatformOptionsLookup = { [key: string]: PlatformLink };
 
 @Component({
   selector: 'app-links',
@@ -37,19 +46,15 @@ interface DropdownInfo {
   templateUrl: './links.component.html',
   styleUrls: ['./links.component.scss'],
   animations: [
-    trigger('linkAnimation', [
-      state('in', style({ height: '*', opacity: 1 })),
-      transition('void => *', [
-        style({ height: 0, opacity: 0 }),
-        animate('0.3s ease-in'),
-      ]),
+    trigger('removalAnimation', [
+      state('in', style({ opacity: 1, height: '*' })),
       transition('* => void', [
-        animate('0.3s ease-out', style({ height: 0, opacity: 0 })),
+        animate('0.3s ease-out', style({ opacity: 0, height: '0px' })),
       ]),
     ]),
   ],
 })
-export class LinksComponent implements OnDestroy {
+export class LinksComponent implements OnDestroy, OnInit {
   private subscription = new Subscription();
   dropdownsInfo: DropdownInfo[] = [];
   removingStates: boolean[] = [];
@@ -59,14 +64,26 @@ export class LinksComponent implements OnDestroy {
   });
   isFormChanged = false;
   platformOptions = platformOptions;
+  platformOptionsLookup: PlatformOptionsLookup = {};
   isDropdownOpen: boolean = false;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
 
   constructor(
     private fb: FormBuilder,
-    private responsiveService: ResponsiveService
+    private responsiveService: ResponsiveService,
+    private phoneSvgStateService: PhoneSvgStateService
   ) {
     this.subscribeToFormChanges();
+  }
+  ngOnInit(): void {
+    this.platformOptionsLookup = platformOptions.reduce((acc, option) => {
+      acc[option.value] = {
+        bgColour: option.bgColour,
+        iconFileName: option.iconFileName,
+        platform: option.label,
+      };
+      return acc;
+    }, {} as PlatformOptionsLookup);
   }
 
   get linkItems() {
@@ -99,7 +116,7 @@ export class LinksComponent implements OnDestroy {
     const linkItem = this.fb.group(
       {
         platform: [firstPlatformOption.value, Validators.required],
-        link: ['', Validators.required],
+        link: [null, Validators.required],
       },
       { validators: linkPlatformValidator }
     );
@@ -127,34 +144,54 @@ export class LinksComponent implements OnDestroy {
     );
 
     this.linkItems.push(linkItem);
+
+    const mappedItems = this.mapToPlatformLinks(this.linkItems);
+    console.log(mappedItems);
+
     this.dropdownsInfo.push({
       isOpen: false,
       placeholder: firstPlatformOption.placeholder,
-      iconPath: firstPlatformOption.iconPath,
+      iconFileName: firstPlatformOption.iconFileName,
     });
+
+    this.phoneSvgStateService.updateLinks([]);
 
     // Initialize the removing state for the new link
     this.removingStates.push(false);
 
-    setTimeout(() => {
-      const newItemIndex = this.linkItems.length - 1;
-      const newItem = document.getElementById(`link-item-${newItemIndex}`);
-      if (newItem) {
-        newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-      }
-    }, 300); // Adjust this duration if necessary
+    const newItemIndex = this.linkItems.length - 1;
+    const newItem = document.getElementById(`link-item-${newItemIndex}`);
+    if (newItem) {
+      newItem.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
 
     this.formSubmitted = false;
   }
 
+  private mapToPlatformLinks(linkItems: FormArray): PlatformLink[] {
+    const formControlsValues: FormControlValue[] = linkItems.getRawValue();
+
+    return formControlsValues.map((control: FormControlValue) => {
+      const platformLink = this.platformOptionsLookup[control.platform];
+
+      // Construct the new PlatformLink object
+      return {
+        platform: platformLink.platform,
+        link: control.link,
+        bgColour: platformLink.bgColour,
+        iconFileName: platformLink.iconFileName,
+      };
+    });
+  }
+
   removeLink(index: number): void {
-    // Set the removing state to true to trigger the animation
-    this.removingStates[index] = true;
+    this.removingStates[index] = true; // Start the removal animation
 
     setTimeout(() => {
       this.linkItems.removeAt(index);
-      this.removingStates.splice(index, 1); // Remove the state for this item
-    }, 300); // The duration should match your animation time
+      this.removingStates.splice(index, 1);
+      // Also update any other related arrays or states as necessary
+    }, 100); // Duration matching the animation
   }
 
   showError(index: number): string {
@@ -180,7 +217,7 @@ export class LinksComponent implements OnDestroy {
       );
 
       if (foundPlatform) {
-        this.dropdownsInfo[index].iconPath = foundPlatform.iconPath;
+        this.dropdownsInfo[index].iconFileName = foundPlatform.iconFileName;
         this.dropdownsInfo[index].placeholder = foundPlatform.placeholder;
         platformControl.setValue(platformValue); // Safely set the value of the control
         linkControl.reset(); // Reset the link control
@@ -216,20 +253,12 @@ export class LinksComponent implements OnDestroy {
   }
 
   drop(event: CdkDragDrop<string[]>): void {
-    moveItemInArray(
-      this.linkItems.controls,
-      event.previousIndex,
-      event.currentIndex
-    );
-    moveItemInArray(
-      this.dropdownsInfo,
-      event.previousIndex,
-      event.currentIndex
-    );
-    moveItemInArray(
-      this.removingStates,
-      event.previousIndex,
-      event.currentIndex
-    );
+    const { previousIndex, currentIndex } = event;
+    if (previousIndex !== currentIndex && !this.isFormChanged) {
+      this.isFormChanged = true;
+    }
+    moveItemInArray(this.linkItems.controls, previousIndex, currentIndex);
+    moveItemInArray(this.dropdownsInfo, previousIndex, currentIndex);
+    moveItemInArray(this.removingStates, previousIndex, currentIndex);
   }
 }

@@ -4,8 +4,9 @@ import { FormGroup } from '@angular/forms';
 import { ResponsiveService } from '../services/responsive.service';
 import { Subscription } from 'rxjs';
 import { SharedModule } from '../shared/shared.module';
-import { ActivatedRoute, RouterModule } from '@angular/router';
+import { ActivatedRoute, Router, RouterModule } from '@angular/router';
 import { CreateAccountFormComponent } from '../create-account-form/create-account-form.component';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-login',
@@ -26,7 +27,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(
     public responsiveService: ResponsiveService,
-    private route: ActivatedRoute
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private router: Router
   ) {}
 
   ngOnDestroy(): void {
@@ -42,6 +45,9 @@ export class LoginComponent implements OnInit, OnDestroy {
   }
 
   ngOnInit(): void {
+    if (this.authService.isLoggedIn()) {
+      this.router.navigate(['/link-sharing-dashboard']);
+    }
     this.subscription.add(
       this.route.url.subscribe((urlSegments) => {
         this.isCreateAccountState = urlSegments.some(
@@ -57,11 +63,5 @@ export class LoginComponent implements OnInit, OnDestroy {
         document.body.style.backgroundColor = newBackgroundColor;
       })
     );
-  }
-
-  onSubmit(form: FormGroup) {
-    this.formSubmitted = true;
-
-    console.log(form);
   }
 }
