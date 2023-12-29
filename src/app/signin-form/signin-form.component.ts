@@ -10,6 +10,7 @@ import { SharedModule } from '../shared/shared.module';
 import { AuthService } from '../services/auth.service';
 import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
+import { getErrorId } from '../shared/constants/error-id';
 
 @Component({
   selector: 'app-signin-form',
@@ -22,6 +23,7 @@ export class SigninFormComponent {
   signInForm: FormGroup;
   formSubmitted = false;
   isLoggingIn = false;
+  getErrorId = getErrorId;
 
   constructor(
     private fb: FormBuilder,

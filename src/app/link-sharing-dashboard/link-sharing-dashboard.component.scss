@@ -29,6 +29,7 @@
 }
 
 .dashboard-aside {
+  position: relative;
   grid-area: aside;
   padding: 2.4rem;
 }
@@ -55,10 +56,26 @@
   display: none;
 }
 
-.dashboard-aside {
+.bg-img-container {
   display: flex;
   justify-content: center;
   align-items: center;
+  height: 100%;
+}
+
+.link {
+  width: 23.7rem;
+  height: 4.4rem;
+}
+
+.links {
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  position: absolute;
+  top: 33.7rem;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .max700 {

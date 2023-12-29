@@ -13,6 +13,7 @@ import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { PrimaryBtnDirective } from '../shared/directives/primary-btn.directive';
+import { getErrorId } from '../shared/constants/error-id';
 
 @Component({
   selector: 'app-create-account-form',
@@ -25,6 +26,7 @@ export class CreateAccountFormComponent {
   createAccountForm: FormGroup;
   formSubmitted = false;
   isLoggingIn = false;
+  getErrorId = getErrorId;
 
   @ViewChild(PrimaryBtnDirective) primaryButtonDirective!: PrimaryBtnDirective;
 

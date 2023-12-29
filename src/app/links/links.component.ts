@@ -31,6 +31,7 @@ import {
   moveItemInArray,
 } from '@angular/cdk/drag-drop';
 import { LinksService } from './links.service';
+import { getErrorId } from '../shared/constants/error-id';
 
 interface DropdownInfo {
   isOpen: boolean;
@@ -63,6 +64,7 @@ export class LinksComponent implements OnDestroy, OnInit {
   isFormChanged = false;
   platformOptions = platformOptions;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
+  getErrorId = getErrorId;
 
   @ViewChildren('linkItem') linkItemsElements!: QueryList<ElementRef>;
 
@@ -132,7 +134,6 @@ export class LinksComponent implements OnDestroy, OnInit {
                 { emitEvent: false }
               );
             } else {
-              // Use updateValueAndValidity with emitEvent: false
               linkControl.updateValueAndValidity({ emitEvent: false });
             }
           }
@@ -142,16 +143,18 @@ export class LinksComponent implements OnDestroy, OnInit {
 
   addLink() {
     const linkItem = this.linksService.createLinkFormGroup();
-    const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
-
     this.addSubscriptionToLinkItem(linkItem);
     this.linkItems.push(linkItem);
     this.dropdownsInfo.push(this.linksService.createInitialDropdownInfo());
-
-    this.phoneSvgStateService.updateLinks(mappedItems);
+    this.updateLinksState();
     this.removingStates.push(false);
     this.scrollToNewLinkAdded();
     this.formSubmitted = false;
+  }
+
+  updateLinksState() {
+    const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
+    this.phoneSvgStateService.updateLinks(mappedItems);
   }
 
   scrollToNewLinkAdded() {
@@ -167,6 +170,7 @@ export class LinksComponent implements OnDestroy, OnInit {
     this.removingStates[index] = true;
     this.linkItems.removeAt(index);
     this.removingStates.splice(index, 1);
+    this.updateLinksState();
   }
 
   showError(index: number): string {
@@ -194,6 +198,7 @@ export class LinksComponent implements OnDestroy, OnInit {
       );
       this.dropdownsInfo[index] =
         this.linksService.getDropdownInfoByPlatform(platformValue);
+      this.updateLinksState();
     }
   }
 

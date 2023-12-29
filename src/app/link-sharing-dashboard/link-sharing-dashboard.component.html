@@ -79,10 +79,22 @@
     </button>
   </header>
   <aside class="dashboard-aside">
-    <img
-      src="../../assets/images/illustration-phone-mockup.svg"
-      alt="phone mockup"
-    />
+    <ng-container *ngIf="svgState$ | async as svgState">
+      <div class="links">
+        <app-link
+          *ngFor="let link of svgState.links | slice : 0 : 5"
+          [bgColour]="link.bgColour"
+          [iconPath]="'../../assets/images/' + link.iconFileName"
+          [platform]="link.platform"
+        ></app-link>
+      </div>
+    </ng-container>
+    <div class="bg-img-container">
+      <img
+        src="../../assets/images/illustration-phone-mockup.svg"
+        alt="phone mockup"
+      />
+    </div>
   </aside>
   <main class="dashboard-main">
     <app-links [hidden]="selectedSection === 'profile'"></app-links>

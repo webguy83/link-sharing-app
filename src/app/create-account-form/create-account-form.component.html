@@ -7,10 +7,11 @@
         alt="Email Icon"
         class="icon"
       />
-      <div class="error-text">
+      <div class="error-text" [id]="getErrorId(0)">
         {{ showEmailError() }}
       </div>
       <input
+        [attr.aria-describedby]="getErrorId(0)"
         type="email"
         placeholder="e.g. alex@email.com"
         class="input"
@@ -30,10 +31,11 @@
         alt="Password Icon"
         class="icon"
       />
-      <div class="error-text">
+      <div class="error-text" [id]="getErrorId(1)">
         {{ getPasswordError() }}
       </div>
       <input
+        [attr.aria-describedby]="getErrorId(1)"
         type="password"
         placeholder="At least 8 characters"
         class="input"
@@ -53,10 +55,11 @@
         alt="Password Icon"
         class="icon"
       />
-      <div class="error-text">
+      <div class="error-text" [id]="getErrorId(2)">
         {{ getPasswordError() }}
       </div>
       <input
+        [attr.aria-describedby]="getErrorId(0)"
         type="password"
         placeholder="At least 8 characters"
         class="input"

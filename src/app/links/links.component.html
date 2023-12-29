@@ -118,7 +118,11 @@
                   alt=""
                   class="icon"
                 />
-                <div class="error-text" *ngIf="showError(i)">
+                <div
+                  [id]="getErrorId(i)"
+                  class="error-text"
+                  *ngIf="showError(i)"
+                >
                   {{ showError(i) }}
                 </div>
                 <input
@@ -126,6 +130,7 @@
                   type="url"
                   formControlName="link"
                   id="link-{{ i }}"
+                  [attr.aria-describedby]="getErrorId(i)"
                   [attr.placeholder]="dropdownsInfo[i].placeholder"
                 />
               </div>
