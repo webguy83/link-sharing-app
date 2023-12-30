@@ -1,8 +1,9 @@
-<div
-  [style.background-color]="bgColour"
-  class="link"
-  style="width: 23.7rem; height: 4.4rem"
->
+<div [style.background-color]="bgColour" class="link">
   <img [src]="iconPath" alt="{{ platform }} icon" />
   {{ platform }}
+  <img
+    src="../../assets/images/icon-arrow-right.svg"
+    class="right-arrow"
+    alt=""
+  />
 </div>

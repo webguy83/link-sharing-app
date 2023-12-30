@@ -29,7 +29,9 @@
 }
 
 .dashboard-aside {
-  position: relative;
+  display: flex;
+  justify-content: center;
+  align-items: center;
   grid-area: aside;
   padding: 2.4rem;
 }
@@ -57,15 +59,7 @@
 }
 
 .bg-img-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-}
-
-.link {
-  width: 23.7rem;
-  height: 4.4rem;
+  position: relative;
 }
 
 .links {
@@ -73,9 +67,9 @@
   flex-direction: column;
   gap: 2rem;
   position: absolute;
-  top: 33.7rem;
+  top: 27.8rem;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translateX(-50.2%);
 }
 
 .max700 {
