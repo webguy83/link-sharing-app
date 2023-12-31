@@ -9,6 +9,11 @@
   justify-content: space-between;
   align-items: center;
   gap: 0.8rem;
+
+  &.frontend-mentor {
+    border: 1px solid var(--light-gray);
+    color: var(--dark-gray);
+  }
 }
 
 .right-arrow {

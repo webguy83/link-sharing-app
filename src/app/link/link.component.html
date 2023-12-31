@@ -1,9 +1,9 @@
-<div [style.background-color]="bgColour" class="link">
+<div
+  [style.background-color]="bgColour"
+  [ngClass]="{ 'frontend-mentor': platform === 'Frontend Mentor' }"
+  class="link"
+>
   <img [src]="iconPath" alt="{{ platform }} icon" />
   {{ platform }}
-  <img
-    src="../../assets/images/icon-arrow-right.svg"
-    class="right-arrow"
-    alt=""
-  />
+  <img [src]="arrowPath" class="right-arrow" alt="" />
 </div>
