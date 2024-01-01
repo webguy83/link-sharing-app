@@ -1,0 +1,17 @@
+<div
+  class="dialog"
+  role="dialog"
+  aria-labelledby="dialog-title"
+  aria-describedby="dialog-description"
+>
+  <h2 mat-dialog-title id="dialog-title">
+    <span class="heading">Unsaved Changes</span>
+  </h2>
+  <mat-dialog-content id="dialog-description">
+    <p>You have unsaved changes! Are you sure you want to discard changes?</p>
+  </mat-dialog-content>
+  <mat-dialog-actions class="actions" align="end">
+    <button appOutlineBtn (click)="onCancel()">Cancel</button>
+    <button appPrimaryBtn (click)="onConfirm()">Discard Changes</button>
+  </mat-dialog-actions>
+</div>

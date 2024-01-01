@@ -1,3 +1,4 @@
+import { UnsavedChangesComponent } from './../shared/models/unsaved-changes.interface';
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -6,8 +7,10 @@ import { CommonModule } from '@angular/common';
   standalone: true,
   imports: [CommonModule],
   templateUrl: './profile-details.component.html',
-  styleUrl: './profile-details.component.scss'
+  styleUrl: './profile-details.component.scss',
 })
-export class ProfileDetailsComponent {
-
+export class ProfileDetailsComponent implements UnsavedChangesComponent {
+  hasUnsavedChanges(): boolean {
+    return false;
+  }
 }

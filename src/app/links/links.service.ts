@@ -56,6 +56,7 @@ export class LinksService {
         bgColour: option.bgColour,
         iconFileName: option.iconFileName,
         platform: option.label,
+        link: '',
       };
       return acc;
     }, {} as PlatformOptionsLookup);

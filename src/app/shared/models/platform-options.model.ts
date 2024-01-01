@@ -9,7 +9,7 @@ export interface PlatformOption {
 
 export interface PlatformLink {
   platform: string;
-  link?: string;
+  link: string;
   bgColour: string;
   iconFileName: string;
 }

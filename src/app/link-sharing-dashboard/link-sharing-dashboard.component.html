@@ -97,9 +97,10 @@
     </div>
   </aside>
   <main class="dashboard-main">
-    <app-links [hidden]="selectedSection === 'profile'"></app-links>
+    <router-outlet></router-outlet>
+    <!-- <app-links [hidden]="selectedSection === 'profile'"></app-links>
     <app-profile-details
       [hidden]="selectedSection === 'links'"
-    ></app-profile-details>
+    ></app-profile-details> -->
   </main>
 </div>

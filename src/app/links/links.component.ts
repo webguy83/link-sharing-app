@@ -32,6 +32,7 @@ import {
 } from '@angular/cdk/drag-drop';
 import { LinksService } from './links.service';
 import { getErrorId } from '../shared/constants/error-id';
+import { UnsavedChangesComponent } from '../shared/models/unsaved-changes.interface';
 
 interface DropdownInfo {
   isOpen: boolean;
@@ -55,13 +56,15 @@ interface DropdownInfo {
   ],
   providers: [LinksService],
 })
-export class LinksComponent implements OnDestroy, OnInit {
+export class LinksComponent
+  implements OnDestroy, OnInit, UnsavedChangesComponent
+{
   private subscription = new Subscription();
   dropdownsInfo: DropdownInfo[] = [];
   removingStates: boolean[] = [];
   formSubmitted = false;
   linksForm!: FormGroup;
-  isFormChanged = false;
+  hasFormChanged = false;
   platformOptions = platformOptions;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
   getErrorId = getErrorId;
@@ -74,6 +77,10 @@ export class LinksComponent implements OnDestroy, OnInit {
     private phoneSvgStateService: PhoneSvgStateService,
     private linksService: LinksService
   ) {}
+
+  hasUnsavedChanges(): boolean {
+    return this.hasFormChanged;
+  }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -109,7 +116,7 @@ export class LinksComponent implements OnDestroy, OnInit {
   subscribeToFormChanges() {
     this.subscription.add(
       this.linksForm.valueChanges.subscribe(() => {
-        this.isFormChanged = true;
+        this.hasFormChanged = true;
       })
     );
   }
@@ -206,7 +213,7 @@ export class LinksComponent implements OnDestroy, OnInit {
     this.formSubmitted = true;
     if (this.linksForm.valid) {
       this.formSubmitted = false;
-      this.isFormChanged = false;
+      this.hasFormChanged = false;
     } else {
       this.scrollToFirstInvalidControl();
     }
@@ -231,8 +238,8 @@ export class LinksComponent implements OnDestroy, OnInit {
 
   drop(event: CdkDragDrop<string[]>): void {
     const { previousIndex, currentIndex } = event;
-    if (previousIndex !== currentIndex && !this.isFormChanged) {
-      this.isFormChanged = true;
+    if (previousIndex !== currentIndex && !this.hasFormChanged) {
+      this.hasFormChanged = true;
     }
     moveItemInArray(this.linkItems.controls, previousIndex, currentIndex);
     moveItemInArray(this.dropdownsInfo, previousIndex, currentIndex);
