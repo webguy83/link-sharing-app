@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 import { PlatformLink } from '../shared/models/platform-options.model';
 
-interface SvgState {
+interface AppState {
   profile: {
     name: string;
     email: string;
@@ -11,7 +11,7 @@ interface SvgState {
   links: PlatformLink[];
 }
 
-const initialState: SvgState = {
+const initialState: AppState = {
   profile: {
     name: '',
     email: '',
@@ -23,27 +23,27 @@ const initialState: SvgState = {
 @Injectable({
   providedIn: 'root',
 })
-export class PhoneSvgStateService {
-  private svgState = new BehaviorSubject<SvgState>(initialState);
-  state$ = this.svgState.asObservable();
+export class AppStateService {
+  private state = new BehaviorSubject<AppState>(initialState);
+  state$ = this.state.asObservable();
 
   constructor() {}
 
   updateProfile(profile: { name: string; email: string; avatarPath: string }) {
-    const currentState = this.svgState.getValue();
+    const currentState = this.state.getValue();
     const newState = {
       ...currentState,
       profile: { ...currentState.profile, ...profile },
     };
-    this.svgState.next(newState);
+    this.state.next(newState);
   }
 
   updateLinks(links: PlatformLink[]) {
-    const currentState = this.svgState.getValue();
+    const currentState = this.state.getValue();
     const newState = {
       ...currentState,
       links: links,
     };
-    this.svgState.next(newState);
+    this.state.next(newState);
   }
 }

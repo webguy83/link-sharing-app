@@ -1,4 +1,4 @@
-import { PhoneSvgStateService } from './../services/phone-svg-state.service';
+import { AppStateService } from '../services/state.service';
 import {
   Component,
   ElementRef,
@@ -74,7 +74,7 @@ export class LinksComponent
   constructor(
     private fb: FormBuilder,
     private responsiveService: ResponsiveService,
-    private phoneSvgStateService: PhoneSvgStateService,
+    private phoneAppStateService: AppStateService,
     private linksService: LinksService
   ) {}
 
@@ -161,7 +161,7 @@ export class LinksComponent
 
   updateLinksState() {
     const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
-    this.phoneSvgStateService.updateLinks(mappedItems);
+    this.phoneAppStateService.updateLinks(mappedItems);
   }
 
   scrollToNewLinkAdded() {
@@ -246,6 +246,6 @@ export class LinksComponent
     moveItemInArray(this.removingStates, previousIndex, currentIndex);
 
     const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
-    this.phoneSvgStateService.updateLinks(mappedItems);
+    this.phoneAppStateService.updateLinks(mappedItems);
   }
 }

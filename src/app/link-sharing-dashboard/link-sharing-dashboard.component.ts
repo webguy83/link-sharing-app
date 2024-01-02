@@ -4,7 +4,7 @@ import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { LinksComponent } from '../links/links.component';
 import { ProfileDetailsComponent } from '../profile-details/profile-details.component';
-import { PhoneSvgStateService } from '../services/phone-svg-state.service';
+import { AppStateService } from '../services/state.service';
 import { LinkComponent } from '../link/link.component';
 import {
   Router,
@@ -34,11 +34,11 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   selectedSection = 'links';
   isMaxWidth700$ = this.responsiveService.isCustomMax700;
   isMaxWidth900$ = this.responsiveService.isCustomMax900;
-  svgState$ = this.phoneSvgStateService.state$;
+  state$ = this.phoneAppStateService.state$;
 
   constructor(
     private responsiveService: ResponsiveService,
-    private phoneSvgStateService: PhoneSvgStateService,
+    private phoneAppStateService: AppStateService,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {}
