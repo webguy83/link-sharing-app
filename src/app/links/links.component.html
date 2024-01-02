@@ -2,7 +2,7 @@
   [formGroup]="linksForm"
   (ngSubmit)="onSubmit()"
   class="links-section"
-  [ngClass]="{ max700: (isMaxWidth500$ | async) }"
+  [ngClass]="{ max500: (isMaxWidth500$ | async) }"
 >
   <div class="container">
     <header class="links-section-header">
@@ -25,6 +25,7 @@
 
   <figure class="phone-container-block" *ngIf="linkItems.length === 0">
     <img
+      class="phone-img"
       src="../../assets/images/illustration-empty.svg"
       alt="Illustration of hand pressing a link on a phone screen"
     />
