@@ -59,7 +59,7 @@ interface DropdownInfo {
 export class LinksComponent
   implements OnDestroy, OnInit, UnsavedChangesComponent
 {
-  private subscription = new Subscription();
+  private subscriptions = new Subscription();
   dropdownsInfo: DropdownInfo[] = [];
   removingStates: boolean[] = [];
   formSubmitted = false;
@@ -74,7 +74,7 @@ export class LinksComponent
   constructor(
     private fb: FormBuilder,
     private responsiveService: ResponsiveService,
-    private phoneAppStateService: AppStateService,
+    private appStateService: AppStateService,
     private linksService: LinksService
   ) {}
 
@@ -99,9 +99,14 @@ export class LinksComponent
   }
 
   private initializeForm(): void {
-    this.linksForm = this.fb.group({
-      linkItems: this.fb.array([]),
-    });
+    this.subscriptions.add(
+      this.appStateService.initialState$.subscribe((state) => {
+        const controls = this.linksService.convertToFormLinks(state.links);
+        this.linksForm = this.fb.group({
+          linkItems: this.fb.array(controls),
+        });
+      })
+    );
   }
 
   toggleDropdown(index: number): void {
@@ -114,7 +119,7 @@ export class LinksComponent
   }
 
   subscribeToFormChanges() {
-    this.subscription.add(
+    this.subscriptions.add(
       this.linksForm.valueChanges.subscribe(() => {
         this.hasFormChanged = true;
       })
@@ -122,11 +127,11 @@ export class LinksComponent
   }
 
   ngOnDestroy(): void {
-    this.subscription.unsubscribe();
+    this.subscriptions.unsubscribe();
   }
 
   private addSubscriptionToLinkItem(linkItem: FormGroup) {
-    this.subscription.add(
+    this.subscriptions.add(
       linkItem.valueChanges
         .pipe(
           distinctUntilChanged() // Add this to prevent unnecessary calls
@@ -161,7 +166,7 @@ export class LinksComponent
 
   updateLinksState() {
     const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
-    this.phoneAppStateService.updateLinks(mappedItems);
+    this.appStateService.updateLinks(mappedItems);
   }
 
   scrollToNewLinkAdded() {
@@ -214,6 +219,7 @@ export class LinksComponent
     if (this.linksForm.valid) {
       this.formSubmitted = false;
       this.hasFormChanged = false;
+      this.appStateService.saveInitialState();
     } else {
       this.scrollToFirstInvalidControl();
     }
@@ -246,6 +252,6 @@ export class LinksComponent
     moveItemInArray(this.removingStates, previousIndex, currentIndex);
 
     const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
-    this.phoneAppStateService.updateLinks(mappedItems);
+    this.appStateService.updateLinks(mappedItems);
   }
 }

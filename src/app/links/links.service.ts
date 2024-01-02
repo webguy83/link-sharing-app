@@ -62,6 +62,15 @@ export class LinksService {
     }, {} as PlatformOptionsLookup);
   }
 
+  convertToFormLinks(platformLinks: PlatformLink[]): FormControlValue[] {
+    return platformLinks.map((platformLink) => {
+      return {
+        platform: platformLink.platform,
+        link: platformLink.link,
+      };
+    });
+  }
+
   mapToPlatformLinks(linkItems: FormArray): PlatformLink[] {
     const formControlsValues: FormControlValue[] = linkItems.getRawValue();
 

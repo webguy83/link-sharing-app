@@ -11,7 +11,7 @@ interface AppState {
   links: PlatformLink[];
 }
 
-const initialState: AppState = {
+const initState = {
   profile: {
     name: '',
     email: '',
@@ -24,14 +24,19 @@ const initialState: AppState = {
   providedIn: 'root',
 })
 export class AppStateService {
-  private state = new BehaviorSubject<AppState>(initialState);
-  state$ = this.state.asObservable();
+  private initialState = new BehaviorSubject<AppState>(initState);
+  private state = new BehaviorSubject<AppState>(initState);
 
-  constructor() {}
+  state$ = this.state.asObservable();
+  initialState$ = this.initialState.asObservable();
+
+  saveInitialState(): void {
+    this.initialState.next(this.state.getValue());
+  }
 
   updateProfile(profile: { name: string; email: string; avatarPath: string }) {
     const currentState = this.state.getValue();
-    const newState = {
+    const newState: AppState = {
       ...currentState,
       profile: { ...currentState.profile, ...profile },
     };
@@ -40,7 +45,7 @@ export class AppStateService {
 
   updateLinks(links: PlatformLink[]) {
     const currentState = this.state.getValue();
-    const newState = {
+    const newState: AppState = {
       ...currentState,
       links: links,
     };
