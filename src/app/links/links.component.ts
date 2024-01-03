@@ -17,7 +17,7 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { platformOptions } from '../shared/constants/platform-options';
-import { Subscription, distinctUntilChanged } from 'rxjs';
+import { Subscription, distinctUntilChanged, take } from 'rxjs';
 import {
   trigger,
   state,
@@ -61,7 +61,6 @@ export class LinksComponent
 {
   private subscriptions = new Subscription();
   dropdownsInfo: DropdownInfo[] = [];
-  removingStates: boolean[] = [];
   formSubmitted = false;
   linksForm!: FormGroup;
   hasFormChanged = false;
@@ -100,10 +99,11 @@ export class LinksComponent
 
   private initializeForm(): void {
     this.subscriptions.add(
-      this.appStateService.initialState$.subscribe((state) => {
-        const controls = this.linksService.convertToFormLinks(state.links);
+      this.appStateService.initialState$.pipe(take(1)).subscribe((state) => {
+        console.log(state)
+
         this.linksForm = this.fb.group({
-          linkItems: this.fb.array(controls),
+          linkItems: this.fb.array([]),
         });
       })
     );
@@ -158,14 +158,13 @@ export class LinksComponent
     this.addSubscriptionToLinkItem(linkItem);
     this.linkItems.push(linkItem);
     this.dropdownsInfo.push(this.linksService.createInitialDropdownInfo());
-    this.updateLinksState();
-    this.removingStates.push(false);
+    this.updateLinksState(this.linkItems);
     this.scrollToNewLinkAdded();
     this.formSubmitted = false;
   }
 
-  updateLinksState() {
-    const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
+  updateLinksState(items: FormArray) {
+    const mappedItems = this.linksService.mapToPlatformLinks(items);
     this.appStateService.updateLinks(mappedItems);
   }
 
@@ -179,10 +178,8 @@ export class LinksComponent
   }
 
   removeLink(index: number): void {
-    this.removingStates[index] = true;
     this.linkItems.removeAt(index);
-    this.removingStates.splice(index, 1);
-    this.updateLinksState();
+    this.updateLinksState(this.linkItems);
   }
 
   showError(index: number): string {
@@ -210,7 +207,7 @@ export class LinksComponent
       );
       this.dropdownsInfo[index] =
         this.linksService.getDropdownInfoByPlatform(platformValue);
-      this.updateLinksState();
+      this.updateLinksState(this.linkItems);
     }
   }
 
@@ -249,7 +246,6 @@ export class LinksComponent
     }
     moveItemInArray(this.linkItems.controls, previousIndex, currentIndex);
     moveItemInArray(this.dropdownsInfo, previousIndex, currentIndex);
-    moveItemInArray(this.removingStates, previousIndex, currentIndex);
 
     const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
     this.appStateService.updateLinks(mappedItems);

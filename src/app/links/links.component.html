@@ -48,7 +48,7 @@
         *ngFor="let linkItemFormGroup of linkItems.controls; let i = index"
       >
         <div
-          [@removalAnimation]="removingStates[i] ? 'out' : 'in'"
+          [@removalAnimation]="dropdownsInfo[i] ? 'out' : 'in'"
           class="link-item-container"
         >
           <div

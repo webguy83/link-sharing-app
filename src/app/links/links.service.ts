@@ -30,12 +30,14 @@ type PlatformOptionsLookup = { [key: string]: PlatformLink };
 export class LinksService {
   constructor(private fb: FormBuilder) {}
 
-  createLinkFormGroup(): FormGroup {
-    const firstPlatformOption = platformOptions[0];
+  createLinkFormGroup(link?: PlatformLink): FormGroup {
+    const platform = link?.platform || platformOptions[0].value;
+    const linkUrl = link?.link || null;
+
     return this.fb.group(
       {
-        platform: [firstPlatformOption.value, Validators.required],
-        link: [null, Validators.required],
+        platform: [platform, Validators.required],
+        link: [linkUrl, Validators.required],
       },
       { validators: linkPlatformValidator }
     );
@@ -60,15 +62,6 @@ export class LinksService {
       };
       return acc;
     }, {} as PlatformOptionsLookup);
-  }
-
-  convertToFormLinks(platformLinks: PlatformLink[]): FormControlValue[] {
-    return platformLinks.map((platformLink) => {
-      return {
-        platform: platformLink.platform,
-        link: platformLink.link,
-      };
-    });
   }
 
   mapToPlatformLinks(linkItems: FormArray): PlatformLink[] {
