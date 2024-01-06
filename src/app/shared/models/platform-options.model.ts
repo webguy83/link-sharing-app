@@ -7,9 +7,12 @@ export interface PlatformOption {
   placeholder: string;
 }
 
-export interface PlatformLink {
+export interface LinkData {
   platform: string;
   link: string;
+}
+
+export interface LinkDataStyled extends LinkData {
   bgColour: string;
   iconFileName: string;
 }

@@ -34,11 +34,11 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   selectedSection = 'links';
   isMaxWidth700$ = this.responsiveService.isCustomMax700;
   isMaxWidth900$ = this.responsiveService.isCustomMax900;
-  links$ = this.phoneAppStateService.links$;
+  links$ = this.appStateService.links$;
 
   constructor(
     private responsiveService: ResponsiveService,
-    private phoneAppStateService: AppStateService,
+    private appStateService: AppStateService,
     private router: Router,
     private activatedRoute: ActivatedRoute
   ) {}

@@ -216,7 +216,10 @@ export class LinksComponent
     if (this.linksForm.valid) {
       this.formSubmitted = false;
       this.hasFormChanged = false;
-      this.appStateService.saveLinks(this.linkItems.value);
+      const mappedItems = this.linksService.mapToPlatformLinks(
+        this.linkItems.value
+      );
+      this.appStateService.saveLinks(mappedItems);
     } else {
       this.scrollToFirstInvalidControl();
     }

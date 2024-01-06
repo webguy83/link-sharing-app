@@ -1,4 +1,4 @@
-import { PlatformLink } from './../shared/models/platform-options.model';
+import { LinkDataStyled } from './../shared/models/platform-options.model';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
 
@@ -12,7 +12,7 @@ interface ProfileState {
   providedIn: 'root',
 })
 export class AppStateService {
-  private linksSubject = new BehaviorSubject<PlatformLink[]>([]);
+  private linksSubject = new BehaviorSubject<LinkDataStyled[]>([]);
   private profileSubject = new BehaviorSubject<ProfileState>({
     name: '',
     email: '',
@@ -22,11 +22,11 @@ export class AppStateService {
   links$ = this.linksSubject.asObservable();
   profile$ = this.profileSubject.asObservable();
 
-  saveLinks(links: PlatformLink[]) {
+  saveLinks(links: LinkDataStyled[]) {
     this.linksSubject.next(links);
   }
 
-  updateLinks(links: PlatformLink[]) {
+  updateLinks(links: LinkDataStyled[]) {
     this.linksSubject.next(links);
   }
 
