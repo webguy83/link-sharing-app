@@ -94,13 +94,13 @@ export class LinksComponent
   }
 
   get linkItems() {
-    return this.linksForm.controls['linkItems'] as FormArray;
+    return this.linksForm.get('linkItems') as FormArray;
   }
 
   private initializeForm(): void {
     this.subscriptions.add(
-      this.appStateService.initialState$.pipe(take(1)).subscribe((state) => {
-        console.log(state)
+      this.appStateService.links$.pipe(take(1)).subscribe((links) => {
+        console.log(links);
 
         this.linksForm = this.fb.group({
           linkItems: this.fb.array([]),
@@ -216,7 +216,7 @@ export class LinksComponent
     if (this.linksForm.valid) {
       this.formSubmitted = false;
       this.hasFormChanged = false;
-      this.appStateService.saveInitialState();
+      this.appStateService.saveLinks(this.linkItems.value);
     } else {
       this.scrollToFirstInvalidControl();
     }

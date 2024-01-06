@@ -80,10 +80,10 @@
   </header>
   <aside class="dashboard-aside">
     <div class="bg-img-container">
-      <ng-container *ngIf="state$ | async as state">
+      <ng-container *ngIf="links$ | async as links">
         <div class="links">
           <app-link
-            *ngFor="let link of state.links | slice : 0 : 5"
+            *ngFor="let link of links | slice : 0 : 5"
             [bgColour]="link.bgColour"
             [iconPath]="'../../assets/images/alternate/' + link.iconFileName"
             [platform]="link.platform"

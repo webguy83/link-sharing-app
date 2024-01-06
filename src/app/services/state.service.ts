@@ -1,54 +1,36 @@
+import { PlatformLink } from './../shared/models/platform-options.model';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-import { PlatformLink } from '../shared/models/platform-options.model';
 
-interface AppState {
-  profile: {
-    name: string;
-    email: string;
-    avatarPath: string;
-  };
-  links: PlatformLink[];
+interface ProfileState {
+  name: string;
+  email: string;
+  avatarPath: string;
 }
-
-const initState = {
-  profile: {
-    name: '',
-    email: '',
-    avatarPath: '',
-  },
-  links: [],
-};
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppStateService {
-  private initialState = new BehaviorSubject<AppState>(initState);
-  private state = new BehaviorSubject<AppState>(initState);
+  private linksSubject = new BehaviorSubject<PlatformLink[]>([]);
+  private profileSubject = new BehaviorSubject<ProfileState>({
+    name: '',
+    email: '',
+    avatarPath: '',
+  });
 
-  state$ = this.state.asObservable();
-  initialState$ = this.initialState.asObservable();
+  links$ = this.linksSubject.asObservable();
+  profile$ = this.profileSubject.asObservable();
 
-  saveInitialState(): void {
-    this.initialState.next(this.state.getValue());
-  }
-
-  updateProfile(profile: { name: string; email: string; avatarPath: string }) {
-    const currentState = this.state.getValue();
-    const newState: AppState = {
-      ...currentState,
-      profile: { ...currentState.profile, ...profile },
-    };
-    this.state.next(newState);
+  saveLinks(links: PlatformLink[]) {
+    this.linksSubject.next(links);
   }
 
   updateLinks(links: PlatformLink[]) {
-    const currentState = this.state.getValue();
-    const newState: AppState = {
-      ...currentState,
-      links: links,
-    };
-    this.state.next(newState);
+    this.linksSubject.next(links);
+  }
+
+  updateProfile(profile: ProfileState) {
+    this.profileSubject.next(profile);
   }
 }
