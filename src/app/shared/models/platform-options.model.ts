@@ -15,4 +15,5 @@ export interface LinkData {
 export interface LinkDataStyled extends LinkData {
   bgColour: string;
   iconFileName: string;
+  label: string;
 }

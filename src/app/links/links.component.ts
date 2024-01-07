@@ -102,10 +102,16 @@ export class LinksComponent
   private initializeForm(): void {
     this.subscriptions.add(
       this.appStateService.links$.pipe(take(1)).subscribe((links) => {
-        const formGroups = links.map((link) => {});
-
+        const formGroups = links.map((link) => {
+          const linkItem = this.linksService.createLinkFormGroup(link);
+          this.addSubscriptionToLinkItem(linkItem);
+          this.additionalLinkStates.push(
+            this.linksService.getAdditionalLinkState(link.platform)
+          );
+          return linkItem;
+        });
         this.linksForm = this.fb.group({
-          linkItems: this.fb.array([]),
+          linkItems: this.fb.array(formGroups),
         });
       })
     );

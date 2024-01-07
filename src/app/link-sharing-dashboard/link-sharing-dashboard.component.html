@@ -86,7 +86,7 @@
             *ngFor="let link of links | slice : 0 : 5"
             [bgColour]="link.bgColour"
             [iconPath]="'../../assets/images/alternate/' + link.iconFileName"
-            [platform]="link.platform"
+            [platform]="link.label"
           ></app-link>
         </div>
       </ng-container>

@@ -7,7 +7,10 @@ import {
   FormGroup,
   Validators,
 } from '@angular/forms';
-import { platformOptions } from '../shared/constants/platform-options';
+import {
+  platformOptions,
+  platformOptionsLookup,
+} from '../shared/constants/platform-options';
 import { LinkData } from '../shared/models/platform-options.model';
 import { linkPlatformValidator } from '../validators/validators';
 
@@ -16,8 +19,6 @@ interface AdditionalLinkState {
   placeholder: string;
   iconFileName: string;
 }
-
-type PlatformOptionsLookup = { [key: string]: LinkDataStyled };
 
 @Injectable()
 export class LinksService {
@@ -36,23 +37,11 @@ export class LinksService {
     );
   }
 
-  get platformOptionsLookup() {
-    return platformOptions.reduce((acc, option) => {
-      acc[option.value] = {
-        bgColour: option.bgColour,
-        iconFileName: option.iconFileName,
-        platform: option.label,
-        profileUrl: '',
-      };
-      return acc;
-    }, {} as PlatformOptionsLookup);
-  }
-
   mapToPlatformLinks(linkItems: FormArray): LinkDataStyled[] {
     const formControlsValues: LinkData[] = linkItems.getRawValue();
 
     return formControlsValues.map((control: LinkData) => {
-      const platformLink = this.platformOptionsLookup[control.platform];
+      const platformLink = platformOptionsLookup[control.platform];
 
       // Construct the new LinkData object
       return {
@@ -60,6 +49,7 @@ export class LinksService {
         profileUrl: control.profileUrl,
         bgColour: platformLink.bgColour,
         iconFileName: platformLink.iconFileName,
+        label: platformLink.label,
       };
     });
   }

@@ -1,4 +1,7 @@
-import { PlatformOption } from '../models/platform-options.model';
+import {
+  LinkDataStyled,
+  PlatformOption,
+} from '../models/platform-options.model';
 
 export const platformOptions: PlatformOption[] = [
   {
@@ -114,3 +117,16 @@ export const platformOptions: PlatformOption[] = [
     placeholder: 'https://stackoverflow.com/users/userId/username',
   },
 ];
+
+type PlatformOptionsLookup = { [key: string]: LinkDataStyled };
+
+export const platformOptionsLookup = platformOptions.reduce((acc, option) => {
+  acc[option.value] = {
+    bgColour: option.bgColour,
+    iconFileName: option.iconFileName,
+    platform: option.value,
+    label: option.label,
+    profileUrl: '',
+  };
+  return acc;
+}, {} as PlatformOptionsLookup);
