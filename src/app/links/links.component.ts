@@ -34,7 +34,7 @@ import { LinksService } from './links.service';
 import { getErrorId } from '../shared/constants/error-id';
 import { UnsavedChangesComponent } from '../shared/models/unsaved-changes.interface';
 
-interface DropdownInfo {
+interface AdditionalLinkState {
   isOpen: boolean;
   placeholder: string;
   iconFileName: string;
@@ -60,7 +60,7 @@ export class LinksComponent
   implements OnDestroy, OnInit, UnsavedChangesComponent
 {
   private subscriptions = new Subscription();
-  dropdownsInfo: DropdownInfo[] = [];
+  additionalLinkStates: AdditionalLinkState[] = [];
   formSubmitted = false;
   linksForm!: FormGroup;
   hasFormChanged = false;
@@ -84,12 +84,14 @@ export class LinksComponent
   ngOnInit(): void {
     this.initializeForm();
     this.subscribeToFormChanges();
-    this.populateDropdownsInfo();
+    this.populateAdditionalLinkStates();
   }
 
-  private populateDropdownsInfo() {
+  private populateAdditionalLinkStates() {
     this.linkItems.controls.forEach(() => {
-      this.dropdownsInfo.push(this.linksService.createInitialDropdownInfo());
+      this.additionalLinkStates.push(
+        this.linksService.getAdditionalLinkState()
+      );
     });
   }
 
@@ -100,7 +102,7 @@ export class LinksComponent
   private initializeForm(): void {
     this.subscriptions.add(
       this.appStateService.links$.pipe(take(1)).subscribe((links) => {
-        console.log(links);
+        const formGroups = links.map((link) => {});
 
         this.linksForm = this.fb.group({
           linkItems: this.fb.array([]),
@@ -111,11 +113,12 @@ export class LinksComponent
 
   toggleDropdown(index: number): void {
     // Close all other dropdowns
-    this.dropdownsInfo.forEach((info, i) => {
+    this.additionalLinkStates.forEach((info, i) => {
       if (i !== index) info.isOpen = false;
     });
     // Toggle the specified dropdown
-    this.dropdownsInfo[index].isOpen = !this.dropdownsInfo[index].isOpen;
+    this.additionalLinkStates[index].isOpen =
+      !this.additionalLinkStates[index].isOpen;
   }
 
   subscribeToFormChanges() {
@@ -137,16 +140,16 @@ export class LinksComponent
           distinctUntilChanged() // Add this to prevent unnecessary calls
         )
         .subscribe(() => {
-          const linkControl = linkItem.get('link');
-          if (linkControl) {
+          const profileUrlControl = linkItem.get('profileUrl');
+          if (profileUrlControl) {
             if (linkItem.errors && linkItem.errors['invalidLinkPlatform']) {
               // Use setErrors with emitEvent: false to prevent a loop
-              linkControl.setErrors(
+              profileUrlControl.setErrors(
                 { invalidLinkPlatform: true },
                 { emitEvent: false }
               );
             } else {
-              linkControl.updateValueAndValidity({ emitEvent: false });
+              profileUrlControl.updateValueAndValidity({ emitEvent: false });
             }
           }
         })
@@ -157,7 +160,7 @@ export class LinksComponent
     const linkItem = this.linksService.createLinkFormGroup();
     this.addSubscriptionToLinkItem(linkItem);
     this.linkItems.push(linkItem);
-    this.dropdownsInfo.push(this.linksService.createInitialDropdownInfo());
+    this.additionalLinkStates.push(this.linksService.getAdditionalLinkState());
     this.updateLinksState(this.linkItems);
     this.scrollToNewLinkAdded();
     this.formSubmitted = false;
@@ -180,14 +183,20 @@ export class LinksComponent
   removeLink(index: number): void {
     this.linkItems.removeAt(index);
     this.updateLinksState(this.linkItems);
+    this.additionalLinkStates = this.additionalLinkStates.filter(
+      (_, i) => i !== index
+    );
   }
 
   showError(index: number): string {
-    const linkControl = this.linkItems.at(index).get('link');
-    if (linkControl && this.formSubmitted) {
-      if (linkControl.hasError('required') || linkControl.value === '') {
+    const profileUrlControl = this.linkItems.at(index).get('profileUrl');
+    if (profileUrlControl && this.formSubmitted) {
+      if (
+        profileUrlControl.hasError('required') ||
+        profileUrlControl.value === ''
+      ) {
         return "Can't be empty";
-      } else if (linkControl.hasError('invalidLinkPlatform')) {
+      } else if (profileUrlControl.hasError('invalidLinkPlatform')) {
         return 'Please check the URL';
       }
     }
@@ -196,17 +205,17 @@ export class LinksComponent
 
   onPlatformChange(index: number, event: any): void {
     const platformControl = this.linkItems.at(index).get('platform');
-    const linkControl = this.linkItems.at(index).get('link');
+    const profileUrlControl = this.linkItems.at(index).get('profileUrl');
 
-    if (platformControl && linkControl) {
+    if (platformControl && profileUrlControl) {
       const platformValue: string = event.target.value;
       this.linksService.updateLinkPlatform(
         platformControl,
-        linkControl,
+        profileUrlControl,
         platformValue
       );
-      this.dropdownsInfo[index] =
-        this.linksService.getDropdownInfoByPlatform(platformValue);
+      this.additionalLinkStates[index] =
+        this.linksService.getAdditionalLinkState(platformValue);
       this.updateLinksState(this.linkItems);
     }
   }
@@ -216,9 +225,7 @@ export class LinksComponent
     if (this.linksForm.valid) {
       this.formSubmitted = false;
       this.hasFormChanged = false;
-      const mappedItems = this.linksService.mapToPlatformLinks(
-        this.linkItems.value
-      );
+      const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
       this.appStateService.saveLinks(mappedItems);
     } else {
       this.scrollToFirstInvalidControl();
@@ -229,8 +236,8 @@ export class LinksComponent
     const linkControlsArray = this.linkItemsElements.toArray();
 
     for (const [index, control] of this.linkItems.controls.entries()) {
-      const linkControl = control.get('link');
-      if (linkControl && linkControl.invalid) {
+      const profileUrlControl = control.get('profileUrl');
+      if (profileUrlControl && profileUrlControl.invalid) {
         // Use ElementRef to access the native element
         const invalidControlElement = linkControlsArray[index].nativeElement;
         invalidControlElement.scrollIntoView({
@@ -248,7 +255,7 @@ export class LinksComponent
       this.hasFormChanged = true;
     }
     moveItemInArray(this.linkItems.controls, previousIndex, currentIndex);
-    moveItemInArray(this.dropdownsInfo, previousIndex, currentIndex);
+    moveItemInArray(this.additionalLinkStates, previousIndex, currentIndex);
 
     const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
     this.appStateService.updateLinks(mappedItems);

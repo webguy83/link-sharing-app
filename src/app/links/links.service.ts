@@ -8,21 +8,13 @@ import {
   Validators,
 } from '@angular/forms';
 import { platformOptions } from '../shared/constants/platform-options';
-import {
-  LinkData,
-  PlatformOption,
-} from '../shared/models/platform-options.model';
+import { LinkData } from '../shared/models/platform-options.model';
 import { linkPlatformValidator } from '../validators/validators';
 
-interface DropdownInfo {
+interface AdditionalLinkState {
   isOpen: boolean;
   placeholder: string;
   iconFileName: string;
-}
-
-interface FormControlValue {
-  platform: string;
-  link: string;
 }
 
 type PlatformOptionsLookup = { [key: string]: LinkDataStyled };
@@ -33,24 +25,15 @@ export class LinksService {
 
   createLinkFormGroup(link?: LinkData): FormGroup {
     const platform = link?.platform || platformOptions[0].value;
-    const linkUrl = link?.link || null;
+    const profileUrl = link?.profileUrl || null;
 
     return this.fb.group(
       {
         platform: [platform, Validators.required],
-        link: [linkUrl, Validators.required],
+        profileUrl: [profileUrl, Validators.required],
       },
       { validators: linkPlatformValidator }
     );
-  }
-
-  createInitialDropdownInfo(): DropdownInfo {
-    const firstPlatformOption = platformOptions[0];
-    return {
-      isOpen: false,
-      placeholder: firstPlatformOption.placeholder,
-      iconFileName: firstPlatformOption.iconFileName,
-    };
   }
 
   get platformOptionsLookup() {
@@ -59,22 +42,22 @@ export class LinksService {
         bgColour: option.bgColour,
         iconFileName: option.iconFileName,
         platform: option.label,
-        link: '',
+        profileUrl: '',
       };
       return acc;
     }, {} as PlatformOptionsLookup);
   }
 
   mapToPlatformLinks(linkItems: FormArray): LinkDataStyled[] {
-    const formControlsValues: FormControlValue[] = linkItems.getRawValue();
+    const formControlsValues: LinkData[] = linkItems.getRawValue();
 
-    return formControlsValues.map((control: FormControlValue) => {
+    return formControlsValues.map((control: LinkData) => {
       const platformLink = this.platformOptionsLookup[control.platform];
 
       // Construct the new LinkData object
       return {
         platform: platformLink.platform,
-        link: control.link,
+        profileUrl: control.profileUrl,
         bgColour: platformLink.bgColour,
         iconFileName: platformLink.iconFileName,
       };
@@ -83,23 +66,23 @@ export class LinksService {
 
   updateLinkPlatform(
     platformControl: AbstractControl,
-    linkControl: AbstractControl,
+    profileUrlControl: AbstractControl,
     platform: string
   ): void {
     platformControl.setValue(platform); // Safely set the value of the control
-    linkControl.reset(); // Reset the link control
+    profileUrlControl.reset(); // Reset the link control
   }
 
-  getDropdownInfoByPlatform(platform: string) {
-    const platformOption = this.findPlatformOption(platform);
+  getAdditionalLinkState(platform?: string): AdditionalLinkState {
+    const platformOption = platformOptions.find(
+      (option) => option.value === platform
+    );
     return {
       isOpen: false,
-      placeholder: platformOption?.placeholder || '',
-      iconFileName: platformOption?.iconFileName || '',
+      placeholder:
+        platformOption?.placeholder || platformOptions[0].placeholder,
+      iconFileName:
+        platformOption?.iconFileName || platformOptions[0].iconFileName,
     };
-  }
-
-  private findPlatformOption(platform: string): PlatformOption | undefined {
-    return platformOptions.find((option) => option.value === platform);
   }
 }

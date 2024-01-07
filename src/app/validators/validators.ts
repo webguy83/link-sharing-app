@@ -29,21 +29,21 @@ export const linkPlatformValidator: ValidatorFn = (
   }
 
   const platformControl = control.get('platform');
-  const linkControl = control.get('link');
+  const profileUrlControl = control.get('profileUrl');
 
-  if (!platformControl || !linkControl) {
+  if (!platformControl || !profileUrlControl) {
     return null;
   }
 
   const platform = platformControl.value;
-  const link = linkControl.value;
+  const profileUrl = profileUrlControl.value;
   const platformOption = platformOptions.find(
     (option) => option.value === platform
   );
 
   if (platformOption && platformOption.urlPattern) {
     const regex = new RegExp(platformOption.urlPattern);
-    if (!regex.test(link)) {
+    if (!regex.test(profileUrl)) {
       return { invalidLinkPlatform: true };
     }
   }

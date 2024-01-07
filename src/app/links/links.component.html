@@ -48,7 +48,7 @@
         *ngFor="let linkItemFormGroup of linkItems.controls; let i = index"
       >
         <div
-          [@removalAnimation]="dropdownsInfo[i] ? 'out' : 'in'"
+          [@removalAnimation]="additionalLinkStates[i] ? 'out' : 'in'"
           class="link-item-container"
         >
           <div
@@ -79,7 +79,8 @@
               <div class="input-container">
                 <img
                   [src]="
-                    '../../../assets/images/' + dropdownsInfo[i].iconFileName
+                    '../../../assets/images/' +
+                    additionalLinkStates[i].iconFileName
                   "
                   alt="Platform Icon"
                   class="icon"
@@ -89,7 +90,7 @@
                   formControlName="platform"
                   id="platform-{{ i }}"
                   appSelectStyle
-                  [class.open]="dropdownsInfo[i].isOpen"
+                  [class.open]="additionalLinkStates[i].isOpen"
                   (click)="toggleDropdown(i)"
                   (change)="onPlatformChange(i, $event)"
                 >
@@ -129,10 +130,10 @@
                 <input
                   class="input"
                   type="url"
-                  formControlName="link"
+                  formControlName="profileUrl"
                   id="link-{{ i }}"
                   [attr.aria-describedby]="getErrorId(i)"
-                  [attr.placeholder]="dropdownsInfo[i].placeholder"
+                  [attr.placeholder]="additionalLinkStates[i].placeholder"
                 />
               </div>
             </div>

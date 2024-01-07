@@ -9,7 +9,7 @@ export interface PlatformOption {
 
 export interface LinkData {
   platform: string;
-  link: string;
+  profileUrl: string;
 }
 
 export interface LinkDataStyled extends LinkData {
