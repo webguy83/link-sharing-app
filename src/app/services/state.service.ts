@@ -12,6 +12,7 @@ interface ProfileState {
   providedIn: 'root',
 })
 export class AppStateService {
+  private initialLinksSubject = new BehaviorSubject<LinkDataStyled[]>([]);
   private linksSubject = new BehaviorSubject<LinkDataStyled[]>([]);
   private profileSubject = new BehaviorSubject<ProfileState>({
     name: '',
@@ -19,11 +20,17 @@ export class AppStateService {
     avatarPath: '',
   });
 
+  initialLinks$ = this.initialLinksSubject.asObservable();
   links$ = this.linksSubject.asObservable();
   profile$ = this.profileSubject.asObservable();
 
+  synchronizeLinksToInitial(): void {
+    const initialLinks = this.initialLinksSubject.getValue();
+    this.linksSubject.next(initialLinks);
+  }
+
   saveLinks(links: LinkDataStyled[]) {
-    this.linksSubject.next(links);
+    this.initialLinksSubject.next(links);
   }
 
   updateLinks(links: LinkDataStyled[]) {

@@ -81,6 +81,10 @@ export class LinksComponent
     return this.hasFormChanged;
   }
 
+  discardChanges(): void {
+    this.appStateService.synchronizeLinksToInitial();
+  }
+
   ngOnInit(): void {
     this.initializeForm();
     this.subscribeToFormChanges();
@@ -101,7 +105,8 @@ export class LinksComponent
 
   private initializeForm(): void {
     this.subscriptions.add(
-      this.appStateService.links$.pipe(take(1)).subscribe((links) => {
+      this.appStateService.initialLinks$.pipe(take(1)).subscribe((links) => {
+        this.appStateService.updateLinks(links);
         const formGroups = links.map((link) => {
           const linkItem = this.linksService.createLinkFormGroup(link);
           this.addSubscriptionToLinkItem(linkItem);

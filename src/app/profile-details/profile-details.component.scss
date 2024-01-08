@@ -1,0 +1,114 @@
+.profile-details-section {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  justify-content: space-between;
+
+  &-header h2 {
+    font-size: 3.2rem;
+    margin-top: 0;
+    margin-bottom: 2rem;
+  }
+}
+
+.profile-details-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  background-color: var(--dark-white);
+  border-radius: 1.2rem;
+  padding: 2rem;
+}
+
+.container {
+  margin: 4rem 4rem 0;
+}
+
+.instructions {
+  font-size: 1.6rem;
+  color: var(--med-gray);
+  margin: 1rem 0;
+}
+
+.picture-upload {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: center;
+  gap: 2rem;
+  margin: 4rem 0 2.4rem;
+  background-color: var(--dark-white);
+  border-radius: 1.2rem;
+  padding: 2rem;
+}
+
+.picture-upload__label {
+  font-size: 1.6rem;
+  flex: 2;
+  color: var(--med-gray);
+  white-space: nowrap;
+}
+
+.picture-upload__box {
+  padding: 6.3rem 3.8rem;
+  font-weight: 600;
+  font-size: 1.6rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  cursor: pointer;
+  border-radius: 1.2rem;
+  background-color: var(--light-purple);
+}
+
+.picture-upload__icon {
+  max-width: 5rem;
+  max-height: 5rem;
+}
+
+.picture-upload__text {
+  font-size: 1.6rem;
+  color: var(--primary);
+  margin-top: 0.8rem;
+  text-align: center;
+}
+
+.picture-upload__info {
+  flex: 1.5;
+  font-size: 1.2rem;
+  color: var(--med-gray);
+  margin-top: 1.6rem; /* Adjust space between box and info text as needed */
+}
+
+.input {
+  padding-left: 1.6rem;
+}
+
+.form-group {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  label {
+    flex: 1;
+  }
+
+  .input-container {
+    margin: 0;
+    flex: 1.5;
+  }
+}
+
+.max600 {
+  .picture-upload {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}
+
+.max500 {
+  .profile-details-section-header h2 {
+    font-size: 2.4rem;
+  }
+}

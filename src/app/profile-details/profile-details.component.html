@@ -1,1 +1,79 @@
-<p>profile-details works!</p>
+<form
+  [formGroup]="profileDetailsForm"
+  (ngSubmit)="onSubmit()"
+  class="profile-details-section"
+  [ngClass]="{
+    max600: (isMaxWidth600$ | async),
+    max500: (isMaxWidth500$ | async)
+  }"
+>
+  <div class="container">
+    <header class="profile-details-section-header">
+      <h2>Profile Details</h2>
+    </header>
+    <p class="instructions">
+      Add your details to create a personal touch to your profile.
+    </p>
+
+    <div class="picture-upload">
+      <span class="picture-upload__label" id="profilePictureLabel"
+        >Profile picture</span
+      >
+      <div
+        class="picture-upload__box"
+        aria-labelledby="profilePictureLabel"
+        tabindex="0"
+        role="button"
+      >
+        <img
+          src="../../assets/images/icon-upload-image.svg"
+          alt="Upload icon"
+          class="picture-upload__icon"
+        />
+        <span class="picture-upload__text">+ Upload Image</span>
+      </div>
+      <p class="picture-upload__info">
+        Image must be below 1024x1024px. Use PNG or JPG format.
+      </p>
+    </div>
+
+    <section class="profile-details-form">
+      <div class="form-group" appFormStyle [ngClass]="{ error: showError() }">
+        <label for="firstName">First name</label>
+        <div class="input-container">
+          <div [id]="getErrorId(0)" class="error-text" *ngIf="showError()">
+            {{ showError() }}
+          </div>
+          <input
+            class="input"
+            type="url"
+            formControlName="firstName"
+            id="firstName"
+            placeholder="e.g. John"
+            [attr.aria-describedby]="getErrorId(0)"
+          />
+        </div>
+      </div>
+      <div class="form-group" appFormStyle [ngClass]="{ error: showError() }">
+        <label for="lastName">Last name</label>
+        <div class="input-container">
+          <div [id]="getErrorId(0)" class="error-text" *ngIf="showError()">
+            {{ showError() }}
+          </div>
+          <input
+            class="input"
+            type="url"
+            formControlName="lastName"
+            id="lastName"
+            placeholder="e.g. Appleseed"
+            [attr.aria-describedby]="getErrorId(0)"
+          />
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">
+    <button class="save-btn" appPrimaryBtn type="submit">Save</button>
+  </footer>
+</form>

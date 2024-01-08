@@ -20,11 +20,11 @@ export class ConfirmDialogComponent {
     private responsiveService: ResponsiveService
   ) {}
 
-  onConfirm(): void {
-    this.dialogRef.close(true);
+  onDiscard(): void {
+    this.dialogRef.close('discard');
   }
 
   onCancel(): void {
-    this.dialogRef.close(false);
+    this.dialogRef.close('cancel');
   }
 }

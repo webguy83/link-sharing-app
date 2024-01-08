@@ -10,6 +10,7 @@ interface BreakpointsDictionary {
   max400: string;
   max420: string;
   max500: string;
+  max600: string;
   max700: string;
   max900: string;
 }
@@ -26,6 +27,7 @@ export class ResponsiveService {
     max400: '(max-width: 400px)',
     max420: '(max-width: 420px)',
     max500: '(max-width: 500px)',
+    max600: '(max-width: 600px)',
     max700: '(max-width: 700px)',
     max900: '(max-width: 900px)',
   };
@@ -73,6 +75,10 @@ export class ResponsiveService {
 
   get isCustomMax500(): Observable<boolean> {
     return this.breakpointSubjects['max500'].asObservable();
+  }
+
+  get isCustomMax600(): Observable<boolean> {
+    return this.breakpointSubjects['max600'].asObservable();
   }
 
   get isCustomMax700(): Observable<boolean> {

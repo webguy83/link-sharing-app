@@ -16,10 +16,19 @@ export const canDeactivateUnsavedChanges: CanDeactivateFn<
     // Handle the dialog result
     return dialogRef.afterClosed().pipe(
       map((result) => {
-        // If result is undefined (clicking outside), treat it as cancellation
-        return result === true;
+        switch (result) {
+          case 'discard':
+            // Directly call discardChanges as it's part of the interface
+            component.discardChanges();
+            return true; // Allow navigation after discarding changes
+          case 'cancel':
+            return false; // Prevent navigation on cancel
+          default:
+            return false; // Treat other cases as cancel
+        }
       })
     );
   }
+  component.discardChanges();
   return of(true); // Allow navigation if no unsaved changes
 };
