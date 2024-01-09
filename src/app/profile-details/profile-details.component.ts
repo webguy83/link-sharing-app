@@ -20,6 +20,7 @@ import { getErrorId } from '../shared/constants/error-id';
 })
 export class ProfileDetailsComponent implements UnsavedChangesComponent {
   profileDetailsForm: FormGroup;
+  formSubmitted = false;
   isMaxWidth600$ = this.responsiveService.isCustomMax600;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
   getErrorId = getErrorId;
@@ -28,9 +29,9 @@ export class ProfileDetailsComponent implements UnsavedChangesComponent {
     private responsiveService: ResponsiveService
   ) {
     this.profileDetailsForm = this.fb.group({
-      firstName: ['', [Validators.required]],
-      lastName: ['', [Validators.required]],
-      email: [''],
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      email: ['', Validators.email],
     });
   }
 
@@ -43,5 +44,30 @@ export class ProfileDetailsComponent implements UnsavedChangesComponent {
     return '';
   }
 
-  onSubmit() {}
+  showRequiredError(formLabel: string) {
+    const control = this.profileDetailsForm.get(formLabel);
+    if (control && this.formSubmitted) {
+      if (control.hasError('required')) {
+        return 'Can’t be empty';
+      }
+    }
+    return '';
+  }
+
+  showEmailError() {
+    const control = this.profileDetailsForm.get('email');
+    if (control && this.formSubmitted) {
+      if (control.hasError('email')) {
+        return 'Must be a valid email';
+      }
+    }
+    return '';
+  }
+
+  onSubmit() {
+    this.formSubmitted = true;
+    if (this.profileDetailsForm.valid) {
+      this.formSubmitted = false;
+    }
+  }
 }

@@ -41,11 +41,19 @@
       class="profile-details-form"
       [ngClass]="{ notMobile: !(isMaxWidth600$ | async) }"
     >
-      <div class="form-group" appFormStyle [ngClass]="{ error: showError() }">
+      <div
+        class="form-group"
+        appFormStyle
+        [ngClass]="{ error: showRequiredError('firstName') }"
+      >
         <label for="firstName">First name*</label>
         <div class="input-container">
-          <div [id]="getErrorId(0)" class="error-text" *ngIf="showError()">
-            {{ showError() }}
+          <div
+            [id]="getErrorId(0)"
+            class="error-text"
+            *ngIf="showRequiredError('firstName')"
+          >
+            {{ showRequiredError("firstName") }}
           </div>
           <input
             class="input"
@@ -56,11 +64,19 @@
           />
         </div>
       </div>
-      <div class="form-group" appFormStyle [ngClass]="{ error: showError() }">
+      <div
+        class="form-group"
+        appFormStyle
+        [ngClass]="{ error: showRequiredError('lastName') }"
+      >
         <label for="lastName">Last name*</label>
         <div class="input-container">
-          <div [id]="getErrorId(1)" class="error-text" *ngIf="showError()">
-            {{ showError() }}
+          <div
+            [id]="getErrorId(1)"
+            class="error-text"
+            *ngIf="showRequiredError('lastName')"
+          >
+            {{ showRequiredError("lastName") }}
           </div>
           <input
             class="input"
@@ -71,11 +87,15 @@
           />
         </div>
       </div>
-      <div class="form-group" appFormStyle [ngClass]="{ error: showError() }">
+      <div
+        class="form-group"
+        appFormStyle
+        [ngClass]="{ error: showEmailError() }"
+      >
         <label for="email">Email</label>
         <div class="input-container">
-          <div [id]="getErrorId(2)" class="error-text" *ngIf="showError()">
-            {{ showError() }}
+          <div [id]="getErrorId(2)" class="error-text" *ngIf="showEmailError()">
+            {{ showEmailError() }}
           </div>
           <input
             class="input"
@@ -90,6 +110,6 @@
   </div>
 
   <footer class="footer">
-    <button class="save-btn" appPrimaryBtn disabled type="submit">Save</button>
+    <button class="save-btn" appPrimaryBtn type="submit">Save</button>
   </footer>
 </form>
