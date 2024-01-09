@@ -12,7 +12,7 @@ import {
   NavigationEnd,
   ActivatedRoute,
 } from '@angular/router';
-import { filter } from 'rxjs/operators';
+import { filter, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
 @Component({
   selector: 'app-link-sharing-dashboard',
@@ -34,7 +34,9 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   selectedSection = 'links';
   isMaxWidth700$ = this.responsiveService.isCustomMax700;
   isMaxWidth900$ = this.responsiveService.isCustomMax900;
-  links$ = this.appStateService.links$;
+  links$ = this.appStateService.links$.pipe(
+    map((links) => links.slice(0, 5)) // Take only the first five links for the phone image
+  );
 
   constructor(
     private responsiveService: ResponsiveService,

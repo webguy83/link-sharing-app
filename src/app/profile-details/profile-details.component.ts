@@ -30,6 +30,7 @@ export class ProfileDetailsComponent implements UnsavedChangesComponent {
     this.profileDetailsForm = this.fb.group({
       firstName: ['', [Validators.required]],
       lastName: ['', [Validators.required]],
+      email: [''],
     });
   }
 

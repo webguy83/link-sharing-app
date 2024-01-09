@@ -18,6 +18,7 @@
   background-color: var(--dark-white);
   border-radius: 1.2rem;
   padding: 2rem;
+  margin-bottom: 2.4rem;
 }
 
 .container {
@@ -85,13 +86,22 @@
   padding-left: 1.6rem;
 }
 
-.form-group {
+.footer {
+  display: flex;
+  justify-content: end;
+  padding: 2.4rem 4rem;
+  border-top: 0.1rem solid var(--light-gray);
+}
+
+.notMobile .form-group {
   display: flex;
   justify-content: space-between;
   align-items: center;
 
   label {
     flex: 1;
+    font-size: 1.6rem;
+    color: var(--med-gray);
   }
 
   .input-container {
@@ -110,5 +120,17 @@
 .max500 {
   .profile-details-section-header h2 {
     font-size: 2.4rem;
+  }
+
+  .container {
+    margin: 2.4rem 2.4rem 0;
+  }
+
+  .footer {
+    padding: 1.6rem;
+  }
+
+  .save-btn {
+    flex-grow: 1;
   }
 }

@@ -37,16 +37,18 @@
       </p>
     </div>
 
-    <section class="profile-details-form">
+    <section
+      class="profile-details-form"
+      [ngClass]="{ notMobile: !(isMaxWidth600$ | async) }"
+    >
       <div class="form-group" appFormStyle [ngClass]="{ error: showError() }">
-        <label for="firstName">First name</label>
+        <label for="firstName">First name*</label>
         <div class="input-container">
           <div [id]="getErrorId(0)" class="error-text" *ngIf="showError()">
             {{ showError() }}
           </div>
           <input
             class="input"
-            type="url"
             formControlName="firstName"
             id="firstName"
             placeholder="e.g. John"
@@ -55,18 +57,32 @@
         </div>
       </div>
       <div class="form-group" appFormStyle [ngClass]="{ error: showError() }">
-        <label for="lastName">Last name</label>
+        <label for="lastName">Last name*</label>
         <div class="input-container">
-          <div [id]="getErrorId(0)" class="error-text" *ngIf="showError()">
+          <div [id]="getErrorId(1)" class="error-text" *ngIf="showError()">
             {{ showError() }}
           </div>
           <input
             class="input"
-            type="url"
             formControlName="lastName"
             id="lastName"
             placeholder="e.g. Appleseed"
-            [attr.aria-describedby]="getErrorId(0)"
+            [attr.aria-describedby]="getErrorId(1)"
+          />
+        </div>
+      </div>
+      <div class="form-group" appFormStyle [ngClass]="{ error: showError() }">
+        <label for="email">Email</label>
+        <div class="input-container">
+          <div [id]="getErrorId(2)" class="error-text" *ngIf="showError()">
+            {{ showError() }}
+          </div>
+          <input
+            class="input"
+            formControlName="email"
+            id="email"
+            placeholder="ben@example.com"
+            [attr.aria-describedby]="getErrorId(2)"
           />
         </div>
       </div>
@@ -74,6 +90,6 @@
   </div>
 
   <footer class="footer">
-    <button class="save-btn" appPrimaryBtn type="submit">Save</button>
+    <button class="save-btn" appPrimaryBtn disabled type="submit">Save</button>
   </footer>
 </form>

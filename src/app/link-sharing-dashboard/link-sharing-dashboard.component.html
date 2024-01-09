@@ -78,12 +78,12 @@
       <span class="btn-text">Preview</span>
     </button>
   </header>
-  <aside class="dashboard-aside">
+  <aside class="dashboard-aside" *ngIf="!(isMaxWidth900$ | async)">
     <div class="bg-img-container">
       <ng-container *ngIf="links$ | async as links">
-        <div class="links">
+        <div class="links" *ngIf="links.length">
           <app-link
-            *ngFor="let link of links | slice : 0 : 5"
+            *ngFor="let link of links"
             [bgColour]="link.bgColour"
             [iconPath]="'../../assets/images/alternate/' + link.iconFileName"
             [platform]="link.label"
