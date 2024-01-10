@@ -19,19 +19,10 @@
       <span class="picture-upload__label" id="profilePictureLabel"
         >Profile picture</span
       >
-      <div
-        class="picture-upload__box"
-        aria-labelledby="profilePictureLabel"
-        tabindex="0"
-        role="button"
-      >
-        <img
-          src="../../assets/images/icon-upload-image.svg"
-          alt="Upload icon"
-          class="picture-upload__icon"
-        />
-        <span class="picture-upload__text">+ Upload Image</span>
-      </div>
+      <app-image-upload
+        formControlName="profilePicture"
+        (imageSelected)="onImageSelected($event)"
+      ></app-image-upload>
       <p class="picture-upload__info">
         Image must be below 1024x1024px. Use PNG or JPG format.
       </p>

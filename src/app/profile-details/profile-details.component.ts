@@ -11,11 +11,17 @@ import { SharedModule } from '../shared/shared.module';
 import { ResponsiveService } from '../services/responsive.service';
 import { getErrorId } from '../shared/constants/error-id';
 import { Subscription } from 'rxjs';
+import { ImageUploadComponent } from '../image-upload/image-upload.component';
 
 @Component({
   selector: 'app-profile-details',
   standalone: true,
-  imports: [CommonModule, SharedModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    SharedModule,
+    ReactiveFormsModule,
+    ImageUploadComponent,
+  ],
   templateUrl: './profile-details.component.html',
   styleUrl: './profile-details.component.scss',
 })
@@ -37,6 +43,7 @@ export class ProfileDetailsComponent
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', Validators.email],
+      profilePicture: [''],
     });
   }
   ngOnInit(): void {
@@ -79,6 +86,8 @@ export class ProfileDetailsComponent
     }
     return '';
   }
+
+  onImageSelected(evt: any) {}
 
   onSubmit() {
     this.formSubmitted = true;

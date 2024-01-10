@@ -50,31 +50,6 @@
   white-space: nowrap;
 }
 
-.picture-upload__box {
-  padding: 6.3rem 3.8rem;
-  font-weight: 600;
-  font-size: 1.6rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  flex-direction: column;
-  cursor: pointer;
-  border-radius: 1.2rem;
-  background-color: var(--light-purple);
-}
-
-.picture-upload__icon {
-  max-width: 5rem;
-  max-height: 5rem;
-}
-
-.picture-upload__text {
-  font-size: 1.6rem;
-  color: var(--primary);
-  margin-top: 0.8rem;
-  text-align: center;
-}
-
 .picture-upload__info {
   flex: 1.5;
   font-size: 1.2rem;
