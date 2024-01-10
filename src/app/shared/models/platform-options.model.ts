@@ -17,3 +17,10 @@ export interface LinkDataStyled extends LinkData {
   iconFileName: string;
   label: string;
 }
+
+export interface ProfileState {
+  firstName: string;
+  lastName: string;
+  email: string;
+  avatarPath: string;
+}

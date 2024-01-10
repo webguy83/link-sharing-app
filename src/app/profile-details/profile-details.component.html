@@ -110,6 +110,13 @@
   </div>
 
   <footer class="footer">
-    <button class="save-btn" appPrimaryBtn type="submit">Save</button>
+    <button
+      class="save-btn"
+      appPrimaryBtn
+      type="submit"
+      [disabled]="!hasFormChanged"
+    >
+      Save
+    </button>
   </footer>
 </form>

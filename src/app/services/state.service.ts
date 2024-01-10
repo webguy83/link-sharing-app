@@ -1,12 +1,9 @@
-import { LinkDataStyled } from './../shared/models/platform-options.model';
+import {
+  LinkDataStyled,
+  ProfileState,
+} from './../shared/models/platform-options.model';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
-
-interface ProfileState {
-  name: string;
-  email: string;
-  avatarPath: string;
-}
 
 @Injectable({
   providedIn: 'root',
@@ -15,7 +12,8 @@ export class AppStateService {
   private initialLinksSubject = new BehaviorSubject<LinkDataStyled[]>([]);
   private linksSubject = new BehaviorSubject<LinkDataStyled[]>([]);
   private profileSubject = new BehaviorSubject<ProfileState>({
-    name: '',
+    firstName: '',
+    lastName: '',
     email: '',
     avatarPath: '',
   });

@@ -1,5 +1,5 @@
 import { UnsavedChangesComponent } from './../shared/models/unsaved-changes.interface';
-import { Component } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -10,6 +10,7 @@ import {
 import { SharedModule } from '../shared/shared.module';
 import { ResponsiveService } from '../services/responsive.service';
 import { getErrorId } from '../shared/constants/error-id';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-profile-details',
@@ -18,12 +19,16 @@ import { getErrorId } from '../shared/constants/error-id';
   templateUrl: './profile-details.component.html',
   styleUrl: './profile-details.component.scss',
 })
-export class ProfileDetailsComponent implements UnsavedChangesComponent {
+export class ProfileDetailsComponent
+  implements UnsavedChangesComponent, OnInit, OnDestroy
+{
   profileDetailsForm: FormGroup;
   formSubmitted = false;
+  hasFormChanged = false;
   isMaxWidth600$ = this.responsiveService.isCustomMax600;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
   getErrorId = getErrorId;
+  private subscriptions = new Subscription();
   constructor(
     private fb: FormBuilder,
     private responsiveService: ResponsiveService
@@ -34,14 +39,25 @@ export class ProfileDetailsComponent implements UnsavedChangesComponent {
       email: ['', Validators.email],
     });
   }
+  ngOnInit(): void {
+    this.subscribeToFormChanges();
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
 
   discardChanges(): void {}
+
   hasUnsavedChanges(): boolean {
     return false;
   }
 
-  showError() {
-    return '';
+  subscribeToFormChanges() {
+    this.subscriptions.add(
+      this.profileDetailsForm.valueChanges.subscribe(() => {
+        this.hasFormChanged = true;
+      })
+    );
   }
 
   showRequiredError(formLabel: string) {
@@ -68,6 +84,7 @@ export class ProfileDetailsComponent implements UnsavedChangesComponent {
     this.formSubmitted = true;
     if (this.profileDetailsForm.valid) {
       this.formSubmitted = false;
+      this.hasFormChanged = false;
     }
   }
 }
