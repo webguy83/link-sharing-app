@@ -20,14 +20,15 @@ export class ImageUploadComponent implements ControlValueAccessor {
   @Output() imageSelected = new EventEmitter<string>();
   imagePreview: string | ArrayBuffer | null = null; // Initialized to null
 
-  onChange = (fileName: string) => {};
   onTouched = () => {};
 
   writeValue(value: string): void {
     // Handle the incoming value (if needed)
   }
 
-  registerOnChange(fn: (fileName: string) => void): void {
+  onChange: (value: string | null) => void = () => {};
+
+  registerOnChange(fn: any): void {
     this.onChange = fn;
   }
 
@@ -35,22 +36,45 @@ export class ImageUploadComponent implements ControlValueAccessor {
     this.onTouched = fn;
   }
 
+  clearImage(event: Event): void {
+    event.stopPropagation();
+    this.imagePreview = null;
+    this.onChange(null);
+    // Additional logic if needed
+  }
+
   handleImageInput(event: Event): void {
     const element = event.target as HTMLInputElement;
     if (element.files && element.files.length) {
       const file = element.files[0];
-      // Validate file size and type here
 
-      // Use FileReader to read the file for preview
+      // Validate file type
+      if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
+        // Invalid file type
+        return;
+      }
+
+      // Use FileReader to read the file for dimension checking
       const reader = new FileReader();
-      reader.onload = () => {
-        this.imagePreview = reader.result;
-        this.onChange(file.name);
-        this.imageSelected.emit(file.name);
+      reader.onload = (e) => {
+        const target = e.target;
+        if (!target) return;
+
+        const img = new Image();
+        img.onload = () => {
+          if (img.width > 1024 || img.height > 1024) {
+            // Image dimensions are larger than 1024x1024px
+            return;
+          }
+
+          // Valid image, set for preview
+          this.imagePreview = target.result;
+          this.onChange(file.name);
+          this.imageSelected.emit(file.name);
+        };
+        img.src = target.result as string;
       };
       reader.readAsDataURL(file);
     }
   }
-
-  // Additional methods for validation and error handling
 }

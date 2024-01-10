@@ -1,4 +1,5 @@
 :host {
+  position: relative;
   width: 100%;
   max-width: 19.3rem;
   height: 19.3rem;
@@ -57,4 +58,13 @@
   .svg-upload path {
     fill: var(--white);
   }
+}
+
+.clear-btn {
+  position: absolute;
+  top: 5px;
+  right: 5px;
+  cursor: pointer;
+  border-radius: 50%;
+  padding: 5px;
 }
