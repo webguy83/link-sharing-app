@@ -1,3 +1,4 @@
+import { AppStateService } from './../services/state.service';
 import { UnsavedChangesComponent } from './../shared/models/unsaved-changes.interface';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -37,13 +38,14 @@ export class ProfileDetailsComponent
   private subscriptions = new Subscription();
   constructor(
     private fb: FormBuilder,
-    private responsiveService: ResponsiveService
+    private responsiveService: ResponsiveService,
+    private appStateService: AppStateService
   ) {
     this.profileDetailsForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', Validators.email],
-      profilePicture: [''],
+      profilePicture: [null],
     });
   }
   ngOnInit(): void {
@@ -61,8 +63,11 @@ export class ProfileDetailsComponent
 
   subscribeToFormChanges() {
     this.subscriptions.add(
-      this.profileDetailsForm.valueChanges.subscribe(() => {
+      this.profileDetailsForm.valueChanges.subscribe((values) => {
+        console.log(values)
         this.hasFormChanged = true;
+        // Call StateService to update the profile state
+        this.appStateService.updateProfile(values);
       })
     );
   }
@@ -71,7 +76,7 @@ export class ProfileDetailsComponent
     const control = this.profileDetailsForm.get(formLabel);
     if (control && this.formSubmitted) {
       if (control.hasError('required')) {
-        return 'Can’t be empty';
+        return 'Can\'t be empty';
       }
     }
     return '';

@@ -19,6 +19,4 @@ export const LinkSharingDashboardRoutes: Routes = [
       }
     ]
   },
-
-  // ... other child routes if any
 ];

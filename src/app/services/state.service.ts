@@ -1,6 +1,6 @@
 import {
   LinkDataStyled,
-  ProfileState,
+  Profile,
 } from './../shared/models/platform-options.model';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject } from 'rxjs';
@@ -10,14 +10,14 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class AppStateService {
   private initialLinksSubject = new BehaviorSubject<LinkDataStyled[]>([]);
-  private initialProfileSubject = new BehaviorSubject<ProfileState>({
+  private initialProfileSubject = new BehaviorSubject<Profile>({
     firstName: '',
     lastName: '',
     email: '',
-    avatarPath: '',
+    profilePicture: null,
   });
   private linksSubject = new BehaviorSubject<LinkDataStyled[]>(this.initialLinksSubject.getValue());
-  private profileSubject = new BehaviorSubject<ProfileState>(this.initialProfileSubject.getValue());
+  private profileSubject = new BehaviorSubject<Profile>(this.initialProfileSubject.getValue());
 
   initialLinks$ = this.initialLinksSubject.asObservable();
   links$ = this.linksSubject.asObservable();
@@ -41,11 +41,11 @@ export class AppStateService {
     this.linksSubject.next(links);
   }
 
-  saveProfile(profile: ProfileState) {
+  saveProfile(profile: Profile) {
     this.initialProfileSubject.next(profile);
   }
 
-  updateProfile(profile: ProfileState) {
+  updateProfile(profile: Profile) {
     this.profileSubject.next(profile);
   }
 }

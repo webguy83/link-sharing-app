@@ -18,9 +18,9 @@ export interface LinkDataStyled extends LinkData {
   label: string;
 }
 
-export interface ProfileState {
+export interface Profile {
   firstName: string;
   lastName: string;
   email: string;
-  avatarPath: string;
+  profilePicture: File | null;
 }

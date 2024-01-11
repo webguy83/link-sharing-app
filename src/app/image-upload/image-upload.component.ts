@@ -17,7 +17,7 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
   ],
 })
 export class ImageUploadComponent implements ControlValueAccessor {
-  @Output() imageSelected = new EventEmitter<string>();
+  @Output() imageSelected = new EventEmitter<File>();
   imagePreview: string | ArrayBuffer | null = null; // Initialized to null
 
   onTouched = () => {};
@@ -26,7 +26,7 @@ export class ImageUploadComponent implements ControlValueAccessor {
     // Handle the incoming value (if needed)
   }
 
-  onChange: (value: string | null) => void = () => {};
+  onChange: (value: File | null) => void = () => {};
 
   registerOnChange(fn: any): void {
     this.onChange = fn;
@@ -48,13 +48,11 @@ export class ImageUploadComponent implements ControlValueAccessor {
     if (element.files && element.files.length) {
       const file = element.files[0];
 
-      // Validate file type
       if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
         // Invalid file type
         return;
       }
 
-      // Use FileReader to read the file for dimension checking
       const reader = new FileReader();
       reader.onload = (e) => {
         const target = e.target;
@@ -69,8 +67,8 @@ export class ImageUploadComponent implements ControlValueAccessor {
 
           // Valid image, set for preview
           this.imagePreview = target.result;
-          this.onChange(file.name);
-          this.imageSelected.emit(file.name);
+          this.onChange(file);
+          this.imageSelected.emit(file);
         };
         img.src = target.result as string;
       };
