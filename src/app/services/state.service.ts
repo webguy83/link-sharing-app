@@ -10,13 +10,14 @@ import { BehaviorSubject } from 'rxjs';
 })
 export class AppStateService {
   private initialLinksSubject = new BehaviorSubject<LinkDataStyled[]>([]);
-  private linksSubject = new BehaviorSubject<LinkDataStyled[]>([]);
-  private profileSubject = new BehaviorSubject<ProfileState>({
+  private initialProfileSubject = new BehaviorSubject<ProfileState>({
     firstName: '',
     lastName: '',
     email: '',
     avatarPath: '',
   });
+  private linksSubject = new BehaviorSubject<LinkDataStyled[]>(this.initialLinksSubject.getValue());
+  private profileSubject = new BehaviorSubject<ProfileState>(this.initialProfileSubject.getValue());
 
   initialLinks$ = this.initialLinksSubject.asObservable();
   links$ = this.linksSubject.asObservable();
@@ -27,12 +28,21 @@ export class AppStateService {
     this.linksSubject.next(initialLinks);
   }
 
+  synchronizeProfileToInitial(): void {
+    const initialProfile = this.initialProfileSubject.getValue();
+    this.profileSubject.next(initialProfile);
+  }
+
   saveLinks(links: LinkDataStyled[]) {
     this.initialLinksSubject.next(links);
   }
 
   updateLinks(links: LinkDataStyled[]) {
     this.linksSubject.next(links);
+  }
+
+  saveProfile(profile: ProfileState) {
+    this.initialProfileSubject.next(profile);
   }
 
   updateProfile(profile: ProfileState) {
