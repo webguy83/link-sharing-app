@@ -30,13 +30,13 @@ import { Subscription } from 'rxjs';
 })
 export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
-  [x: string]: any;
+  profilePictureUrl: string | null = null;
+  firstNameInitial = '';
+  lastNameInitial = '';
   selectedSection = 'links';
   isMaxWidth700$ = this.responsiveService.isCustomMax700;
   isMaxWidth900$ = this.responsiveService.isCustomMax900;
-  links$ = this.appStateService.links$.pipe(
-    map((links) => links.slice(0, 5)) // Take only the first five links for the phone image
-  );
+  links$ = this.appStateService.links$.pipe(map((links) => links.slice(0, 5)));
 
   constructor(
     private responsiveService: ResponsiveService,
@@ -46,7 +46,6 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   ) {}
 
   ngOnInit(): void {
-    // Check the initial route
     const currentRoute =
       this.activatedRoute.snapshot.firstChild?.routeConfig?.path;
     if (currentRoute === 'links') {
@@ -54,6 +53,19 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
     } else if (currentRoute === 'profile-details') {
       this.selectedSection = 'profile';
     }
+
+    this.subscriptions.add(
+      this.appStateService.profile$.subscribe((profile) => {
+        this.firstNameInitial = profile.firstName.charAt(0).toUpperCase();
+        this.lastNameInitial = profile.lastName.charAt(0).toUpperCase();
+
+        if (profile && profile.picture) {
+          this.profilePictureUrl = URL.createObjectURL(profile.picture);
+        } else {
+          this.profilePictureUrl = null;
+        }
+      })
+    );
 
     // Subscribe to router events for subsequent navigation
     this.subscriptions.add(
