@@ -20,8 +20,8 @@
         >Profile picture</span
       >
       <app-image-upload
-        formControlName="profilePicture"
-        (imageSelected)="onImageSelected($event)"
+        formControlName="picture"
+        [initialImage]="initialProfilePicture"
       ></app-image-upload>
       <p class="picture-upload__info">
         Image must be below 1024x1024px. Use PNG or JPG format.
@@ -51,6 +51,7 @@
             formControlName="firstName"
             id="firstName"
             placeholder="e.g. John"
+            (keydown)="alphaOnly($event)"
             [attr.aria-describedby]="getErrorId(0)"
           />
         </div>
@@ -74,6 +75,7 @@
             formControlName="lastName"
             id="lastName"
             placeholder="e.g. Appleseed"
+            (keydown)="alphaOnly($event)"
             [attr.aria-describedby]="getErrorId(1)"
           />
         </div>

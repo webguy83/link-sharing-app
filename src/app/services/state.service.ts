@@ -14,13 +14,14 @@ export class AppStateService {
     firstName: '',
     lastName: '',
     email: '',
-    profilePicture: null,
+    picture: null,
   });
   private linksSubject = new BehaviorSubject<LinkDataStyled[]>(this.initialLinksSubject.getValue());
   private profileSubject = new BehaviorSubject<Profile>(this.initialProfileSubject.getValue());
 
   initialLinks$ = this.initialLinksSubject.asObservable();
   links$ = this.linksSubject.asObservable();
+  initialProfile$ = this.initialProfileSubject.asObservable();
   profile$ = this.profileSubject.asObservable();
 
   synchronizeLinksToInitial(): void {

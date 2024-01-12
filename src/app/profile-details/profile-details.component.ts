@@ -13,6 +13,8 @@ import { ResponsiveService } from '../services/responsive.service';
 import { getErrorId } from '../shared/constants/error-id';
 import { Subscription } from 'rxjs';
 import { ImageUploadComponent } from '../image-upload/image-upload.component';
+import { Profile } from '../shared/models/platform-options.model';
+import { ProfileDetailsService } from './profile-details.service';
 
 @Component({
   selector: 'app-profile-details',
@@ -25,6 +27,7 @@ import { ImageUploadComponent } from '../image-upload/image-upload.component';
   ],
   templateUrl: './profile-details.component.html',
   styleUrl: './profile-details.component.scss',
+  providers: [ProfileDetailsService],
 })
 export class ProfileDetailsComponent
   implements UnsavedChangesComponent, OnInit, OnDestroy
@@ -32,42 +35,69 @@ export class ProfileDetailsComponent
   profileDetailsForm: FormGroup;
   formSubmitted = false;
   hasFormChanged = false;
+  initialDataLoaded = false;
   isMaxWidth600$ = this.responsiveService.isCustomMax600;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
   getErrorId = getErrorId;
+  alphaOnly = this.profileDetailsService.alphaOnly;
+  initialProfilePicture: File | null = null;
+
   private subscriptions = new Subscription();
   constructor(
     private fb: FormBuilder,
     private responsiveService: ResponsiveService,
-    private appStateService: AppStateService
+    private appStateService: AppStateService,
+    private profileDetailsService: ProfileDetailsService
   ) {
     this.profileDetailsForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
       email: ['', Validators.email],
-      profilePicture: [null],
+      picture: [null],
     });
   }
+
   ngOnInit(): void {
     this.subscribeToFormChanges();
+    this.populateInitialFormData();
   }
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
   }
 
-  discardChanges(): void {}
+  discardChanges(): void {
+    this.appStateService.synchronizeProfileToInitial();
+  }
 
   hasUnsavedChanges(): boolean {
-    return false;
+    return this.hasFormChanged;
   }
 
   subscribeToFormChanges() {
     this.subscriptions.add(
-      this.profileDetailsForm.valueChanges.subscribe((values) => {
-        console.log(values)
-        this.hasFormChanged = true;
-        // Call StateService to update the profile state
-        this.appStateService.updateProfile(values);
+      this.profileDetailsForm.valueChanges.subscribe((profile: Profile) => {
+        if (this.profileDetailsForm.dirty) {
+          this.hasFormChanged = true;
+          this.appStateService.updateProfile(profile);
+        }
+      })
+    );
+  }
+
+  populateInitialFormData(): void {
+    this.subscriptions.add(
+      this.appStateService.initialProfile$.subscribe((profile) => {
+        if (profile && !this.initialDataLoaded) {
+          this.profileDetailsForm.patchValue({
+            firstName: profile.firstName,
+            lastName: profile.lastName,
+            email: profile.email,
+          });
+          if (profile.picture) {
+            this.initialProfilePicture = profile.picture;
+          }
+          this.initialDataLoaded = true; // Set the flag to true after loading initial data
+        }
       })
     );
   }
@@ -76,7 +106,7 @@ export class ProfileDetailsComponent
     const control = this.profileDetailsForm.get(formLabel);
     if (control && this.formSubmitted) {
       if (control.hasError('required')) {
-        return 'Can\'t be empty';
+        return "Can't be empty";
       }
     }
     return '';
@@ -97,6 +127,8 @@ export class ProfileDetailsComponent
   onSubmit() {
     this.formSubmitted = true;
     if (this.profileDetailsForm.valid) {
+      const profileData = this.profileDetailsForm.value as Profile;
+      this.appStateService.saveProfile(profileData);
       this.formSubmitted = false;
       this.hasFormChanged = false;
     }

@@ -1,5 +1,13 @@
 import { CommonModule } from '@angular/common';
-import { Component, forwardRef, Output, EventEmitter } from '@angular/core';
+import {
+  Component,
+  forwardRef,
+  ViewChild,
+  ElementRef,
+  Input,
+  SimpleChanges,
+  OnChanges,
+} from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 
 @Component({
@@ -16,16 +24,36 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
     },
   ],
 })
-export class ImageUploadComponent implements ControlValueAccessor {
-  @Output() imageSelected = new EventEmitter<File>();
-  imagePreview: string | ArrayBuffer | null = null; // Initialized to null
+export class ImageUploadComponent implements ControlValueAccessor, OnChanges {
+  @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
+  imagePreview: string | ArrayBuffer | null = null;
+
+  @Input() initialImage: File | null = null;
+
+  ngOnChanges(changes: SimpleChanges): void {
+    if (changes['initialImage'] && this.initialImage) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+      };
+      reader.readAsDataURL(this.initialImage);
+    }
+  }
 
   onTouched = () => {};
 
-  writeValue(value: string): void {
-    // Handle the incoming value (if needed)
+  writeValue(value: File | null): void {
+    if (value) {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        this.imagePreview = e.target.result;
+      };
+      reader.readAsDataURL(value);
+    } else {
+      this.imagePreview = null;
+    }
   }
-
   onChange: (value: File | null) => void = () => {};
 
   registerOnChange(fn: any): void {
@@ -40,7 +68,8 @@ export class ImageUploadComponent implements ControlValueAccessor {
     event.stopPropagation();
     this.imagePreview = null;
     this.onChange(null);
-    // Additional logic if needed
+
+    this.resetInput();
   }
 
   handleImageInput(event: Event): void {
@@ -68,11 +97,16 @@ export class ImageUploadComponent implements ControlValueAccessor {
           // Valid image, set for preview
           this.imagePreview = target.result;
           this.onChange(file);
-          this.imageSelected.emit(file);
         };
         img.src = target.result as string;
       };
       reader.readAsDataURL(file);
+    }
+  }
+
+  private resetInput(): void {
+    if (this.fileInput && this.fileInput.nativeElement) {
+      this.fileInput.nativeElement.value = '';
     }
   }
 }

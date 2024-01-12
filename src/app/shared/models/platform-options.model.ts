@@ -22,5 +22,5 @@ export interface Profile {
   firstName: string;
   lastName: string;
   email: string;
-  profilePicture: File | null;
+  picture: File | null;
 }
