@@ -38,6 +38,7 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   isMaxWidth700$ = this.responsiveService.isCustomMax700;
   isMaxWidth900$ = this.responsiveService.isCustomMax900;
   links$ = this.appStateService.links$.pipe(map((links) => links.slice(0, 5)));
+  profile$ = this.appStateService.initialProfile$;
 
   constructor(
     private responsiveService: ResponsiveService,

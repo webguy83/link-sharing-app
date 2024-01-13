@@ -53,6 +53,7 @@ export class OutlineBtnDirective implements OnInit, OnDestroy {
       this.renderer.removeClass(this.el.nativeElement, 'disabled');
       this.renderer.removeStyle(this.el.nativeElement, 'opacity');
       this.renderer.removeStyle(this.el.nativeElement, 'pointerEvents');
+      this.renderer.setStyle(this.el.nativeElement, 'cursor', 'pointer');
     }
   }
 
@@ -71,6 +72,7 @@ export class OutlineBtnDirective implements OnInit, OnDestroy {
       display: 'inline-flex',
       alignItems: 'center',
       justifyContent: 'center',
+      userSelect: 'none',
     };
     this.setStyles(baseStyles);
   }
