@@ -8,13 +8,20 @@
   }"
 >
   <h2 mat-dialog-title id="dialog-title">
-    <span class="heading">Unsaved Changes</span>
+    <span class="heading">{{ data.heading }}</span>
   </h2>
   <mat-dialog-content id="dialog-description">
-    <p>You have unsaved changes! Are you sure you want to discard changes?</p>
+    <p>{{ data.description }}</p>
   </mat-dialog-content>
   <mat-dialog-actions class="actions" align="end">
-    <button appOutlineBtn (click)="onCancel()">Cancel</button>
-    <button appPrimaryBtn (click)="onDiscard()">Discard Changes</button>
+    <button type="button" appOutlineBtn (click)="onCancel()">Close</button>
+    <button
+      *ngIf="data.showDiscardButton"
+      type="button"
+      appPrimaryBtn
+      (click)="onDiscard()"
+    >
+      Discard Changes
+    </button>
   </mat-dialog-actions>
 </div>

@@ -9,6 +9,8 @@ import {
   OnChanges,
 } from '@angular/core';
 import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
+import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
+import { MatDialog } from '@angular/material/dialog';
 
 @Component({
   selector: 'app-image-upload',
@@ -26,6 +28,8 @@ import { ControlValueAccessor, NG_VALUE_ACCESSOR } from '@angular/forms';
 })
 export class ImageUploadComponent implements ControlValueAccessor, OnChanges {
   @ViewChild('fileInput') fileInput!: ElementRef<HTMLInputElement>;
+
+  constructor(private dialog: MatDialog) {}
 
   imagePreview: string | ArrayBuffer | null = null;
 
@@ -78,7 +82,7 @@ export class ImageUploadComponent implements ControlValueAccessor, OnChanges {
       const file = element.files[0];
 
       if (file.type !== 'image/png' && file.type !== 'image/jpeg') {
-        // Invalid file type
+        this.openConfirmDialog();
         return;
       }
 
@@ -91,6 +95,7 @@ export class ImageUploadComponent implements ControlValueAccessor, OnChanges {
         img.onload = () => {
           if (img.width > 1024 || img.height > 1024) {
             // Image dimensions are larger than 1024x1024px
+            this.openConfirmDialog();
             return;
           }
 
@@ -102,6 +107,16 @@ export class ImageUploadComponent implements ControlValueAccessor, OnChanges {
       };
       reader.readAsDataURL(file);
     }
+  }
+
+  openConfirmDialog(): void {
+    this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        heading: 'Invalid Image',
+        description: 'Image must be below 1024x1024px. Use PNG or JPG format.',
+        showCancelButton: false,
+      },
+    });
   }
 
   private resetInput(): void {

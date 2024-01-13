@@ -11,7 +11,14 @@ export const canDeactivateUnsavedChanges: CanDeactivateFn<
   UnsavedChangesComponent
 > = (component: UnsavedChangesComponent) => {
   if (component.hasUnsavedChanges()) {
-    const dialogRef = inject(MatDialog).open(ConfirmDialogComponent);
+    const dialogRef = inject(MatDialog).open(ConfirmDialogComponent, {
+      data: {
+        heading: 'Unsaved Changes',
+        description:
+          'You have unsaved changes! Are you sure you want to discard changes?',
+        showDiscardButton: true,
+      },
+    });
 
     // Handle the dialog result
     return dialogRef.afterClosed().pipe(

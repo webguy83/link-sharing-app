@@ -13,7 +13,7 @@ import { ResponsiveService } from '../services/responsive.service';
 import { getErrorId } from '../shared/constants/error-id';
 import { Subscription } from 'rxjs';
 import { ImageUploadComponent } from '../image-upload/image-upload.component';
-import { Profile } from '../shared/models/platform-options.model';
+import { Profile } from '../shared/models/basics.model';
 import { ProfileDetailsService } from './profile-details.service';
 
 @Component({
@@ -92,6 +92,7 @@ export class ProfileDetailsComponent
             firstName: profile.firstName,
             lastName: profile.lastName,
             email: profile.email,
+            picture: profile.picture,
           });
           if (profile.picture) {
             this.initialProfilePicture = profile.picture;

@@ -61,7 +61,7 @@
         <span class="btn-text">Profile Details</span>
       </button>
     </div>
-    <button appOutlineBtn class="eye-btn" type="button">
+    <button appOutlineBtn disabled class="eye-btn" type="button">
       <svg
         class="eye-icon"
         xmlns="http://www.w3.org/2000/svg"
@@ -89,12 +89,18 @@
       <ng-template #initialsTemplate>
         <div
           class="initials-container"
-          *ngIf="firstNameInitial && lastNameInitial"
+          *ngIf="firstNameInitial || lastNameInitial"
         >
           <span class="first-initial">{{ firstNameInitial }}</span>
           <span class="last-initial">{{ lastNameInitial }}</span>
         </div>
       </ng-template>
+      <div class="profile-info">
+        <p *ngIf="firstName || lastName">
+          {{ truncatedFirstName }} {{ truncatedLastName }}
+        </p>
+        <p class="email" *ngIf="email">{{ email }}</p>
+      </div>
       <ng-container *ngIf="links$ | async as links">
         <div class="links" *ngIf="links.length">
           <app-link
@@ -113,9 +119,5 @@
   </aside>
   <main class="dashboard-main">
     <router-outlet></router-outlet>
-    <!-- <app-links [hidden]="selectedSection === 'profile'"></app-links>
-    <app-profile-details
-      [hidden]="selectedSection === 'links'"
-    ></app-profile-details> -->
   </main>
 </div>

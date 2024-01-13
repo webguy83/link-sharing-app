@@ -1,4 +1,4 @@
-import { LinkDataStyled } from './../shared/models/platform-options.model';
+import { LinkDataStyled } from '../shared/models/basics.model';
 import { Injectable } from '@angular/core';
 import {
   AbstractControl,
@@ -11,7 +11,7 @@ import {
   platformOptions,
   platformOptionsLookup,
 } from '../shared/constants/platform-options';
-import { LinkData } from '../shared/models/platform-options.model';
+import { LinkData } from '../shared/models/basics.model';
 import { linkPlatformValidator } from '../validators/validators';
 
 interface AdditionalLinkState {

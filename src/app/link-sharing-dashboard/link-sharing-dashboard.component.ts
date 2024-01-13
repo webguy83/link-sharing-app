@@ -31,8 +31,9 @@ import { Subscription } from 'rxjs';
 export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
   profilePictureUrl: string | null = null;
-  firstNameInitial = '';
-  lastNameInitial = '';
+  firstName = '';
+  lastName = '';
+  email = '';
   selectedSection = 'links';
   isMaxWidth700$ = this.responsiveService.isCustomMax700;
   isMaxWidth900$ = this.responsiveService.isCustomMax900;
@@ -56,8 +57,9 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
 
     this.subscriptions.add(
       this.appStateService.profile$.subscribe((profile) => {
-        this.firstNameInitial = profile.firstName.charAt(0).toUpperCase();
-        this.lastNameInitial = profile.lastName.charAt(0).toUpperCase();
+        this.firstName = profile.firstName;
+        this.lastName = profile.lastName;
+        this.email = profile.email;
 
         if (profile && profile.picture) {
           this.profilePictureUrl = URL.createObjectURL(profile.picture);
@@ -89,6 +91,28 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
           }
         })
     );
+  }
+
+  get firstNameInitial(): string {
+    return this.firstName.charAt(0).toUpperCase();
+  }
+
+  get lastNameInitial(): string {
+    return this.lastName.charAt(0).toUpperCase();
+  }
+
+  getTruncatedName(name: string, maxLength: number): string {
+    return name.length > maxLength
+      ? `${name.substring(0, maxLength)}...`
+      : name;
+  }
+
+  get truncatedFirstName(): string {
+    return this.getTruncatedName(this.firstName, 25);
+  }
+
+  get truncatedLastName(): string {
+    return this.getTruncatedName(this.lastName, 25);
   }
 
   ngOnDestroy() {

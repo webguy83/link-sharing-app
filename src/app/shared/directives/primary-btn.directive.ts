@@ -3,20 +3,18 @@ import {
   ElementRef,
   Renderer2,
   HostListener,
-  AfterViewInit,
   OnDestroy,
+  OnInit,
 } from '@angular/core';
 
 @Directive({
   selector: '[appPrimaryBtn]',
 })
-export class PrimaryBtnDirective implements AfterViewInit, OnDestroy {
+export class PrimaryBtnDirective implements OnInit, OnDestroy {
   private mutationObserver!: MutationObserver;
   constructor(private el: ElementRef, private renderer: Renderer2) {}
-  ngOnDestroy(): void {
-    this.mutationObserver.disconnect();
-  }
-  ngAfterViewInit(): void {
+
+  ngOnInit(): void {
     this.mutationObserver = new MutationObserver(
       (mutations: MutationRecord[]) => {
         mutations.forEach((mutation) => {
@@ -33,6 +31,9 @@ export class PrimaryBtnDirective implements AfterViewInit, OnDestroy {
 
     this.applyStyles();
     this.checkAndApplyDisabledStyles();
+  }
+  ngOnDestroy(): void {
+    this.mutationObserver.disconnect();
   }
 
   public resetButtonStyles(): void {

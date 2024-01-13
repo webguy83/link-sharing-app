@@ -1,7 +1,4 @@
-import {
-  LinkDataStyled,
-  PlatformOption,
-} from '../models/platform-options.model';
+import { LinkDataStyled, PlatformOption } from '../models/basics.model';
 
 export const platformOptions: PlatformOption[] = [
   {

@@ -5,6 +5,7 @@ import {
   HostListener,
   OnInit,
   OnDestroy,
+  Input,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ResponsiveService } from '../../services/responsive.service';
@@ -13,6 +14,12 @@ import { ResponsiveService } from '../../services/responsive.service';
   selector: '[appOutlineBtn]',
 })
 export class OutlineBtnDirective implements OnInit, OnDestroy {
+  private _isDisabled: boolean = false;
+  @Input()
+  set disabled(value: string | boolean) {
+    this._isDisabled = value === '' || value === true || value === 'true';
+    this.updateDisabledState();
+  }
   private subscription = new Subscription();
 
   constructor(
@@ -24,10 +31,29 @@ export class OutlineBtnDirective implements OnInit, OnDestroy {
   ngOnInit(): void {
     this.setupStyles();
     this.setupResponsiveStyles();
+    this.updateDisabledState();
   }
 
   ngOnDestroy(): void {
     this.subscription.unsubscribe();
+  }
+
+  private updateDisabledState(): void {
+    if (this._isDisabled) {
+      this.renderer.addClass(this.el.nativeElement, 'disabled');
+      this.renderer.setStyle(this.el.nativeElement, 'opacity', '0.25');
+      this.renderer.setStyle(this.el.nativeElement, 'cursor', 'default');
+      this.renderer.setStyle(
+        this.el.nativeElement,
+        'backgroundColor',
+        'transparent'
+      );
+      this.renderer.setStyle(this.el.nativeElement, 'pointerEvents', 'none'); // Disables hover and click events
+    } else {
+      this.renderer.removeClass(this.el.nativeElement, 'disabled');
+      this.renderer.removeStyle(this.el.nativeElement, 'opacity');
+      this.renderer.removeStyle(this.el.nativeElement, 'pointerEvents');
+    }
   }
 
   private setupStyles(): void {

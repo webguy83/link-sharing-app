@@ -111,6 +111,29 @@
   font-size: 4rem;
   font-weight: 700;
 }
+.profile-info {
+  position: absolute;
+  background-color: var(--white);
+  color: var(--dark-gray);
+  font-size: 1.8rem;
+  font-weight: 600;
+  width: 90%;
+  text-align: center;
+  top: 18rem;
+  left: 50%;
+  transform: translateX(-50%);
+
+  p {
+    margin-top: 0.3rem;
+  }
+
+  .email {
+    color: var(--med-gray);
+    font-size: 1.4rem;
+    font-weight: 400;
+    margin-top: 1.2rem;
+  }
+}
 
 .max700 {
   .btn-text {
