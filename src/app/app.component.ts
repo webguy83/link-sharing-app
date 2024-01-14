@@ -1,6 +1,13 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { NavigationCancel, NavigationEnd, NavigationError, NavigationStart, Router, RouterOutlet } from '@angular/router';
+import {
+  NavigationCancel,
+  NavigationEnd,
+  NavigationError,
+  NavigationStart,
+  Router,
+  RouterOutlet,
+} from '@angular/router';
 import { fadeInOutAnimation } from './animations/route-animations';
 import { PreloaderComponent } from './preloader/preloader.component';
 
@@ -15,10 +22,14 @@ import { PreloaderComponent } from './preloader/preloader.component';
 export class AppComponent {
   isLoading = false;
   constructor(private router: Router) {
-    this.router.events.subscribe(event => {
+    this.router.events.subscribe((event) => {
       if (event instanceof NavigationStart) {
         this.isLoading = true;
-      } else if (event instanceof NavigationEnd || event instanceof NavigationError || event instanceof NavigationCancel) {
+      } else if (
+        event instanceof NavigationEnd ||
+        event instanceof NavigationError ||
+        event instanceof NavigationCancel
+      ) {
         this.isLoading = false;
       }
     });

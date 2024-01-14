@@ -1,1 +1,27 @@
-<p>preview works!</p>
+<div class="preview-container">
+  <header class="preview-header">
+    <a href="/editor" class="back-button">Back to Editor</a>
+    <button type="button" class="share-link-button" (click)="shareLink()">
+      Share Link
+    </button>
+  </header>
+  <main class="preview-content">
+    <div class="user-card">
+      <ng-container *ngIf="profile$ | async as profile">
+        <img
+          *ngIf="profile.picture"
+          [src]="profile.picture"
+          alt="Profile image of {{ profile.firstName }} {{ profile.lastName }}"
+        />
+        <h1>{{ profile.firstName }} {{ profile.lastName }}</h1>
+        <p>{{ profile.email }}</p>
+      </ng-container>
+      <div class="links-container">
+        <!-- Dynamically create link buttons here -->
+        <!-- <button *ngFor="let link of userLinks" (click)="navigateTo(link.url)" [style.backgroundColor]="link.color">
+          {{ link.name }}
+        </button> -->
+      </div>
+    </div>
+  </main>
+</div>
