@@ -14,6 +14,8 @@ import {
 } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
+import { Profile } from '../shared/models/basics.model';
+import { AvatarComponent } from '../avatar/avatar.component';
 @Component({
   selector: 'app-link-sharing-dashboard',
   standalone: true,
@@ -24,21 +26,18 @@ import { Subscription } from 'rxjs';
     ProfileDetailsComponent,
     LinkComponent,
     RouterOutlet,
+    AvatarComponent,
   ],
   templateUrl: './link-sharing-dashboard.component.html',
   styleUrls: ['./link-sharing-dashboard.component.scss'],
 })
 export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
-  profilePictureUrl: string | null = null;
-  firstName = '';
-  lastName = '';
-  email = '';
   selectedSection = 'links';
   isMaxWidth700$ = this.responsiveService.isCustomMax700;
   isMaxWidth900$ = this.responsiveService.isCustomMax900;
   links$ = this.appStateService.links$.pipe(map((links) => links.slice(0, 5)));
-  profile$ = this.appStateService.initialProfile$;
+  profile$ = this.appStateService.profile$;
 
   constructor(
     private responsiveService: ResponsiveService,
@@ -55,20 +54,6 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
     } else if (currentRoute === 'profile-details') {
       this.selectedSection = 'profile';
     }
-
-    this.subscriptions.add(
-      this.appStateService.profile$.subscribe((profile) => {
-        this.firstName = profile.firstName;
-        this.lastName = profile.lastName;
-        this.email = profile.email;
-
-        if (profile && profile.picture) {
-          this.profilePictureUrl = URL.createObjectURL(profile.picture);
-        } else {
-          this.profilePictureUrl = null;
-        }
-      })
-    );
 
     // Subscribe to router events for subsequent navigation
     this.subscriptions.add(
@@ -94,26 +79,10 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
     );
   }
 
-  get firstNameInitial(): string {
-    return this.firstName.charAt(0).toUpperCase();
-  }
-
-  get lastNameInitial(): string {
-    return this.lastName.charAt(0).toUpperCase();
-  }
-
   getTruncatedName(name: string, maxLength: number): string {
     return name.length > maxLength
       ? `${name.substring(0, maxLength)}...`
       : name;
-  }
-
-  get truncatedFirstName(): string {
-    return this.getTruncatedName(this.firstName, 25);
-  }
-
-  get truncatedLastName(): string {
-    return this.getTruncatedName(this.lastName, 25);
   }
 
   ngOnDestroy() {

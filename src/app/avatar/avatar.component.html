@@ -1,0 +1,9 @@
+<div *ngIf="profilePictureUrl; else initialsTemplate" class="profile-picture">
+  <img [src]="profilePictureUrl" alt="Profile Picture" />
+</div>
+<ng-template #initialsTemplate>
+  <div class="initials-container" *ngIf="firstNameInitial || lastNameInitial">
+    <span class="first-initial">{{ firstNameInitial }}</span>
+    <span class="last-initial">{{ lastNameInitial }}</span>
+  </div>
+</ng-template>

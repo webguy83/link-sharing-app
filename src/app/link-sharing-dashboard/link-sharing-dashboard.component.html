@@ -87,27 +87,16 @@
   </header>
   <aside class="dashboard-aside" *ngIf="!(isMaxWidth900$ | async)">
     <div class="bg-img-container">
-      <div
-        *ngIf="profilePictureUrl; else initialsTemplate"
-        class="profile-picture"
-      >
-        <img [src]="profilePictureUrl" alt="Profile Picture" />
-      </div>
-      <ng-template #initialsTemplate>
-        <div
-          class="initials-container"
-          *ngIf="firstNameInitial || lastNameInitial"
-        >
-          <span class="first-initial">{{ firstNameInitial }}</span>
-          <span class="last-initial">{{ lastNameInitial }}</span>
+      <ng-container *ngIf="profile$ | async as profile">
+        <app-avatar class="avatar" [profile]="profile"></app-avatar>
+        <div class="profile-info">
+          <p *ngIf="profile.firstName || profile.lastName">
+            {{ getTruncatedName(profile.firstName, 25) }}
+            {{ getTruncatedName(profile.lastName, 25) }}
+          </p>
+          <p class="email" *ngIf="profile.email">{{ profile.email }}</p>
         </div>
-      </ng-template>
-      <div class="profile-info">
-        <p *ngIf="firstName || lastName">
-          {{ truncatedFirstName }} {{ truncatedLastName }}
-        </p>
-        <p class="email" *ngIf="email">{{ email }}</p>
-      </div>
+      </ng-container>
       <ng-container *ngIf="links$ | async as links">
         <div class="links" *ngIf="links.length">
           <app-link
