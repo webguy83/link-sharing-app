@@ -14,7 +14,7 @@ import {
 } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { Profile } from '../shared/models/basics.model';
+import { LinkDataStyled, Profile } from '../shared/models/basics.model';
 import { AvatarComponent } from '../avatar/avatar.component';
 @Component({
   selector: 'app-link-sharing-dashboard',
@@ -83,6 +83,10 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
     return name.length > maxLength
       ? `${name.substring(0, maxLength)}...`
       : name;
+  }
+
+  trackByFn(index: number, link: LinkDataStyled) {
+    return `${link.platform}-${link.profileUrl}-${link.bgColour}-${link.iconFileName}`;
   }
 
   ngOnDestroy() {
