@@ -1,4 +1,4 @@
-import { LinkDataStyled, PlatformOption } from '../models/basics.model';
+import { LinkBlock, PlatformOption } from '../models/basics.model';
 
 export const platformOptions: PlatformOption[] = [
   {
@@ -115,7 +115,7 @@ export const platformOptions: PlatformOption[] = [
   },
 ];
 
-type PlatformOptionsLookup = { [key: string]: LinkDataStyled };
+type PlatformOptionsLookup = { [key: string]: LinkBlock };
 
 export const platformOptionsLookup = platformOptions.reduce((acc, option) => {
   acc[option.value] = {

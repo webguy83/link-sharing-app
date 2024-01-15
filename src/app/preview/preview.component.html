@@ -1,4 +1,10 @@
-<div class="preview-container">
+<div
+  class="preview-container"
+  [ngClass]="{
+    max500: (isMaxWidth500$ | async),
+    max350: (isMaxWidth350$ | async)
+  }"
+>
   <header class="preview-header">
     <button
       type="button"
@@ -18,19 +24,19 @@
     </button>
   </header>
   <main class="preview-content">
-    <div class="user-card">
+    <div #userCard class="user-card">
       <ng-container *ngIf="profile$ | async as profile">
         <app-avatar [profile]="profile"></app-avatar>
-        <h1 class="header">{{ profile.firstName }} {{ profile.lastName }}</h1>
+        <h1 class="header" #nameTextElm>
+          {{ profile.firstName }} {{ profile.lastName }}
+        </h1>
         <p class="email">{{ profile.email }}</p>
       </ng-container>
       <ng-container *ngIf="links$ | async as links">
         <div class="links" *ngIf="links.length">
           <app-link
             *ngFor="let link of links"
-            [bgColour]="link.bgColour"
-            [iconPath]="'../../assets/images/alternate/' + link.iconFileName"
-            [platform]="link.label"
+            [linkBlock]="link"
             [extraPadding]="true"
           ></app-link>
         </div>
@@ -38,3 +44,4 @@
     </div>
   </main>
 </div>
+<div #bgPanel class="bg-panel"></div>

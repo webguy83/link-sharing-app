@@ -101,9 +101,7 @@
         <div class="links" *ngIf="links.length">
           <app-link
             *ngFor="let link of links; trackBy: trackByFn"
-            [bgColour]="link.bgColour"
-            [iconPath]="'../../assets/images/alternate/' + link.iconFileName"
-            [platform]="link.label"
+            [linkBlock]="link"
           ></app-link>
         </div>
       </ng-container>

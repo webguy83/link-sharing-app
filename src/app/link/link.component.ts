@@ -1,5 +1,6 @@
 import { CommonModule } from '@angular/common';
 import { Component, Input } from '@angular/core';
+import { LinkBlock } from '../shared/models/basics.model';
 
 @Component({
   selector: 'app-link',
@@ -9,13 +10,12 @@ import { Component, Input } from '@angular/core';
   styleUrl: './link.component.scss',
 })
 export class LinkComponent {
-  @Input() bgColour!: string;
-  @Input() platform!: string;
-  @Input() iconPath!: string;
+  @Input() linkBlock!: LinkBlock;
   @Input() extraPadding = false;
 
   get arrowPath() {
-    const extraDomain = this.platform === 'Frontend Mentor' ? 'alternate/' : '';
+    const extraDomain =
+      this.linkBlock.label === 'Frontend Mentor' ? 'alternate/' : '';
     return `../../assets/images/${extraDomain}icon-arrow-right.svg`;
   }
 }

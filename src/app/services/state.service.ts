@@ -1,12 +1,12 @@
-import { LinkDataStyled, Profile } from '../shared/models/basics.model';
+import { LinkBlock, Profile } from '../shared/models/basics.model';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, map } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',
 })
 export class AppStateService {
-  private initialLinksSubject = new BehaviorSubject<LinkDataStyled[]>([
+  private initialLinksSubject = new BehaviorSubject<LinkBlock[]>([
     {
       platform: 'github',
       profileUrl: 'http://www.github.com',
@@ -49,7 +49,7 @@ export class AppStateService {
     picture: null,
   });
 
-  private linksSubject = new BehaviorSubject<LinkDataStyled[]>(
+  private linksSubject = new BehaviorSubject<LinkBlock[]>(
     this.initialLinksSubject.getValue()
   );
   private profileSubject = new BehaviorSubject<Profile>(
@@ -57,7 +57,16 @@ export class AppStateService {
   );
 
   initialLinks$ = this.initialLinksSubject.asObservable();
-  links$ = this.linksSubject.asObservable();
+  links$ = this.linksSubject.asObservable().pipe(
+    map((links) => {
+      return links.map((link) => {
+        return {
+          ...link,
+          iconFileName: `../../assets/images/alternate/${link.iconFileName}`,
+        };
+      });
+    })
+  );
   initialProfile$ = this.initialProfileSubject.asObservable();
   profile$ = this.profileSubject.asObservable();
 
@@ -71,12 +80,12 @@ export class AppStateService {
     this.profileSubject.next(initialProfile);
   }
 
-  saveLinks(links: LinkDataStyled[]) {
+  saveLinks(links: LinkBlock[]) {
     console.log(links);
     this.initialLinksSubject.next(links);
   }
 
-  updateLinks(links: LinkDataStyled[]) {
+  updateLinks(links: LinkBlock[]) {
     this.linksSubject.next(links);
   }
 

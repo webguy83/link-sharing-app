@@ -12,7 +12,7 @@ export interface LinkData {
   profileUrl: string;
 }
 
-export interface LinkDataStyled extends LinkData {
+export interface LinkBlock extends LinkData {
   bgColour: string;
   iconFileName: string;
   label: string;

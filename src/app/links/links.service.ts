@@ -1,4 +1,4 @@
-import { LinkDataStyled } from '../shared/models/basics.model';
+import { LinkBlock } from '../shared/models/basics.model';
 import { Injectable } from '@angular/core';
 import {
   AbstractControl,
@@ -37,7 +37,7 @@ export class LinksService {
     );
   }
 
-  mapToPlatformLinks(linkItems: FormArray): LinkDataStyled[] {
+  mapToPlatformLinks(linkItems: FormArray): LinkBlock[] {
     const formControlsValues: LinkData[] = linkItems.getRawValue();
 
     return formControlsValues.map((control: LinkData) => {
