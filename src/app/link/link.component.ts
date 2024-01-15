@@ -12,6 +12,7 @@ export class LinkComponent {
   @Input() bgColour!: string;
   @Input() platform!: string;
   @Input() iconPath!: string;
+  @Input() extraPadding = false;
 
   get arrowPath() {
     const extraDomain = this.platform === 'Frontend Mentor' ? 'alternate/' : '';

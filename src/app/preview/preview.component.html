@@ -1,27 +1,40 @@
 <div class="preview-container">
   <header class="preview-header">
-    <a href="/editor" class="back-button">Back to Editor</a>
-    <button type="button" class="share-link-button" (click)="shareLink()">
+    <button
+      type="button"
+      appOutlineBtn
+      class="share-link-button"
+      (click)="shareLink()"
+    >
+      Back to Editor
+    </button>
+    <button
+      type="button"
+      appPrimaryBtn
+      class="share-link-button"
+      (click)="shareLink()"
+    >
       Share Link
     </button>
   </header>
   <main class="preview-content">
     <div class="user-card">
       <ng-container *ngIf="profile$ | async as profile">
-        <img
-          *ngIf="profile.picture"
-          [src]="profile.picture"
-          alt="Profile image of {{ profile.firstName }} {{ profile.lastName }}"
-        />
-        <h1>{{ profile.firstName }} {{ profile.lastName }}</h1>
-        <p>{{ profile.email }}</p>
+        <app-avatar [profile]="profile"></app-avatar>
+        <h1 class="header">{{ profile.firstName }} {{ profile.lastName }}</h1>
+        <p class="email">{{ profile.email }}</p>
       </ng-container>
-      <div class="links-container">
-        <!-- Dynamically create link buttons here -->
-        <!-- <button *ngFor="let link of userLinks" (click)="navigateTo(link.url)" [style.backgroundColor]="link.color">
-          {{ link.name }}
-        </button> -->
-      </div>
+      <ng-container *ngIf="links$ | async as links">
+        <div class="links" *ngIf="links.length">
+          <app-link
+            *ngFor="let link of links"
+            [bgColour]="link.bgColour"
+            [iconPath]="'../../assets/images/alternate/' + link.iconFileName"
+            [platform]="link.label"
+            [extraPadding]="true"
+          ></app-link>
+        </div>
+      </ng-container>
     </div>
   </main>
 </div>

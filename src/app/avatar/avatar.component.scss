@@ -1,3 +1,8 @@
+:host {
+  display: flex;
+  justify-content: center;
+}
+
 .profile-picture {
   overflow: hidden;
 
@@ -12,9 +17,6 @@
 }
 
 .initials-container {
-  position: absolute;
-  left: 50%;
-  transform: translateX(-50%);
   overflow: hidden;
   width: 9.6rem;
   height: 9.6rem;

@@ -1,14 +1,17 @@
+import { AvatarComponent } from './../avatar/avatar.component';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { AppStateService } from '../services/state.service';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { SharedModule } from '../shared/shared.module';
+import { LinkComponent } from '../link/link.component';
 
 @Component({
   selector: 'app-preview',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, AvatarComponent, SharedModule, LinkComponent],
   templateUrl: './preview.component.html',
   styleUrl: './preview.component.scss',
 })

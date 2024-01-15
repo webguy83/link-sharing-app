@@ -123,12 +123,11 @@ export class ProfileDetailsComponent
     return '';
   }
 
-  onImageSelected(evt: any) {}
-
   onSubmit() {
     this.formSubmitted = true;
     if (this.profileDetailsForm.valid) {
       const profileData = this.profileDetailsForm.value as Profile;
+      console.log(profileData);
       this.appStateService.saveProfile(profileData);
       this.formSubmitted = false;
       this.hasFormChanged = false;
