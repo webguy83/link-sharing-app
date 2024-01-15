@@ -67,6 +67,7 @@
         [disabled]="!profile.firstName && !profile.lastName"
         class="eye-btn"
         type="button"
+        (click)="goToPreview()"
       >
         <svg
           class="eye-icon"

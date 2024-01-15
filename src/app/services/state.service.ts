@@ -6,46 +6,11 @@ import { BehaviorSubject, map } from 'rxjs';
   providedIn: 'root',
 })
 export class AppStateService {
-  private initialLinksSubject = new BehaviorSubject<LinkBlock[]>([
-    {
-      platform: 'github',
-      profileUrl: 'http://www.github.com',
-      bgColour: '#1A1A1A',
-      iconFileName: 'icon-github.svg',
-      label: 'GitHub',
-    },
-    {
-      platform: 'linkedin',
-      profileUrl: 'http://www.linkedin.com',
-      bgColour: '#2D68FF',
-      iconFileName: 'icon-linkedin.svg',
-      label: 'LinkedIn',
-    },
-    {
-      platform: 'youtube',
-      profileUrl: 'http://www.youtube.com',
-      bgColour: '#EE3939',
-      iconFileName: 'icon-youtube.svg',
-      label: 'YouTube',
-    },
-    {
-      platform: 'twitch',
-      profileUrl: 'http://www.twitch.tv',
-      bgColour: '#EE3FC8',
-      iconFileName: 'icon-twitch.svg',
-      label: 'Twitch',
-    },
-  ]);
-  // private initialProfileSubject = new BehaviorSubject<Profile>({
-  //   firstName: '',
-  //   lastName: '',
-  //   email: '',
-  //   picture: null,
-  // });
+  private initialLinksSubject = new BehaviorSubject<LinkBlock[]>([]);
   private initialProfileSubject = new BehaviorSubject<Profile>({
-    firstName: 'Curtis',
-    lastName: 'Yacboski',
-    email: 'curtis_102@hotmail.com',
+    firstName: '',
+    lastName: '',
+    email: '',
     picture: null,
   });
 

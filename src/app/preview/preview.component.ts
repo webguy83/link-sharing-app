@@ -63,6 +63,10 @@ export class PreviewComponent implements OnInit, AfterViewInit {
     window.open(url, '_blank');
   }
 
+  navigateToDashboard() {
+    this.router.navigate(['/link-sharing-dashboard']);
+  }
+
   shareLink() {
     // Logic to share the link
   }

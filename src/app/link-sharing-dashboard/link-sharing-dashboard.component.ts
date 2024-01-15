@@ -89,6 +89,10 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
     return `${link.platform}-${link.profileUrl}-${link.bgColour}-${link.iconFileName}`;
   }
 
+  goToPreview() {
+    this.router.navigate(['/preview', 'fucker']);
+  }
+
   ngOnDestroy() {
     this.subscriptions.unsubscribe();
   }
