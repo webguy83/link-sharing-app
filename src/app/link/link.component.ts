@@ -12,10 +12,18 @@ import { LinkBlock } from '../shared/models/basics.model';
 export class LinkComponent {
   @Input() linkBlock!: LinkBlock;
   @Input() extraPadding = false;
+  @Input() enableClick = true;
 
   get arrowPath() {
     const extraDomain =
       this.linkBlock.label === 'Frontend Mentor' ? 'alternate/' : '';
     return `../../assets/images/${extraDomain}icon-arrow-right.svg`;
+  }
+
+  openLink(url: string): void {
+    if(url && this.enableClick) {
+      window.open(url, '_blank');
+    }
+
   }
 }

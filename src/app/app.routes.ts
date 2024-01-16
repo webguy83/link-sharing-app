@@ -1,7 +1,7 @@
 import { Routes } from '@angular/router';
 import { authGuard } from './guards/auth.guard';
 import { authResolver } from './resolvers/auth.resolver';
-import { validIdGuard } from './guards/validId.guard';
+import { checkIdGuard } from './guards/checkId.guard';
 
 export const routes: Routes = [
   {
@@ -27,6 +27,6 @@ export const routes: Routes = [
     path: 'preview/:id',
     loadComponent: () =>
       import('./preview/preview.component').then((m) => m.PreviewComponent),
-    canActivate: [validIdGuard],
+    canActivate: [checkIdGuard],
   },
 ];

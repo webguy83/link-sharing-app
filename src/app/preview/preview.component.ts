@@ -13,7 +13,7 @@ import { AppStateService } from '../services/state.service';
 import { Subscription, map } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { Router } from '@angular/router';
-import { CommonModule } from '@angular/common';
+import { CommonModule, Location } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { LinkComponent } from '../link/link.component';
 
@@ -24,21 +24,35 @@ import { LinkComponent } from '../link/link.component';
   templateUrl: './preview.component.html',
   styleUrl: './preview.component.scss',
 })
-export class PreviewComponent implements OnInit, AfterViewInit {
+export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   profile$ = this.appStateService.profile$;
   links$ = this.appStateService.links$;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
   isMaxWidth350$ = this.responsiveService.isCustomMax350;
 
+  private subscriptions: Subscription = new Subscription();
+
   @ViewChild('userCard') userCard!: ElementRef<HTMLDivElement>;
   @ViewChild('bgPanel') bgPanel!: ElementRef<HTMLDivElement>;
   @ViewChild('nameTextElm') nameTextElm!: ElementRef<HTMLParagraphElement>;
+  isAuthenticated: boolean = false;
 
   constructor(
     private appStateService: AppStateService,
     private responsiveService: ResponsiveService,
-    private router: Router
-  ) {}
+    private router: Router,
+    private location: Location,
+    public authService: AuthService
+  ) {
+    this.subscriptions.add(
+      this.authService.isAuthenticated().subscribe((authStatus) => {
+        this.isAuthenticated = authStatus;
+      })
+    );
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
+  }
   ngAfterViewInit(): void {
     this.adjustBackgroundPanelHeight();
   }
@@ -58,13 +72,14 @@ export class PreviewComponent implements OnInit, AfterViewInit {
 
   ngOnInit() {}
 
-  navigateTo(url: string) {
-    // Logic to navigate to the link's URL
-    window.open(url, '_blank');
-  }
+  backToEditor() {
+    const state = this.location.getState() as any;
 
-  navigateToDashboard() {
-    this.router.navigate(['/link-sharing-dashboard']);
+    if (state && state.navigationId > 1) {
+      this.location.back();
+    } else {
+      this.router.navigate(['/link-sharing-dashboard']);
+    }
   }
 
   shareLink() {

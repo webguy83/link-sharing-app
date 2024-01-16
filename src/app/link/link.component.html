@@ -1,8 +1,12 @@
 <div
   [style.background-color]="linkBlock.bgColour"
-  [ngStyle]="{ padding: extraPadding ? '1.6rem' : '0 1.2rem' }"
+  [ngStyle]="{ padding: extraPadding ? '1.6rem' : '0 1.2rem', cursor: enableClick ? 'pointer' : 'default' }"
   [ngClass]="{ 'frontend-mentor': linkBlock.label === 'Frontend Mentor' }"
   class="link"
+  role="link"
+  tabindex="0"
+  (click)="openLink(linkBlock.profileUrl)"
+  (keyup.enter)="openLink(linkBlock.profileUrl)"
 >
   <img [src]="linkBlock.iconFileName" alt="{{ linkBlock.platform }} icon" />
   {{ linkBlock.label }}

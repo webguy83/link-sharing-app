@@ -46,7 +46,6 @@ export class AppStateService {
   }
 
   saveLinks(links: LinkBlock[]) {
-    console.log(links);
     this.initialLinksSubject.next(links);
   }
 

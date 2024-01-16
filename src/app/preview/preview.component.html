@@ -5,18 +5,20 @@
     max350: (isMaxWidth350$ | async)
   }"
 >
-  <header class="preview-header">
+  <header class="preview-header" *ngIf="isAuthenticated">
     <button
       type="button"
+      aria-label="Back to Editor"
       appOutlineBtn
       class="share-link-button"
-      (click)="navigateToDashboard()"
+      (click)="backToEditor()"
     >
       Back to Editor
     </button>
     <button
       type="button"
       appPrimaryBtn
+      aria-label="Share Link"
       class="share-link-button"
       (click)="shareLink()"
     >

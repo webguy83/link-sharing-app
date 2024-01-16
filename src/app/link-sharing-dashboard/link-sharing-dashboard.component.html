@@ -103,6 +103,7 @@
           <app-link
             *ngFor="let link of links; trackBy: trackByFn"
             [linkBlock]="link"
+            [enableClick]="false"
           ></app-link>
         </div>
       </ng-container>

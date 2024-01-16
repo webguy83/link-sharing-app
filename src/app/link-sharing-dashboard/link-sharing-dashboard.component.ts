@@ -14,7 +14,7 @@ import {
 } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
 import { Subscription } from 'rxjs';
-import { LinkBlock, Profile } from '../shared/models/basics.model';
+import { LinkBlock } from '../shared/models/basics.model';
 import { AvatarComponent } from '../avatar/avatar.component';
 @Component({
   selector: 'app-link-sharing-dashboard',
@@ -86,7 +86,7 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   }
 
   trackByFn(index: number, link: LinkBlock) {
-    return `${link.platform}-${link.profileUrl}-${link.bgColour}-${link.iconFileName}`;
+    return `${link.platform}-${link.profileUrl}-${link.bgColour}-${link.iconFileName}-${index}`;
   }
 
   goToPreview() {

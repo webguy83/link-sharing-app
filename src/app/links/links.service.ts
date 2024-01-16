@@ -22,7 +22,10 @@ interface AdditionalLinkState {
 
 @Injectable()
 export class LinksService {
-  constructor(private fb: FormBuilder) {}
+
+  constructor(private fb: FormBuilder) {
+
+  }
 
   createLinkFormGroup(link?: LinkData): FormGroup {
     const platform = link?.platform || platformOptions[0].value;
