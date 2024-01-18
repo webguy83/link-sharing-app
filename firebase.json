@@ -1,0 +1,9 @@
+{
+  "hosting": [
+    {
+      "target": "link-sharing",
+      "source": ".",
+      "frameworksBackend": {}
+    }
+  ]
+}

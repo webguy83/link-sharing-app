@@ -3,12 +3,13 @@ import { authGuard } from './guards/auth.guard';
 import { authResolver } from './resolvers/auth.resolver';
 import { checkIdGuard } from './guards/checkId.guard';
 
+
 export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
       import('./login/login.component').then((m) => m.LoginComponent),
-    resolve: { isAuthenticated: authResolver },
+      resolve: { isAuthenticated: authResolver },
   },
   {
     path: 'create-account',
@@ -30,3 +31,4 @@ export const routes: Routes = [
     canActivate: [checkIdGuard],
   },
 ];
+

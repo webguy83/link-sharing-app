@@ -1,6 +1,5 @@
 import { SigninFormComponent } from './../signin-form/signin-form.component';
 import { Component, OnInit, OnDestroy } from '@angular/core';
-import { FormGroup } from '@angular/forms';
 import { ResponsiveService } from '../services/responsive.service';
 import { Subscription } from 'rxjs';
 import { SharedModule } from '../shared/shared.module';

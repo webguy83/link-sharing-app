@@ -1,0 +1,14 @@
+{
+  "targets": {
+    "frontendmentor-linksharing": {
+      "hosting": {
+        "link-sharing": [
+          "frontendmentor-linksharing"
+        ]
+      }
+    }
+  },
+  "projects": {
+    "default": "frontendmentor-linksharing"
+  }
+}
