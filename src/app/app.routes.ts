@@ -1,6 +1,5 @@
 import { Routes } from '@angular/router';
 import { checkIdGuard } from './guards/checkId.guard';
-import { AuthGuard } from './guards/auth.guard';
 import { authResolver } from './resolvers/auth.resolver';
 
 export const routes: Routes = [
@@ -8,7 +7,6 @@ export const routes: Routes = [
     path: '',
     loadComponent: () =>
       import('./login/login.component').then((m) => m.LoginComponent),
-    canActivate: [AuthGuard.canActivate],
     resolve: { isAuthenticated: authResolver },
   },
   {
