@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { canDeactivateUnsavedChanges } from '../guards/can-deactivate.guard';
+import { AuthGuard } from '../guards/auth.guard';
 
 export const LinkSharingDashboardRoutes: Routes = [
   {
@@ -8,6 +9,7 @@ export const LinkSharingDashboardRoutes: Routes = [
       import('../link-sharing-dashboard/link-sharing-dashboard.component').then(
         (m) => m.LinkSharingDashboardComponent
       ),
+    canActivate: [AuthGuard.canActivate],
     children: [
       { path: '', redirectTo: 'links', pathMatch: 'full' },
       {

@@ -1,15 +1,15 @@
 import { Routes } from '@angular/router';
-import { authGuard } from './guards/auth.guard';
-import { authResolver } from './resolvers/auth.resolver';
 import { checkIdGuard } from './guards/checkId.guard';
-
+import { AuthGuard } from './guards/auth.guard';
+import { authResolver } from './resolvers/auth.resolver';
 
 export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
       import('./login/login.component').then((m) => m.LoginComponent),
-      resolve: { isAuthenticated: authResolver },
+    canActivate: [AuthGuard.canActivate],
+    resolve: { isAuthenticated: authResolver },
   },
   {
     path: 'create-account',
@@ -18,7 +18,6 @@ export const routes: Routes = [
   },
   {
     path: 'link-sharing-dashboard',
-    canActivate: [authGuard],
     loadChildren: () =>
       import('./link-sharing-dashboard/link-sharing-dashboard.routes').then(
         (m) => m.LinkSharingDashboardRoutes
@@ -30,5 +29,8 @@ export const routes: Routes = [
       import('./preview/preview.component').then((m) => m.PreviewComponent),
     canActivate: [checkIdGuard],
   },
+  {
+    path: '**',
+    redirectTo: '',
+  },
 ];
-

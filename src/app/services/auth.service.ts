@@ -1,8 +1,17 @@
 import { Injectable, inject } from '@angular/core';
-import { Auth, user, User, authState, idToken, signInWithEmailAndPassword, createUserWithEmailAndPassword, signOut, UserCredential } from '@angular/fire/auth';
+import {
+  Auth,
+  user,
+  User,
+  authState,
+  idToken,
+  signInWithEmailAndPassword,
+  createUserWithEmailAndPassword,
+  signOut,
+  UserCredential,
+} from '@angular/fire/auth';
 import { Observable, from } from 'rxjs';
-import { map } from 'rxjs/operators';
-
+import { map, tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
@@ -19,8 +28,8 @@ export class AuthService {
   // Observable of the ID token
   idToken$: Observable<string | null> = idToken(this.auth);
 
-  isAuthenticated(): Observable<boolean> {
-    return this.user$.pipe(map(user => !!user));
+  isAuthenticated() {
+    return this.user$.pipe(map((user) => !!user));
   }
 
   signIn(email: string, password: string): Observable<UserCredential> {
