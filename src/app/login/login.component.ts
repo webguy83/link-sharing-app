@@ -1,6 +1,6 @@
+import { ResponsiveService } from './../services/responsive.service';
 import { SigninFormComponent } from './../signin-form/signin-form.component';
-import { Component, OnInit, OnDestroy } from '@angular/core';
-import { ResponsiveService } from '../services/responsive.service';
+import { Component, OnInit, OnDestroy, inject } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { SharedModule } from '../shared/shared.module';
 import { ActivatedRoute, Router, RouterModule } from '@angular/router';
@@ -21,15 +21,11 @@ import { AuthService } from '../services/auth.service';
 })
 export class LoginComponent implements OnInit, OnDestroy {
   private subscription: Subscription = new Subscription();
-
+  responsiveService = inject(ResponsiveService);
+  private authService = inject(AuthService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
   formSubmitted = false;
-
-  constructor(
-    public responsiveService: ResponsiveService,
-    private authService: AuthService,
-    private route: ActivatedRoute,
-    private router: Router
-  ) {}
 
   ngOnDestroy(): void {
     if (this.subscription) {

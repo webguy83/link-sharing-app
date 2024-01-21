@@ -9,7 +9,7 @@ import { NotificationData } from '../shared/models/basics.model';
 export class NotificationService {
   private snackBar = inject(MatSnackBar);
 
-  showNotification(message: string, iconPath: string): void {
+  showNotification(message: string, iconPath?: string): void {
     this.snackBar.openFromComponent<NotificationComponent, NotificationData>(
       NotificationComponent,
       {

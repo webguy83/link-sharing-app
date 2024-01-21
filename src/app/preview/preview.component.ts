@@ -1,3 +1,4 @@
+import { NotificationService } from './../services/notification.service';
 import { ResponsiveService } from './../services/responsive.service';
 import { AvatarComponent } from './../avatar/avatar.component';
 import {
@@ -8,6 +9,7 @@ import {
   OnDestroy,
   OnInit,
   ViewChild,
+  inject,
 } from '@angular/core';
 import { AppStateService } from '../services/state.service';
 import { Subscription, map } from 'rxjs';
@@ -25,6 +27,12 @@ import { LinkComponent } from '../link/link.component';
   styleUrl: './preview.component.scss',
 })
 export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
+  private appStateService = inject(AppStateService);
+  private responsiveService = inject(ResponsiveService);
+  private router = inject(Router);
+  private location = inject(Location);
+  private notificationService = inject(NotificationService);
+  authService = inject(AuthService);
   profile$ = this.appStateService.profile$;
   links$ = this.appStateService.links$;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
@@ -37,13 +45,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('nameTextElm') nameTextElm!: ElementRef<HTMLParagraphElement>;
   isAuthenticated: boolean = false;
 
-  constructor(
-    private appStateService: AppStateService,
-    private responsiveService: ResponsiveService,
-    private router: Router,
-    private location: Location,
-    public authService: AuthService
-  ) {
+  constructor() {
     this.subscriptions.add(
       this.authService.isAuthenticated().subscribe((authStatus) => {
         this.isAuthenticated = authStatus;
@@ -83,6 +85,9 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   shareLink() {
-    // Logic to share the link
+    this.notificationService.showNotification(
+      'The link has been copied to your clipboard!',
+      '../../assets/images/icon-link.svg'
+    );
   }
 }

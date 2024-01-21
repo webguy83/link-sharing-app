@@ -19,16 +19,13 @@
     <h1 class="heading">
       {{ isCreateAccountState ? "Create account" : "Login" }}
     </h1>
-    <p class="sub-heading" *ngIf="isCreateAccountState">
-      Let's get you started sharing your links!
-    </p>
-    <p class="sub-heading" *ngIf="!isCreateAccountState">
-      Add your details below to get back into the app
-    </p>
-    <app-signin-form *ngIf="!isCreateAccountState"></app-signin-form>
-    <app-create-account-form
-      *ngIf="isCreateAccountState"
-    ></app-create-account-form>
+    @if (isCreateAccountState) {
+    <p class="sub-heading">Let's get you started sharing your links!</p>
+    <app-create-account-form></app-create-account-form>
+    } @else {
+    <p class="sub-heading">Add your details below to get back into the app</p>
+    <app-signin-form></app-signin-form>
+    }
     <p class="create-account-text">
       <span
         >{{ isCreateAccountState ? "Already" : "Don't" }} have an account?
