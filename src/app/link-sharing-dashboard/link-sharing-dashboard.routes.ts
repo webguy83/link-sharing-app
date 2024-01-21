@@ -17,6 +17,7 @@ export const LinkSharingDashboardRoutes: Routes = [
         loadComponent: () =>
           import('../links/links.component').then((m) => m.LinksComponent),
         canDeactivate: [canDeactivateUnsavedChanges],
+        canActivate: [AuthGuard.canActivate],
       },
       {
         path: 'profile-details',
@@ -25,6 +26,7 @@ export const LinkSharingDashboardRoutes: Routes = [
             (m) => m.ProfileDetailsComponent
           ),
         canDeactivate: [canDeactivateUnsavedChanges],
+        canActivate: [AuthGuard.canActivate],
       },
     ],
   },
