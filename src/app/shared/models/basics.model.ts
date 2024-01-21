@@ -24,3 +24,8 @@ export interface Profile {
   email: string;
   picture: File | null;
 }
+
+export interface NotificationData {
+  message: string;
+  iconPath?: string;
+}

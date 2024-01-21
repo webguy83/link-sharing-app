@@ -1,3 +1,4 @@
+import { NotificationService } from './../services/notification.service';
 import { AppStateService } from '../services/state.service';
 import {
   Component,
@@ -6,8 +7,8 @@ import {
   OnInit,
   QueryList,
   ViewChildren,
+  inject,
 } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { ResponsiveService } from '../services/responsive.service';
 import {
@@ -17,7 +18,7 @@ import {
   FormGroup,
 } from '@angular/forms';
 import { platformOptions } from '../shared/constants/platform-options';
-import { Subscription, distinctUntilChanged, take } from 'rxjs';
+import { Subscription, distinctUntilChanged, finalize, take } from 'rxjs';
 import {
   trigger,
   state,
@@ -33,6 +34,9 @@ import {
 import { LinksService } from './links.service';
 import { getErrorId } from '../shared/constants/error-id';
 import { UnsavedChangesComponent } from '../shared/models/unsaved-changes.interface';
+import { AuthService } from '../services/auth.service';
+import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
 
 interface AdditionalLinkState {
   isOpen: boolean;
@@ -43,7 +47,7 @@ interface AdditionalLinkState {
 @Component({
   selector: 'app-links',
   standalone: true,
-  imports: [CommonModule, SharedModule, ReactiveFormsModule, DragDropModule],
+  imports: [SharedModule, ReactiveFormsModule, DragDropModule],
   templateUrl: './links.component.html',
   styleUrls: ['./links.component.scss'],
   animations: [
@@ -61,21 +65,25 @@ export class LinksComponent
 {
   private subscriptions = new Subscription();
   additionalLinkStates: AdditionalLinkState[] = [];
+  private fb = inject(FormBuilder);
+  private responsiveService = inject(ResponsiveService);
+  private appStateService = inject(AppStateService);
+  private linksService = inject(LinksService);
+  private authService = inject(AuthService);
+  private userService = inject(UserService);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
+
+  userId: string | null = null;
   formSubmitted = false;
   linksForm!: FormGroup;
   hasFormChanged = false;
+  formSaving = false;
   platformOptions = platformOptions;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
   getErrorId = getErrorId;
 
   @ViewChildren('linkItem') linkItemsElements!: QueryList<ElementRef>;
-
-  constructor(
-    private fb: FormBuilder,
-    private responsiveService: ResponsiveService,
-    private appStateService: AppStateService,
-    private linksService: LinksService
-  ) {}
 
   hasUnsavedChanges(): boolean {
     return this.hasFormChanged;
@@ -89,6 +97,12 @@ export class LinksComponent
     this.initializeForm();
     this.subscribeToFormChanges();
     this.populateAdditionalLinkStates();
+
+    this.subscriptions.add(
+      this.authService.user$.subscribe((user) => {
+        this.userId = user ? user.uid : null;
+      })
+    );
   }
 
   private populateAdditionalLinkStates() {
@@ -233,11 +247,36 @@ export class LinksComponent
 
   onSubmit(): void {
     this.formSubmitted = true;
-    if (this.linksForm.valid) {
-      this.formSubmitted = false;
-      this.hasFormChanged = false;
+    if (this.linksForm.valid && this.userId) {
+      this.formSaving = true;
       const mappedItems = this.linksService.mapToPlatformLinks(this.linkItems);
-      this.appStateService.saveLinks(mappedItems);
+      this.userService
+        .createUserLinks(this.userId, mappedItems)
+        .pipe(
+          finalize(() => {
+            this.formSaving = false;
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.formSubmitted = false;
+            this.hasFormChanged = false;
+            this.notificationService.showNotification(
+              'Your changes have been successfully saved!',
+              '../../assets/images/icon-changes-saved.svg'
+            );
+            this.appStateService.saveLinks(mappedItems);
+          },
+          error: (error) => {
+            console.log(error);
+            this.notificationService.showNotification(
+              'Error saving changes! Please try again later.',
+              '../../assets/images/icon-changes-saved.svg'
+            );
+          },
+        });
+    } else if (!this.userId) {
+      this.router.navigate(['']);
     } else {
       this.scrollToFirstInvalidControl();
     }

@@ -1,13 +1,13 @@
 import { Routes } from '@angular/router';
 import { checkIdGuard } from './guards/checkId.guard';
-import { authResolver } from './resolvers/auth.resolver';
+import { AuthGuard } from './guards/auth.guard';
 
 export const routes: Routes = [
   {
     path: '',
     loadComponent: () =>
       import('./login/login.component').then((m) => m.LoginComponent),
-    resolve: { isAuthenticated: authResolver },
+    canActivate: [AuthGuard.canActivate],
   },
   {
     path: 'create-account',

@@ -22,8 +22,8 @@
       + Add new link
     </button>
   </div>
-
-  <figure class="phone-container-block" *ngIf="linkItems.length === 0">
+  @if (linkItems.length === 0) {
+  <figure class="phone-container-block">
     <img
       class="phone-img"
       src="../../assets/images/illustration-empty.svg"
@@ -36,120 +36,116 @@
       profiles with everyone!
     </p>
   </figure>
-
-  <section class="links-form" *ngIf="linkItems.controls.length">
+  } @else {
+  <section class="links-form">
     <div
       formArrayName="linkItems"
       class="link-items"
       cdkDropList
       (cdkDropListDropped)="drop($event)"
     >
-      <ng-container
-        *ngFor="let linkItemFormGroup of linkItems.controls; let i = index"
+      @for (link of linkItems.controls; track $index) {
+      <div
+        [@removalAnimation]="additionalLinkStates[$index] ? 'out' : 'in'"
+        class="link-item-container"
       >
         <div
-          [@removalAnimation]="additionalLinkStates[i] ? 'out' : 'in'"
-          class="link-item-container"
+          class="link-item"
+          [formGroupName]="$index"
+          id="link-item-{{ $index }}"
+          #linkItem
+          cdkDrag
         >
-          <div
-            class="link-item"
-            [formGroupName]="i"
-            id="link-item-{{ i }}"
-            #linkItem
-            cdkDrag
-          >
-            <div class="link-header">
-              <img
-                src="../../assets/images/icon-drag-and-drop.svg"
-                alt="Drag Handle"
-                class="drag-handle"
-                cdkDragHandle
-              />
-              <h3 class="link-title">Link #{{ i + 1 }}</h3>
-              <button
-                type="button"
-                class="remove-button"
-                (click)="removeLink(i)"
-              >
-                Remove
-              </button>
-            </div>
-            <div class="form-group" appFormStyle>
-              <label for="platform-{{ i }}">Platform</label>
-              <div class="input-container">
-                <img
-                  [src]="
-                    '../../../assets/images/' +
-                    additionalLinkStates[i].iconFileName
-                  "
-                  alt="Platform Icon"
-                  class="icon"
-                />
-                <select
-                  class="input select-box"
-                  formControlName="platform"
-                  id="platform-{{ i }}"
-                  appSelectStyle
-                  [class.open]="additionalLinkStates[i].isOpen"
-                  (click)="toggleDropdown(i)"
-                  (change)="onPlatformChange(i, $event)"
-                >
-                  <option
-                    *ngFor="let option of platformOptions"
-                    [value]="option.value"
-                  >
-                    {{ option.label }}
-                  </option>
-                </select>
-                <img
-                  class="dropdown-arrow"
-                  src="../../assets/images/icon-chevron-down.svg"
-                  alt="Dropdown arrow"
-                />
-              </div>
-            </div>
-            <div
-              class="form-group"
-              appFormStyle
-              [ngClass]="{ error: showError(i) }"
+          <div class="link-header">
+            <img
+              src="../../assets/images/icon-drag-and-drop.svg"
+              alt="Drag Handle"
+              class="drag-handle"
+              cdkDragHandle
+            />
+            <h3 class="link-title">Link #{{ $index + 1 }}</h3>
+            <button
+              type="button"
+              class="remove-button"
+              (click)="removeLink($index)"
             >
-              <label for="link-{{ i }}">Link</label>
-              <div class="input-container">
-                <img
-                  src="../../assets/images/icon-link.svg"
-                  alt=""
-                  class="icon"
-                />
-                <div
-                  [id]="getErrorId(i)"
-                  class="error-text"
-                  *ngIf="showError(i)"
-                >
-                  {{ showError(i) }}
-                </div>
-                <input
-                  class="input"
-                  formControlName="profileUrl"
-                  id="link-{{ i }}"
-                  [attr.aria-describedby]="getErrorId(i)"
-                  [attr.placeholder]="additionalLinkStates[i].placeholder"
-                />
+              Remove
+            </button>
+          </div>
+          <div class="form-group" appFormStyle>
+            <label for="platform-{{ $index }}">Platform</label>
+            <div class="input-container">
+              <img
+                [src]="
+                  '../../../assets/images/' +
+                  additionalLinkStates[$index].iconFileName
+                "
+                alt="Platform Icon"
+                class="icon"
+              />
+              <select
+                class="input select-box"
+                formControlName="platform"
+                id="platform-{{ $index }}"
+                appSelectStyle
+                [class.open]="additionalLinkStates[$index].isOpen"
+                (click)="toggleDropdown($index)"
+                (change)="onPlatformChange($index, $event)"
+              >
+                @for (option of platformOptions; track $index) {
+                <option [value]="option.value">
+                  {{ option.label }}
+                </option>
+                }
+              </select>
+              <img
+                class="dropdown-arrow"
+                src="../../assets/images/icon-chevron-down.svg"
+                alt="Dropdown arrow"
+              />
+            </div>
+          </div>
+          <div
+            class="form-group"
+            appFormStyle
+            [ngClass]="{ error: showError($index) }"
+          >
+            <label for="link-{{ $index }}">Link</label>
+            <div class="input-container">
+              <img
+                src="../../assets/images/icon-link.svg"
+                alt=""
+                class="icon"
+              />
+              @if (showError($index)) {
+              <div [id]="getErrorId($index)" class="error-text">
+                {{ showError($index) }}
               </div>
+              }
+              <input
+                class="input"
+                formControlName="profileUrl"
+                id="link-{{ $index }}"
+                [attr.aria-describedby]="getErrorId($index)"
+                [attr.placeholder]="additionalLinkStates[$index].placeholder"
+              />
             </div>
           </div>
         </div>
-      </ng-container>
+      </div>
+      }
     </div>
   </section>
+  }
 
   <footer class="footer">
     <button
       class="save-btn"
       appPrimaryBtn
       type="submit"
-      [disabled]="!hasFormChanged"
+      [disabled]="!hasFormChanged || formSaving"
     >
-      Save
+      @if (formSaving) { Saving } @else { Save }
     </button>
   </footer>
 </form>

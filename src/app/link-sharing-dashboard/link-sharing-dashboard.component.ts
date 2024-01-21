@@ -1,10 +1,12 @@
+import { AppStateService } from './../services/state.service';
+import { AuthService } from './../services/auth.service';
+import { UserService } from './../services/user.service';
 import { ResponsiveService } from './../services/responsive.service';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { LinksComponent } from '../links/links.component';
 import { ProfileDetailsComponent } from '../profile-details/profile-details.component';
-import { AppStateService } from '../services/state.service';
 import { LinkComponent } from '../link/link.component';
 import {
   Router,
@@ -33,18 +35,16 @@ import { AvatarComponent } from '../avatar/avatar.component';
 })
 export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   private subscriptions = new Subscription();
+  private responsiveService = inject(ResponsiveService);
+  private appStateService = inject(AppStateService);
+  private router = inject(Router);
+  private activatedRoute = inject(ActivatedRoute);
+
   selectedSection = 'links';
   isMaxWidth700$ = this.responsiveService.isCustomMax700;
   isMaxWidth900$ = this.responsiveService.isCustomMax900;
   links$ = this.appStateService.links$.pipe(map((links) => links.slice(0, 5)));
   profile$ = this.appStateService.profile$;
-
-  constructor(
-    private responsiveService: ResponsiveService,
-    private appStateService: AppStateService,
-    private router: Router,
-    private activatedRoute: ActivatedRoute
-  ) {}
 
   ngOnInit(): void {
     const currentRoute =
