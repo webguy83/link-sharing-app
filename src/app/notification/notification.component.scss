@@ -1,6 +1,7 @@
-.custom-snackbar {
+.notification-bar {
   color: var(--dark-white);
   display: flex;
+  justify-content: center;
   align-items: center;
   font-weight: 600;
   gap: 0.8rem;

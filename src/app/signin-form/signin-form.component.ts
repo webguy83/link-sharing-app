@@ -1,4 +1,6 @@
-import { Component } from '@angular/core';
+import { NotificationService } from './../services/notification.service';
+import { AuthService } from './../services/auth.service';
+import { Component, inject } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -6,8 +8,7 @@ import {
   ReactiveFormsModule,
 } from '@angular/forms';
 import { SharedModule } from '../shared/shared.module';
-import { AuthService } from '../services/auth.service';
-import { MatSnackBar, MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { getErrorId } from '../shared/constants/error-id';
 
@@ -24,12 +25,12 @@ export class SigninFormComponent {
   isLoggingIn = false;
   getErrorId = getErrorId;
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private snackBar: MatSnackBar,
-    private router: Router
-  ) {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private notificationService = inject(NotificationService);
+
+  constructor() {
     this.signInForm = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', [Validators.required, Validators.minLength(8)]],
@@ -72,18 +73,12 @@ export class SigninFormComponent {
 
       this.authService.signIn(email, password).subscribe({
         next: () => {
-          this.snackBar.open('Login successful!', 'Close', {
-            duration: 3000,
-            panelClass: ['dark-gray-snackbar'],
-          });
+          this.notificationService.showNotification('Login successful!');
           this.router.navigate(['/link-sharing-dashboard']);
         },
         error: () => {
-          this.isLoggingIn = false; // Re-enable the button
-          this.snackBar.open('Login attempt failed!', 'Close', {
-            duration: 3000,
-            panelClass: ['dark-gray-snackbar'],
-          });
+          this.isLoggingIn = false;
+          this.notificationService.showNotification('Login attempt failed!');
         },
       });
     } else {

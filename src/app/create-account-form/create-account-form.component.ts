@@ -1,4 +1,4 @@
-import { Component, ViewChild } from '@angular/core';
+import { Component, ViewChild, inject } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -8,11 +8,11 @@ import {
 import { SharedModule } from '../shared/shared.module';
 import { AuthService } from '../services/auth.service';
 import { passwordMatchValidator } from '../validators/validators';
-import { MatSnackBar } from '@angular/material/snack-bar';
 import { Router } from '@angular/router';
 import { finalize } from 'rxjs';
 import { PrimaryBtnDirective } from '../shared/directives/primary-btn.directive';
 import { getErrorId } from '../shared/constants/error-id';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-create-account-form',
@@ -35,12 +35,12 @@ export class CreateAccountFormComponent {
     }
   }
 
-  constructor(
-    private fb: FormBuilder,
-    private authService: AuthService,
-    private snackBar: MatSnackBar,
-    private router: Router
-  ) {
+  private fb = inject(FormBuilder);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  private notificationService = inject(NotificationService);
+
+  constructor() {
     this.createAccountForm = this.fb.group(
       {
         email: ['', [Validators.required, Validators.email]],
@@ -111,24 +111,17 @@ export class CreateAccountFormComponent {
         )
         .subscribe({
           next: () => {
-            this.snackBar.open('Account created successfully!', 'Close', {
-              duration: 3000,
-              panelClass: ['dark-gray-snackbar'],
-            });
+            this.notificationService.showNotification(
+              'Account created successfully'
+            );
             this.router.navigate(['/link-sharing-dashboard']);
           },
           error: (error) => {
             let errorMessage = 'Failed to create an account!';
-
-            // Check if the user exists
             if (error.code === 'auth/email-already-in-use') {
               errorMessage = 'Email already in use!';
             }
-
-            this.snackBar.open(errorMessage, 'Close', {
-              duration: 3000,
-              panelClass: ['dark-gray-snackbar'],
-            });
+            this.notificationService.showNotification(errorMessage);
           },
         });
     } else {

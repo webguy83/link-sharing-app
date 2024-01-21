@@ -14,7 +14,7 @@ export class NotificationService {
       NotificationComponent,
       {
         data: { message, iconPath },
-        duration: 3000,
+        duration: 2500,
       }
     );
   }
