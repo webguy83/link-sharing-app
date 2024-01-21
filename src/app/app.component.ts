@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
+
 import {
   NavigationCancel,
   NavigationEnd,
@@ -14,7 +14,7 @@ import { PreloaderComponent } from './preloader/preloader.component';
 @Component({
   selector: 'app-root',
   standalone: true,
-  imports: [CommonModule, RouterOutlet, PreloaderComponent],
+  imports: [RouterOutlet, PreloaderComponent],
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
   animations: [fadeInOutAnimation],

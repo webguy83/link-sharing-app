@@ -1,5 +1,4 @@
 import { Component } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
   FormGroup,
   FormBuilder,
@@ -15,7 +14,7 @@ import { getErrorId } from '../shared/constants/error-id';
 @Component({
   selector: 'app-signin-form',
   standalone: true,
-  imports: [CommonModule, SharedModule, ReactiveFormsModule, MatSnackBarModule],
+  imports: [SharedModule, ReactiveFormsModule, MatSnackBarModule],
   templateUrl: './signin-form.component.html',
   styleUrl: './signin-form.component.scss',
 })

@@ -1,9 +1,6 @@
 import { AppStateService } from './../services/state.service';
-import { AuthService } from './../services/auth.service';
-import { UserService } from './../services/user.service';
 import { ResponsiveService } from './../services/responsive.service';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { LinksComponent } from '../links/links.component';
 import { ProfileDetailsComponent } from '../profile-details/profile-details.component';
@@ -22,7 +19,6 @@ import { AvatarComponent } from '../avatar/avatar.component';
   selector: 'app-link-sharing-dashboard',
   standalone: true,
   imports: [
-    CommonModule,
     SharedModule,
     LinksComponent,
     ProfileDetailsComponent,

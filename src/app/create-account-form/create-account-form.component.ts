@@ -1,5 +1,4 @@
 import { Component, ViewChild } from '@angular/core';
-import { CommonModule } from '@angular/common';
 import {
   FormGroup,
   FormBuilder,
@@ -18,7 +17,7 @@ import { getErrorId } from '../shared/constants/error-id';
 @Component({
   selector: 'app-create-account-form',
   standalone: true,
-  imports: [CommonModule, SharedModule, ReactiveFormsModule],
+  imports: [SharedModule, ReactiveFormsModule],
   templateUrl: './create-account-form.component.html',
   styleUrl: './create-account-form.component.scss',
 })

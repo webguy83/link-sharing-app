@@ -4,45 +4,50 @@
     max500: (isMaxWidth500$ | async),
     max350: (isMaxWidth350$ | async)
   }"
->
-  <header class="preview-header" *ngIf="isAuthenticated">
-    <button
-      type="button"
-      aria-label="Back to Editor"
-      appOutlineBtn
-      class="share-link-button"
-      (click)="backToEditor()"
-    >
-      Back to Editor
-    </button>
-    <button
-      type="button"
-      appPrimaryBtn
-      aria-label="Share Link"
-      class="share-link-button"
-      (click)="shareLink()"
-    >
-      Share Link
-    </button>
-  </header>
+  >
+  @if (isAuthenticated) {
+    <header class="preview-header">
+      <button
+        type="button"
+        aria-label="Back to Editor"
+        appOutlineBtn
+        class="share-link-button"
+        (click)="backToEditor()"
+        >
+        Back to Editor
+      </button>
+      <button
+        type="button"
+        appPrimaryBtn
+        aria-label="Share Link"
+        class="share-link-button"
+        (click)="shareLink()"
+        >
+        Share Link
+      </button>
+    </header>
+  }
   <main class="preview-content">
     <div #userCard class="user-card">
-      <ng-container *ngIf="profile$ | async as profile">
+      @if (profile$ | async; as profile) {
         <app-avatar [profile]="profile"></app-avatar>
         <h1 class="header" #nameTextElm>
           {{ profile.firstName }} {{ profile.lastName }}
         </h1>
         <p class="email">{{ profile.email }}</p>
-      </ng-container>
-      <ng-container *ngIf="links$ | async as links">
-        <div class="links" *ngIf="links.length">
-          <app-link
-            *ngFor="let link of links"
-            [linkBlock]="link"
-            [extraPadding]="true"
-          ></app-link>
-        </div>
-      </ng-container>
+      }
+      @if (links$ | async; as links) {
+        @if (links.length) {
+          <div class="links">
+            @for (link of links; track link) {
+              <app-link
+                [linkBlock]="link"
+                [extraPadding]="true"
+              ></app-link>
+            }
+          </div>
+        }
+      }
     </div>
   </main>
 </div>
