@@ -268,7 +268,6 @@ export class LinksComponent
             this.appStateService.saveLinks(mappedItems);
           },
           error: (error) => {
-            console.log(error);
             this.notificationService.showNotification(
               'Error saving changes! Please try again later.',
               '../../assets/images/icon-changes-saved.svg'

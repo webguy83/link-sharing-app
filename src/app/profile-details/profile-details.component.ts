@@ -1,6 +1,6 @@
 import { AppStateService } from './../services/state.service';
 import { UnsavedChangesComponent } from './../shared/models/unsaved-changes.interface';
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
   FormBuilder,
@@ -15,6 +15,8 @@ import { Subscription } from 'rxjs';
 import { ImageUploadComponent } from '../image-upload/image-upload.component';
 import { Profile } from '../shared/models/basics.model';
 import { ProfileDetailsService } from './profile-details.service';
+import { UserService } from '../services/user.service';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-profile-details',
@@ -32,6 +34,12 @@ import { ProfileDetailsService } from './profile-details.service';
 export class ProfileDetailsComponent
   implements UnsavedChangesComponent, OnInit, OnDestroy
 {
+  fb = inject(FormBuilder);
+  responsiveService = inject(ResponsiveService);
+  appStateService = inject(AppStateService);
+  profileDetailsService = inject(ProfileDetailsService);
+  userService = inject(UserService);
+  authService = inject(AuthService);
   profileDetailsForm: FormGroup;
   formSubmitted = false;
   hasFormChanged = false;
@@ -41,14 +49,10 @@ export class ProfileDetailsComponent
   getErrorId = getErrorId;
   alphaOnly = this.profileDetailsService.alphaOnly;
   initialProfilePicture: File | null = null;
+  userId: string | null = null;
 
   private subscriptions = new Subscription();
-  constructor(
-    private fb: FormBuilder,
-    private responsiveService: ResponsiveService,
-    private appStateService: AppStateService,
-    private profileDetailsService: ProfileDetailsService
-  ) {
+  constructor() {
     this.profileDetailsForm = this.fb.group({
       firstName: ['', Validators.required],
       lastName: ['', Validators.required],
@@ -60,6 +64,11 @@ export class ProfileDetailsComponent
   ngOnInit(): void {
     this.subscribeToFormChanges();
     this.populateInitialFormData();
+    this.subscriptions.add(
+      this.authService.user$.subscribe((user) => {
+        this.userId = user ? user.uid : null;
+      })
+    );
   }
   ngOnDestroy(): void {
     this.subscriptions.unsubscribe();
@@ -125,8 +134,13 @@ export class ProfileDetailsComponent
 
   onSubmit() {
     this.formSubmitted = true;
-    if (this.profileDetailsForm.valid) {
+    if (this.profileDetailsForm.valid && this.userId) {
       const profileData = this.profileDetailsForm.value as Profile;
+      this.userService
+        .uploadProfilePicture(this.userId, profileData.picture)
+        .subscribe((profilePath) => {
+          console.log(profilePath);
+        });
       this.appStateService.saveProfile(profileData);
       this.formSubmitted = false;
       this.hasFormChanged = false;

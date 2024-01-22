@@ -11,9 +11,12 @@ import {
   ref,
   uploadBytes,
   getDownloadURL,
+  deleteObject,
+  listAll,
+  StorageReference,
 } from '@angular/fire/storage';
-import { from, Observable } from 'rxjs';
-import { switchMap } from 'rxjs/operators';
+import { EMPTY, from, Observable, of, throwError } from 'rxjs';
+import { catchError, switchMap, tap } from 'rxjs/operators';
 import { LinkBlock, Profile } from '../shared/models/basics.model';
 
 @Injectable({
@@ -37,11 +40,37 @@ export class UserService {
     return from(setDoc(userDocRef, { links }, { merge: true }));
   }
 
-  uploadProfilePicture(userId: string, file: File): Observable<string> {
+  private deleteExistingImages(userId: string): Observable<void> {
+    const storageRef = ref(this.storage, `profilePictures/${userId}/`);
+    return from(listAll(storageRef)).pipe(
+      switchMap((res) => {
+        const deletionPromises = res.items.map((item) => deleteObject(item));
+        return from(Promise.all(deletionPromises)).pipe(
+          switchMap(() => of(undefined))
+        );
+      })
+    );
+  }
+
+  private uploadNewImage(userId: string, file: File): Observable<string> {
     const filePath = `profilePictures/${userId}/${file.name}`;
     const fileRef = ref(this.storage, filePath);
     return from(uploadBytes(fileRef, file)).pipe(
       switchMap(() => getDownloadURL(fileRef))
+    );
+  }
+
+  uploadProfilePicture(
+    userId: string,
+    file: File | null
+  ): Observable<string | void> {
+    return this.deleteExistingImages(userId).pipe(
+      switchMap(() => {
+        if (file) {
+          return this.uploadNewImage(userId, file);
+        }
+        return EMPTY;
+      })
     );
   }
 }
