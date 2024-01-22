@@ -27,8 +27,15 @@ export class UserService {
   private storage = inject(Storage);
 
   createUserProfile(userId: string, profile: Profile): Observable<void> {
+    const firebaseProfile = {
+      firstName: profile.firstName,
+      lastName: profile.lastName,
+      email: profile.email,
+    };
     const userDocRef = doc(this.firestore, `users/${userId}`);
-    return from(setDoc(userDocRef, { profile }, { merge: true }));
+    return from(
+      setDoc(userDocRef, { profile: firebaseProfile }, { merge: true })
+    );
   }
 
   createUserLinks(userId: string, links: LinkBlock[]): Observable<void> {

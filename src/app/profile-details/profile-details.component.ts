@@ -11,12 +11,13 @@ import {
 import { SharedModule } from '../shared/shared.module';
 import { ResponsiveService } from '../services/responsive.service';
 import { getErrorId } from '../shared/constants/error-id';
-import { Subscription } from 'rxjs';
+import { Subscription, forkJoin } from 'rxjs';
 import { ImageUploadComponent } from '../image-upload/image-upload.component';
 import { Profile } from '../shared/models/basics.model';
 import { ProfileDetailsService } from './profile-details.service';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-profile-details',
@@ -38,6 +39,7 @@ export class ProfileDetailsComponent
   responsiveService = inject(ResponsiveService);
   appStateService = inject(AppStateService);
   profileDetailsService = inject(ProfileDetailsService);
+  notificationService = inject(NotificationService);
   userService = inject(UserService);
   authService = inject(AuthService);
   profileDetailsForm: FormGroup;
@@ -136,14 +138,37 @@ export class ProfileDetailsComponent
     this.formSubmitted = true;
     if (this.profileDetailsForm.valid && this.userId) {
       const profileData = this.profileDetailsForm.value as Profile;
-      this.userService
-        .uploadProfilePicture(this.userId, profileData.picture)
-        .subscribe((profilePath) => {
-          console.log(profilePath);
-        });
-      this.appStateService.saveProfile(profileData);
-      this.formSubmitted = false;
-      this.hasFormChanged = false;
+
+      // Observable for uploading profile picture
+      const uploadProfilePicture$ = this.userService.uploadProfilePicture(
+        this.userId,
+        profileData.picture
+      );
+
+      // Observable for updating user profile
+      const updateUserProfile$ = this.userService.createUserProfile(
+        this.userId,
+        profileData
+      );
+
+      // Use forkJoin to wait for both observables to complete
+      forkJoin([uploadProfilePicture$, updateUserProfile$]).subscribe({
+        next: () => {
+          this.notificationService.showNotification(
+            'Your changes have been successfully saved!'
+          );
+          this.appStateService.saveProfile(profileData);
+          this.formSubmitted = false;
+          this.hasFormChanged = false;
+          // Place your notification logic here
+        },
+        error: () => {
+          this.notificationService.showNotification(
+            'Error saving changes! Please try again later.',
+            '../../assets/images/icon-changes-saved.svg'
+          );
+        },
+      });
     }
   }
 }
