@@ -43,6 +43,16 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   profile$ = this.appStateService.profile$;
 
   ngOnInit(): void {
+    this.activatedRoute.data.subscribe((data) => {
+      const resolvedData = data['profileAndLinks']; // 'profileAndLinks' should match the key used in your route configuration
+
+      if (resolvedData) {
+        // Update the AppStateService with the fetched data
+        this.appStateService.saveProfile(resolvedData.userProfile);
+        this.appStateService.saveLinks(resolvedData.userLinks);
+      }
+    });
+
     const currentRoute =
       this.activatedRoute.snapshot.firstChild?.routeConfig?.path;
     if (currentRoute === 'links') {

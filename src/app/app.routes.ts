@@ -1,6 +1,7 @@
 import { Routes } from '@angular/router';
 import { checkIdGuard } from './guards/checkId.guard';
 import { AuthGuard } from './guards/auth.guard';
+import { profileAndLinksResolver } from './resolvers/profile-and-links.resolver.resolver';
 
 export const routes: Routes = [
   {
@@ -20,6 +21,7 @@ export const routes: Routes = [
       import('./link-sharing-dashboard/link-sharing-dashboard.routes').then(
         (m) => m.LinkSharingDashboardRoutes
       ),
+    resolve: { profileAndLinks: profileAndLinksResolver },
   },
   {
     path: 'preview/:id',

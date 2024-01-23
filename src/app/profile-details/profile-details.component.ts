@@ -160,7 +160,6 @@ export class ProfileDetailsComponent
           this.appStateService.saveProfile(profileData);
           this.formSubmitted = false;
           this.hasFormChanged = false;
-          // Place your notification logic here
         },
         error: () => {
           this.notificationService.showNotification(
