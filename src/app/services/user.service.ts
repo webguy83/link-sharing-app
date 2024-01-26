@@ -17,12 +17,12 @@ import {
 } from '@angular/fire/storage';
 import { EMPTY, from, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
-import { LinkBlock, Profile } from '../shared/models/basics.model';
+import {
+  FirebaseData,
+  LinkBlock,
+  Profile,
+} from '../shared/models/basics.model';
 
-interface FirebaseData {
-  profile: Profile;
-  links: LinkBlock[];
-}
 @Injectable({
   providedIn: 'root',
 })

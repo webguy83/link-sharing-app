@@ -12,8 +12,12 @@ import {
   ActivatedRoute,
 } from '@angular/router';
 import { filter, map } from 'rxjs/operators';
-import { Subscription } from 'rxjs';
-import { LinkBlock } from '../shared/models/basics.model';
+import { Observable, Subscription, of } from 'rxjs';
+import {
+  FirebaseData,
+  LinkBlock,
+  Profile,
+} from '../shared/models/basics.model';
 import { AvatarComponent } from '../avatar/avatar.component';
 @Component({
   selector: 'app-link-sharing-dashboard',
@@ -39,19 +43,31 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   selectedSection = 'links';
   isMaxWidth700$ = this.responsiveService.isCustomMax700;
   isMaxWidth900$ = this.responsiveService.isCustomMax900;
-  links$ = this.appStateService.links$.pipe(map((links) => links.slice(0, 5)));
-  profile$ = this.appStateService.profile$;
+
+  profile$: Observable<Profile> = of({
+    firstName: '',
+    lastName: '',
+    email: '',
+    picture: null,
+  });
+  links$: Observable<LinkBlock[]> = of([]);
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe((data) => {
-      const resolvedData = data['profileAndLinks']; // 'profileAndLinks' should match the key used in your route configuration
+    // this.links$ = this.appStateService.links$.pipe(
+    //   map((links) => links.slice(0, 5))
+    // );
+    // this.profile$ = this.appStateService.profile$;
 
-      if (resolvedData) {
-        // Update the AppStateService with the fetched data
-        this.appStateService.saveProfile(resolvedData.userProfile);
-        this.appStateService.saveLinks(resolvedData.userLinks);
-      }
-    });
+    this.subscriptions.add(
+      this.activatedRoute.data.subscribe((data) => {
+        const resolvedData = data['profileAndLinks'] as FirebaseData;
+        if (resolvedData) {
+
+          this.appStateService.saveProfile(resolvedData.profile);
+          this.appStateService.saveLinks(resolvedData.links);
+        }
+      })
+    );
 
     const currentRoute =
       this.activatedRoute.snapshot.firstChild?.routeConfig?.path;

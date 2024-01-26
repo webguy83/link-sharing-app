@@ -2,6 +2,7 @@ import { Routes } from '@angular/router';
 import { checkIdGuard } from './guards/checkId.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { profileAndLinksResolver } from './resolvers/profile-and-links.resolver.resolver';
+import { canDeactivateUnsavedChanges } from './guards/can-deactivate.guard';
 
 export const routes: Routes = [
   {
@@ -17,10 +18,29 @@ export const routes: Routes = [
   },
   {
     path: 'link-sharing-dashboard',
-    loadChildren: () =>
-      import('./link-sharing-dashboard/link-sharing-dashboard.routes').then(
-        (m) => m.LinkSharingDashboardRoutes
+    loadComponent: () =>
+      import('./link-sharing-dashboard/link-sharing-dashboard.component').then(
+        (m) => m.LinkSharingDashboardComponent
       ),
+      canActivate: [AuthGuard.canActivate],
+      canActivateChild: [AuthGuard.canActivate],
+      children: [
+        { path: '', redirectTo: 'links', pathMatch: 'full' },
+        {
+          path: 'links',
+          loadComponent: () =>
+            import('./links/links.component').then((m) => m.LinksComponent),
+          canDeactivate: [canDeactivateUnsavedChanges],
+        },
+        {
+          path: 'profile-details',
+          loadComponent: () =>
+            import('./profile-details/profile-details.component').then(
+              (m) => m.ProfileDetailsComponent
+            ),
+          canDeactivate: [canDeactivateUnsavedChanges],
+        },
+      ],
     resolve: { profileAndLinks: profileAndLinksResolver },
   },
   {

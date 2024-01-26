@@ -29,3 +29,8 @@ export interface NotificationData {
   message: string;
   iconPath?: string;
 }
+
+export interface FirebaseData {
+  profile: Profile;
+  links: LinkBlock[];
+}

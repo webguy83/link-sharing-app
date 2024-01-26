@@ -1,11 +1,11 @@
 import { inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { map } from 'rxjs/operators';
-import { CanActivateFn } from '@angular/router';
+import { CanActivateFn, CanActivateChildFn } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 
 export class AuthGuard {
-  static canActivate: CanActivateFn = (route, state) => {
+  static canActivate: CanActivateFn | CanActivateChildFn = (route, state) => {
     const authService = inject(AuthService);
     const router = inject(Router);
 
