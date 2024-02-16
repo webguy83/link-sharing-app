@@ -35,7 +35,10 @@ export class UserService {
     return from(getDoc(userDocRef)).pipe(
       map((docSnapshot) => {
         if (!docSnapshot.exists()) {
-          throw new Error('User data not found');
+          return {
+            profile: {picture: null, firstName: '', lastName: '', email: ''},
+            links: []
+          }
         }
         return docSnapshot.data() as FirebaseData;
       })

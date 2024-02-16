@@ -1,6 +1,12 @@
 import { AppStateService } from './../services/state.service';
 import { ResponsiveService } from './../services/responsive.service';
-import { Component, OnDestroy, OnInit, inject } from '@angular/core';
+import {
+  ChangeDetectorRef,
+  Component,
+  OnDestroy,
+  OnInit,
+  inject,
+} from '@angular/core';
 import { SharedModule } from '../shared/shared.module';
 import { LinksComponent } from '../links/links.component';
 import { ProfileDetailsComponent } from '../profile-details/profile-details.component';
@@ -11,8 +17,8 @@ import {
   NavigationEnd,
   ActivatedRoute,
 } from '@angular/router';
-import { filter, map } from 'rxjs/operators';
-import { Observable, Subscription, of } from 'rxjs';
+import { filter } from 'rxjs/operators';
+import { Observable, Subscription, of, map } from 'rxjs';
 import {
   FirebaseData,
   LinkBlock,
@@ -39,66 +45,41 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   private appStateService = inject(AppStateService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private cdRef = inject(ChangeDetectorRef);
 
   selectedSection = 'links';
   isMaxWidth700$ = this.responsiveService.isCustomMax700;
   isMaxWidth900$ = this.responsiveService.isCustomMax900;
 
-  profile$: Observable<Profile> = of({
-    firstName: '',
-    lastName: '',
-    email: '',
-    picture: null,
-  });
-  links$: Observable<LinkBlock[]> = of([]);
+  links$ = this.appStateService.links$.pipe(map((links) => links.slice(0, 5)));
+  profile$ = this.appStateService.profile$;
 
   ngOnInit(): void {
-    // this.links$ = this.appStateService.links$.pipe(
-    //   map((links) => links.slice(0, 5))
-    // );
-    // this.profile$ = this.appStateService.profile$;
+    this.activatedRoute.data.subscribe((data) => {
+      const { links, profile } = data['backendData'];
+      this.appStateService.saveLinks(links);
+      //this.appStateService.updateProfile(profile);
+      this.cdRef.detectChanges();
+    });
 
     this.subscriptions.add(
-      this.activatedRoute.data.subscribe((data) => {
-        const resolvedData = data['profileAndLinks'] as FirebaseData;
-        if (resolvedData) {
-
-          this.appStateService.saveProfile(resolvedData.profile);
-          this.appStateService.saveLinks(resolvedData.links);
+      this.activatedRoute.queryParams.subscribe((params) => {
+        this.selectedSection = params['selectedSection'];
+        if (
+          this.selectedSection !== 'links' &&
+          this.selectedSection !== 'profile-details'
+        ) {
+          this.redirectToDefaultSection();
         }
       })
     );
+  }
 
-    const currentRoute =
-      this.activatedRoute.snapshot.firstChild?.routeConfig?.path;
-    if (currentRoute === 'links') {
-      this.selectedSection = 'links';
-    } else if (currentRoute === 'profile-details') {
-      this.selectedSection = 'profile';
-    }
-
-    // Subscribe to router events for subsequent navigation
-    this.subscriptions.add(
-      this.router.events
-        .pipe(
-          filter(
-            (event): event is NavigationEnd => event instanceof NavigationEnd
-          )
-        )
-        .subscribe((event: NavigationEnd) => {
-          if (
-            event.urlAfterRedirects.includes('/link-sharing-dashboard/links')
-          ) {
-            this.selectedSection = 'links';
-          } else if (
-            event.urlAfterRedirects.includes(
-              '/link-sharing-dashboard/profile-details'
-            )
-          ) {
-            this.selectedSection = 'profile';
-          }
-        })
-    );
+  private redirectToDefaultSection() {
+    const userId = this.activatedRoute.snapshot.params['id'];
+    this.router.navigate(['/link-sharing-dashboard', userId], {
+      queryParams: { selectedSection: 'links' },
+    });
   }
 
   getTruncatedName(name: string, maxLength: number): string {
@@ -111,6 +92,7 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
     return `${link.platform}-${link.profileUrl}-${link.bgColour}-${link.iconFileName}-${index}`;
   }
 
+
   goToPreview() {
     this.router.navigate(['/preview', 'fucker']);
   }
@@ -120,10 +102,15 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   }
 
   toggleSelection(section: 'profile' | 'links'): void {
+    const userId = this.activatedRoute.snapshot.params['id'];
     if (section === 'links') {
-      this.router.navigate(['/', 'link-sharing-dashboard', 'links']);
+      this.router.navigate(['link-sharing-dashboard', userId], {
+        queryParams: { selectedSection: 'links' },
+      });
     } else if (section === 'profile') {
-      this.router.navigate(['/', 'link-sharing-dashboard', 'profile-details']);
+      this.router.navigate(['link-sharing-dashboard', userId], {
+        queryParams: { selectedSection: 'profile-details' },
+      });
     }
   }
 }

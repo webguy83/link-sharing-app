@@ -44,7 +44,7 @@
       cdkDropList
       (cdkDropListDropped)="drop($event)"
     >
-      @for (link of linkItems.controls; track $index) {
+      @for (link of linkItems.controls; track link) {
       <div
         [@removalAnimation]="additionalLinkStates[$index] ? 'out' : 'in'"
         class="link-item-container"

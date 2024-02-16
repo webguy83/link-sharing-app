@@ -1,5 +1,5 @@
 <div class="preloader">
-  @if (isLoading) {
-    <mat-spinner color="primary"></mat-spinner>
+  @if (isLoading$ | async) {
+  <mat-spinner color="primary"></mat-spinner>
   }
 </div>

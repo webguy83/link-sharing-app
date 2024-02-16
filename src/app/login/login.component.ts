@@ -41,9 +41,9 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     this.subscription.add(
-      this.authService.isAuthenticated().subscribe((isAuth) => {
-        if (isAuth) {
-          this.router.navigate(['/link-sharing-dashboard']);
+      this.authService.user$.subscribe((user) => {
+        if (user) {
+          this.router.navigate(['/link-sharing-dashboard', user.uid]);
         }
       })
     );

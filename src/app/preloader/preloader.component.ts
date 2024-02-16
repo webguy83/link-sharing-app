@@ -1,13 +1,16 @@
+import { AsyncPipe } from '@angular/common';
+import { LoadingService } from './../services/loading.service';
 
-import { Component, Input } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 @Component({
   selector: 'app-preloader',
   standalone: true,
-  imports: [MatProgressSpinnerModule],
+  imports: [MatProgressSpinnerModule, AsyncPipe],
   templateUrl: './preloader.component.html',
-  styleUrl: './preloader.component.scss'
+  styleUrl: './preloader.component.scss',
 })
 export class PreloaderComponent {
-  @Input() isLoading: boolean = false;
+  private loadingService = inject(LoadingService);
+  isLoading$ = this.loadingService.isLoading$;
 }

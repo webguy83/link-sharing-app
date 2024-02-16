@@ -110,11 +110,13 @@ export class CreateAccountFormComponent {
           })
         )
         .subscribe({
-          next: () => {
+          next: (userCredential) => {
+            const userId = userCredential.user.uid;
+
             this.notificationService.showNotification(
               'Account created successfully'
             );
-            this.router.navigate(['/link-sharing-dashboard']);
+            this.router.navigate(['/link-sharing-dashboard', userId]);
           },
           error: (error) => {
             let errorMessage = 'Failed to create an account!';

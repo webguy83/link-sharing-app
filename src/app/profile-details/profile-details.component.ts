@@ -97,7 +97,7 @@ export class ProfileDetailsComponent
 
   populateInitialFormData(): void {
     this.subscriptions.add(
-      this.appStateService.initialProfile$.subscribe((profile) => {
+      this.appStateService.profile$.subscribe((profile) => {
         if (profile && !this.initialDataLoaded) {
           this.profileDetailsForm.patchValue({
             firstName: profile.firstName,
