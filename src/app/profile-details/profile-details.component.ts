@@ -1,3 +1,4 @@
+import { FormStateService } from './../services/form-state.service';
 import { AppStateService } from './../services/state.service';
 import { UnsavedChangesComponent } from './../shared/models/unsaved-changes.interface';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
@@ -32,9 +33,7 @@ import { NotificationService } from '../services/notification.service';
   styleUrl: './profile-details.component.scss',
   providers: [ProfileDetailsService],
 })
-export class ProfileDetailsComponent
-  implements UnsavedChangesComponent, OnInit, OnDestroy
-{
+export class ProfileDetailsComponent implements OnInit, OnDestroy {
   fb = inject(FormBuilder);
   responsiveService = inject(ResponsiveService);
   appStateService = inject(AppStateService);
@@ -42,9 +41,10 @@ export class ProfileDetailsComponent
   notificationService = inject(NotificationService);
   userService = inject(UserService);
   authService = inject(AuthService);
+  formStateService = inject(FormStateService);
   profileDetailsForm: FormGroup;
   formSubmitted = false;
-  hasFormChanged = false;
+  hasFormChanged = this.formStateService.formChanged;
   initialDataLoaded = false;
   isMaxWidth600$ = this.responsiveService.isCustomMax600;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
@@ -76,19 +76,11 @@ export class ProfileDetailsComponent
     this.subscriptions.unsubscribe();
   }
 
-  discardChanges(): void {
-    this.appStateService.synchronizeProfileToInitial();
-  }
-
-  hasUnsavedChanges(): boolean {
-    return this.hasFormChanged;
-  }
-
   subscribeToFormChanges() {
     this.subscriptions.add(
       this.profileDetailsForm.valueChanges.subscribe((profile: Profile) => {
         if (this.profileDetailsForm.dirty) {
-          this.hasFormChanged = true;
+          this.formStateService.setFormChanged(true);
           this.appStateService.updateProfile(profile);
         }
       })
@@ -159,7 +151,7 @@ export class ProfileDetailsComponent
           );
           this.appStateService.saveProfile(profileData);
           this.formSubmitted = false;
-          this.hasFormChanged = false;
+          this.formStateService.setFormChanged(false);
         },
         error: () => {
           this.notificationService.showNotification(

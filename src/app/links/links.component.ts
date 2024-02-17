@@ -37,6 +37,7 @@ import { UnsavedChangesComponent } from '../shared/models/unsaved-changes.interf
 import { AuthService } from '../services/auth.service';
 import { UserService } from '../services/user.service';
 import { Router } from '@angular/router';
+import { FormStateService } from '../services/form-state.service';
 
 interface AdditionalLinkState {
   isOpen: boolean;
@@ -60,9 +61,7 @@ interface AdditionalLinkState {
   ],
   providers: [LinksService],
 })
-export class LinksComponent
-  implements OnDestroy, OnInit, UnsavedChangesComponent
-{
+export class LinksComponent implements OnDestroy, OnInit {
   private subscriptions = new Subscription();
   additionalLinkStates: AdditionalLinkState[] = [];
   private fb = inject(FormBuilder);
@@ -73,25 +72,17 @@ export class LinksComponent
   private userService = inject(UserService);
   private notificationService = inject(NotificationService);
   private router = inject(Router);
-
+  formStateService = inject(FormStateService);
   userId: string | null = null;
   formSubmitted = false;
   linksForm!: FormGroup;
-  hasFormChanged = false;
+  hasFormChanged = this.formStateService.formChanged;
   formSaving = false;
   platformOptions = platformOptions;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
   getErrorId = getErrorId;
 
   @ViewChildren('linkItem') linkItemsElements!: QueryList<ElementRef>;
-
-  hasUnsavedChanges(): boolean {
-    return this.hasFormChanged;
-  }
-
-  discardChanges(): void {
-    this.appStateService.synchronizeLinksToInitial();
-  }
 
   ngOnInit(): void {
     this.initializeForm();
@@ -149,7 +140,7 @@ export class LinksComponent
   subscribeToFormChanges() {
     this.subscriptions.add(
       this.linksForm.valueChanges.subscribe(() => {
-        this.hasFormChanged = true;
+        this.formStateService.setFormChanged(true);
       })
     );
   }
@@ -260,7 +251,7 @@ export class LinksComponent
         .subscribe({
           next: () => {
             this.formSubmitted = false;
-            this.hasFormChanged = false;
+            this.formStateService.setFormChanged(false);
             this.notificationService.showNotification(
               'Your changes have been successfully saved!',
               '../../assets/images/icon-changes-saved.svg'
@@ -300,8 +291,11 @@ export class LinksComponent
 
   drop(event: CdkDragDrop<string[]>): void {
     const { previousIndex, currentIndex } = event;
-    if (previousIndex !== currentIndex && !this.hasFormChanged) {
-      this.hasFormChanged = true;
+    if (
+      previousIndex !== currentIndex &&
+      !this.formStateService.formChanged()
+    ) {
+      this.formStateService.setFormChanged(true);
     }
     moveItemInArray(this.linkItems.controls, previousIndex, currentIndex);
     moveItemInArray(this.additionalLinkStates, previousIndex, currentIndex);

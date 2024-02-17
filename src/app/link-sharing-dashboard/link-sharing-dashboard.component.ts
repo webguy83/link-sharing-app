@@ -1,3 +1,4 @@
+import { ConfirmDialogService } from './../services/confirm-dialog.service';
 import { AppStateService } from './../services/state.service';
 import { ResponsiveService } from './../services/responsive.service';
 import {
@@ -25,6 +26,7 @@ import {
   Profile,
 } from '../shared/models/basics.model';
 import { AvatarComponent } from '../avatar/avatar.component';
+import { FormStateService } from '../services/form-state.service';
 @Component({
   selector: 'app-link-sharing-dashboard',
   standalone: true,
@@ -45,6 +47,8 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   private appStateService = inject(AppStateService);
   private router = inject(Router);
   private activatedRoute = inject(ActivatedRoute);
+  private formStateService = inject(FormStateService);
+  private confirmDialogService = inject(ConfirmDialogService);
   private cdRef = inject(ChangeDetectorRef);
 
   selectedSection = 'links';
@@ -92,7 +96,6 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
     return `${link.platform}-${link.profileUrl}-${link.bgColour}-${link.iconFileName}-${index}`;
   }
 
-
   goToPreview() {
     this.router.navigate(['/preview', 'fucker']);
   }
@@ -102,7 +105,29 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   }
 
   toggleSelection(section: 'profile' | 'links'): void {
+    if (this.formStateService.formChanged()) {
+      this.subscriptions.add(
+        this.confirmDialogService.openConfirmDialog().subscribe((status) => {
+          if (status === 'discard') {
+            switch (section) {
+              case 'links':
+                this.appStateService.synchronizeProfileToInitial();
+                break;
+              default:
+                this.appStateService.synchronizeLinksToInitial();
+            }
+            this.moveToSection(section);
+          }
+        })
+      );
+    } else {
+      this.moveToSection(section);
+    }
+  }
+
+  moveToSection(section: 'profile' | 'links') {
     const userId = this.activatedRoute.snapshot.params['id'];
+    this.formStateService.setFormChanged(false);
     if (section === 'links') {
       this.router.navigate(['link-sharing-dashboard', userId], {
         queryParams: { selectedSection: 'links' },

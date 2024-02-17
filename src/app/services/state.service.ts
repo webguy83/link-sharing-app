@@ -1,5 +1,5 @@
 import { LinkBlock, Profile } from '../shared/models/basics.model';
-import { Injectable } from '@angular/core';
+import { Injectable, computed, signal } from '@angular/core';
 import { BehaviorSubject, map } from 'rxjs';
 
 @Injectable({
@@ -13,6 +13,16 @@ export class AppStateService {
     email: '',
     picture: null,
   });
+
+  private hasUnsavedChangesSignal = signal(false);
+
+  setUnsavedChanges(isUnsaved: boolean) {
+    this.hasUnsavedChangesSignal.set(isUnsaved);
+  }
+
+  hasUnsavedChanges() {
+    return computed(() => this.hasUnsavedChangesSignal());
+  }
 
   private linksSubject = new BehaviorSubject<LinkBlock[]>(
     this.initialLinksSubject.getValue()

@@ -6,7 +6,7 @@
     max600: (isMaxWidth600$ | async),
     max500: (isMaxWidth500$ | async)
   }"
-  >
+>
   <div class="container">
     <header class="profile-details-section-header">
       <h2>Profile Details</h2>
@@ -18,102 +18,96 @@
     <div class="picture-upload">
       <span class="picture-upload__label" id="profilePictureLabel"
         >Profile picture</span
-        >
-        <app-image-upload
-          formControlName="picture"
-          [initialImage]="initialProfilePicture"
-        ></app-image-upload>
-        <p class="picture-upload__info">
-          Image must be below 1024x1024px. Use PNG or JPG format.
-        </p>
-      </div>
-
-      <section
-        class="profile-details-form"
-        [ngClass]="{ notMobile: !(isMaxWidth600$ | async) }"
-        >
-        <div
-          class="form-group"
-          appFormStyle
-          [ngClass]="{ error: showRequiredError('firstName') }"
-          >
-          <label for="firstName">First name*</label>
-          <div class="input-container">
-            @if (showRequiredError('firstName')) {
-              <div
-                [id]="getErrorId(0)"
-                class="error-text"
-                >
-                {{ showRequiredError("firstName") }}
-              </div>
-            }
-            <input
-              class="input"
-              formControlName="firstName"
-              id="firstName"
-              placeholder="e.g. John"
-              (keydown)="alphaOnly($event)"
-              [attr.aria-describedby]="getErrorId(0)"
-              />
-          </div>
-        </div>
-        <div
-          class="form-group"
-          appFormStyle
-          [ngClass]="{ error: showRequiredError('lastName') }"
-          >
-          <label for="lastName">Last name*</label>
-          <div class="input-container">
-            @if (showRequiredError('lastName')) {
-              <div
-                [id]="getErrorId(1)"
-                class="error-text"
-                >
-                {{ showRequiredError("lastName") }}
-              </div>
-            }
-            <input
-              class="input"
-              formControlName="lastName"
-              id="lastName"
-              placeholder="e.g. Appleseed"
-              (keydown)="alphaOnly($event)"
-              [attr.aria-describedby]="getErrorId(1)"
-              />
-          </div>
-        </div>
-        <div
-          class="form-group"
-          appFormStyle
-          [ngClass]="{ error: showEmailError() }"
-          >
-          <label for="email">Email</label>
-          <div class="input-container">
-            @if (showEmailError()) {
-              <div [id]="getErrorId(2)" class="error-text">
-                {{ showEmailError() }}
-              </div>
-            }
-            <input
-              class="input"
-              formControlName="email"
-              id="email"
-              placeholder="ben@example.com"
-              [attr.aria-describedby]="getErrorId(2)"
-              />
-          </div>
-        </div>
-      </section>
+      >
+      <app-image-upload
+        formControlName="picture"
+        [initialImage]="initialProfilePicture"
+      ></app-image-upload>
+      <p class="picture-upload__info">
+        Image must be below 1024x1024px. Use PNG or JPG format.
+      </p>
     </div>
 
-    <footer class="footer">
-      <button
-        class="save-btn"
-        appPrimaryBtn
-        type="submit"
-        [disabled]="!hasFormChanged"
-        >
-        Save
-      </button>
-    </footer>
-  </form>
+    <section
+      class="profile-details-form"
+      [ngClass]="{ notMobile: !(isMaxWidth600$ | async) }"
+    >
+      <div
+        class="form-group"
+        appFormStyle
+        [ngClass]="{ error: showRequiredError('firstName') }"
+      >
+        <label for="firstName">First name*</label>
+        <div class="input-container">
+          @if (showRequiredError('firstName')) {
+          <div [id]="getErrorId(0)" class="error-text">
+            {{ showRequiredError("firstName") }}
+          </div>
+          }
+          <input
+            class="input"
+            formControlName="firstName"
+            id="firstName"
+            placeholder="e.g. John"
+            (keydown)="alphaOnly($event)"
+            [attr.aria-describedby]="getErrorId(0)"
+          />
+        </div>
+      </div>
+      <div
+        class="form-group"
+        appFormStyle
+        [ngClass]="{ error: showRequiredError('lastName') }"
+      >
+        <label for="lastName">Last name*</label>
+        <div class="input-container">
+          @if (showRequiredError('lastName')) {
+          <div [id]="getErrorId(1)" class="error-text">
+            {{ showRequiredError("lastName") }}
+          </div>
+          }
+          <input
+            class="input"
+            formControlName="lastName"
+            id="lastName"
+            placeholder="e.g. Appleseed"
+            (keydown)="alphaOnly($event)"
+            [attr.aria-describedby]="getErrorId(1)"
+          />
+        </div>
+      </div>
+      <div
+        class="form-group"
+        appFormStyle
+        [ngClass]="{ error: showEmailError() }"
+      >
+        <label for="email">Email</label>
+        <div class="input-container">
+          @if (showEmailError()) {
+          <div [id]="getErrorId(2)" class="error-text">
+            {{ showEmailError() }}
+          </div>
+          }
+          <input
+            class="input"
+            formControlName="email"
+            id="email"
+            placeholder="ben@example.com"
+            [attr.aria-describedby]="getErrorId(2)"
+          />
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <footer class="footer">
+    <button
+      class="save-btn"
+      appPrimaryBtn
+      type="submit"
+      [disabled]="!hasFormChanged()"
+    >
+      Save
+    </button>
+  </footer>
+</form>

@@ -6,7 +6,7 @@ import {
   NavigationError,
   NavigationCancel,
 } from '@angular/router';
-import { BehaviorSubject, startWith } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable({
   providedIn: 'root',

@@ -143,7 +143,7 @@
       class="save-btn"
       appPrimaryBtn
       type="submit"
-      [disabled]="!hasFormChanged || formSaving"
+      [disabled]="!hasFormChanged() || formSaving"
     >
       @if (formSaving) { Saving } @else { Save }
     </button>
