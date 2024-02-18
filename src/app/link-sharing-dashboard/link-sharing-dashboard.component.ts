@@ -12,19 +12,9 @@ import { SharedModule } from '../shared/shared.module';
 import { LinksComponent } from '../links/links.component';
 import { ProfileDetailsComponent } from '../profile-details/profile-details.component';
 import { LinkComponent } from '../link/link.component';
-import {
-  Router,
-  RouterOutlet,
-  NavigationEnd,
-  ActivatedRoute,
-} from '@angular/router';
-import { filter } from 'rxjs/operators';
-import { Observable, Subscription, of, map } from 'rxjs';
-import {
-  FirebaseData,
-  LinkBlock,
-  Profile,
-} from '../shared/models/basics.model';
+import { Router, RouterOutlet, ActivatedRoute } from '@angular/router';
+import { Subscription, map } from 'rxjs';
+import { LinkBlock } from '../shared/models/basics.model';
 import { AvatarComponent } from '../avatar/avatar.component';
 import { FormStateService } from '../services/form-state.service';
 @Component({
@@ -59,12 +49,17 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   profile$ = this.appStateService.profile$;
 
   ngOnInit(): void {
-    this.activatedRoute.data.subscribe((data) => {
-      const { links, profile } = data['backendData'];
-      this.appStateService.saveLinks(links);
-      this.appStateService.updateProfile(profile);
-      this.cdRef.detectChanges();
-    });
+    this.subscriptions.add(
+      this.activatedRoute.data.subscribe((data) => {
+        if (data['backendData']) {
+          const { links, profile } = data['backendData'];
+          this.appStateService.saveLinks(links);
+          this.appStateService.saveProfile(profile);
+          this.appStateService.updateProfile(profile);
+          this.cdRef.detectChanges();
+        }
+      })
+    );
 
     this.subscriptions.add(
       this.activatedRoute.queryParams.subscribe((params) => {
@@ -97,7 +92,26 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   }
 
   goToPreview() {
-    this.router.navigate(['/preview', 'fucker']);
+    const userId = this.activatedRoute.snapshot.params['id'];
+    if (this.formStateService.formChanged()) {
+      this.subscriptions.add(
+        this.confirmDialogService.openConfirmDialog().subscribe((status) => {
+          if (status === 'discard') {
+            switch (this.selectedSection) {
+              case 'links':
+                this.appStateService.synchronizeLinksToInitial();
+                break;
+              default:
+                this.appStateService.synchronizeProfileToInitial();
+            }
+            this.formStateService.setFormChanged(false);
+            this.router.navigate(['/preview', userId]);
+          }
+        })
+      );
+    } else {
+      this.router.navigate(['/preview', userId]);
+    }
   }
 
   ngOnDestroy() {

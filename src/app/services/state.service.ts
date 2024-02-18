@@ -59,12 +59,12 @@ export class AppStateService {
     this.initialLinksSubject.next(links);
   }
 
-  updateLinks(links: LinkBlock[]) {
-    this.linksSubject.next(links);
-  }
-
   saveProfile(profile: Profile) {
     this.initialProfileSubject.next(profile);
+  }
+
+  updateLinks(links: LinkBlock[]) {
+    this.linksSubject.next(links);
   }
 
   updateProfile(profile: Profile) {

@@ -17,8 +17,8 @@ import {
   listAll,
   getBlob,
 } from '@angular/fire/storage';
-import { EMPTY, from, Observable, of } from 'rxjs';
-import { map, switchMap, tap } from 'rxjs/operators';
+import { from, Observable, of } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
 import {
   FirebaseData,
   LinkBlock,
@@ -145,13 +145,13 @@ export class UserService {
   uploadProfilePicture(
     userId: string,
     file: File | null
-  ): Observable<string | void> {
+  ): Observable<string | null> {
     return this.deleteExistingImages(userId).pipe(
       switchMap(() => {
         if (file) {
           return this.uploadNewImage(userId, file);
         }
-        return EMPTY;
+        return of(null);
       })
     );
   }

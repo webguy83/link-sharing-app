@@ -1,5 +1,4 @@
 import { Routes } from '@angular/router';
-import { checkIdGuard } from './guards/checkId.guard';
 import { AuthGuard } from './guards/auth.guard';
 import { profileAndLinksResolver } from './resolvers/profile-and-links.resolver.resolver';
 
@@ -22,13 +21,13 @@ export const routes: Routes = [
         (m) => m.LinkSharingDashboardComponent
       ),
     canActivate: [AuthGuard.canActivate],
-    resolve: { backendData: profileAndLinksResolver}
+    resolve: { backendData: profileAndLinksResolver },
   },
   {
     path: 'preview/:id',
     loadComponent: () =>
       import('./preview/preview.component').then((m) => m.PreviewComponent),
-    canActivate: [checkIdGuard],
+    resolve: { backendData: profileAndLinksResolver },
   },
   {
     path: '**',

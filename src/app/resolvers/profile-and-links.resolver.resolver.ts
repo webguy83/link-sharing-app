@@ -1,12 +1,12 @@
 // profile-and-links.resolver.ts
 import { ResolveFn } from '@angular/router';
 import { forkJoin, of } from 'rxjs';
-import { Profile, FirebaseData } from '../shared/models/basics.model';
+import { FirebaseData } from '../shared/models/basics.model';
 import { Router } from '@angular/router';
 import { inject } from '@angular/core';
 import { UserService } from '../services/user.service';
 
-export const profileAndLinksResolver: ResolveFn<FirebaseData> = (
+export const profileAndLinksResolver: ResolveFn<FirebaseData | null> = (
   route,
   _state
 ) => {
@@ -16,7 +16,7 @@ export const profileAndLinksResolver: ResolveFn<FirebaseData> = (
 
   if (!id) {
     router.navigate(['']);
-    return of<FirebaseData>({ profile: {} as Profile, links: [] });
+    return of(null);
   }
 
   return forkJoin({

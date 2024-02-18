@@ -3,6 +3,7 @@ import { ResponsiveService } from './../services/responsive.service';
 import { AvatarComponent } from './../avatar/avatar.component';
 import {
   AfterViewInit,
+  ChangeDetectorRef,
   Component,
   ElementRef,
   HostListener,
@@ -12,9 +13,9 @@ import {
   inject,
 } from '@angular/core';
 import { AppStateService } from '../services/state.service';
-import { Subscription, map } from 'rxjs';
+import { Subscription, map, switchMap, tap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';
 import { SharedModule } from '../shared/shared.module';
 import { LinkComponent } from '../link/link.component';
@@ -32,6 +33,8 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   private router = inject(Router);
   private location = inject(Location);
   private notificationService = inject(NotificationService);
+  private activatedRoute = inject(ActivatedRoute);
+  private cdRef = inject(ChangeDetectorRef);
   authService = inject(AuthService);
   profile$ = this.appStateService.profile$;
   links$ = this.appStateService.links$;
@@ -43,12 +46,47 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('userCard') userCard!: ElementRef<HTMLDivElement>;
   @ViewChild('bgPanel') bgPanel!: ElementRef<HTMLDivElement>;
   @ViewChild('nameTextElm') nameTextElm!: ElementRef<HTMLParagraphElement>;
-  isAuthenticated: boolean = false;
+  isAuthenticated = false;
 
-  constructor() {
+  constructor() {}
+  ngOnInit(): void {
     this.subscriptions.add(
-      this.authService.isAuthenticated().subscribe((authStatus) => {
-        this.isAuthenticated = authStatus;
+      this.activatedRoute.paramMap
+        .pipe(
+          switchMap((params) => {
+            const urlUserId = params.get('id');
+            // Return an observable combining both the URL ID and the authenticated user's ID
+            return this.authService.user$.pipe(
+              map((user) => ({ urlUserId, authUserId: user?.uid }))
+            );
+          })
+        )
+        .subscribe({
+          next: ({ urlUserId, authUserId }) => {
+            if (urlUserId === authUserId) {
+              this.isAuthenticated = true;
+            }
+          },
+          error: (err) => console.error(err),
+        })
+    );
+
+    this.subscriptions.add(
+      this.activatedRoute.data.subscribe((data) => {
+        if (data['backendData']) {
+          const { links, profile } = data['backendData'];
+          this.appStateService.updateLinks(links);
+          this.appStateService.updateProfile(profile);
+          this.cdRef.detectChanges();
+        }
+      })
+    );
+
+    this.subscriptions.add(
+      this.profile$.subscribe((profile) => {
+        if (!profile.firstName.length && !profile.lastName.length) {
+          this.router.navigate(['']);
+        }
       })
     );
   }
@@ -71,8 +109,6 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
       userCardElmOffset + (nameTextElmOffset - userCardElmOffset)
     }px`;
   }
-
-  ngOnInit() {}
 
   backToEditor() {
     const state = this.location.getState() as any;

@@ -89,7 +89,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
 
   populateInitialFormData(): void {
     this.subscriptions.add(
-      this.appStateService.profile$.subscribe((profile) => {
+      this.appStateService.initialProfile$.subscribe((profile) => {
         if (profile && !this.initialDataLoaded) {
           this.profileDetailsForm.patchValue({
             firstName: profile.firstName,
