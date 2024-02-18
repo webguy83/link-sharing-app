@@ -35,7 +35,7 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   private notificationService = inject(NotificationService);
   private activatedRoute = inject(ActivatedRoute);
   private cdRef = inject(ChangeDetectorRef);
-  authService = inject(AuthService);
+  private authService = inject(AuthService);
   profile$ = this.appStateService.profile$;
   links$ = this.appStateService.links$;
   isMaxWidth500$ = this.responsiveService.isCustomMax500;
@@ -121,9 +121,21 @@ export class PreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   }
 
   shareLink() {
-    this.notificationService.showNotification(
-      'The link has been copied to your clipboard!',
-      '../../assets/images/icon-link.svg'
-    );
+    const fullUrl = window.location.origin + this.location.path();
+
+    navigator.clipboard
+      .writeText(fullUrl)
+      .then(() => {
+        this.notificationService.showNotification(
+          'The link has been copied to your clipboard!',
+          '../../assets/images/icon-link.svg'
+        );
+      })
+      .catch((err) => {
+        this.notificationService.showNotification(
+          err,
+          '../../assets/images/icon-link.svg'
+        );
+      });
   }
 }

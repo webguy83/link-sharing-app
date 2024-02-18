@@ -13,10 +13,11 @@ import { LinksComponent } from '../links/links.component';
 import { ProfileDetailsComponent } from '../profile-details/profile-details.component';
 import { LinkComponent } from '../link/link.component';
 import { Router, RouterOutlet, ActivatedRoute } from '@angular/router';
-import { Subscription, map } from 'rxjs';
+import { Subscription, map, switchMap } from 'rxjs';
 import { LinkBlock } from '../shared/models/basics.model';
 import { AvatarComponent } from '../avatar/avatar.component';
 import { FormStateService } from '../services/form-state.service';
+import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-link-sharing-dashboard',
   standalone: true,
@@ -40,6 +41,7 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   private formStateService = inject(FormStateService);
   private confirmDialogService = inject(ConfirmDialogService);
   private cdRef = inject(ChangeDetectorRef);
+  private authService = inject(AuthService);
 
   selectedSection = 'links';
   isMaxWidth700$ = this.responsiveService.isCustomMax700;
@@ -59,6 +61,27 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
           this.cdRef.detectChanges();
         }
       })
+    );
+
+    this.subscriptions.add(
+      this.activatedRoute.paramMap
+        .pipe(
+          switchMap((params) => {
+            const urlUserId = params.get('id');
+            // Return an observable combining both the URL ID and the authenticated user's ID
+            return this.authService.user$.pipe(
+              map((user) => ({ urlUserId, authUserId: user?.uid }))
+            );
+          })
+        )
+        .subscribe({
+          next: ({ urlUserId, authUserId }) => {
+            if (urlUserId !== authUserId) {
+              this.router.navigate(['']);
+            }
+          },
+          error: (err) => console.error(err),
+        })
     );
 
     this.subscriptions.add(
