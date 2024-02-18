@@ -105,9 +105,9 @@
       class="save-btn"
       appPrimaryBtn
       type="submit"
-      [disabled]="!hasFormChanged()"
+      [disabled]="!hasFormChanged() || formSaving"
     >
-      Save
+      @if (formSaving) { Saving... } @else { Save }
     </button>
   </footer>
 </form>

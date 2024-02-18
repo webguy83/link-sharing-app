@@ -1,5 +1,6 @@
 import { inject, Injectable } from '@angular/core';
 import {
+  DocumentData,
   Firestore,
   deleteField,
   doc,
@@ -14,6 +15,7 @@ import {
   getDownloadURL,
   deleteObject,
   listAll,
+  getBlob,
 } from '@angular/fire/storage';
 import { EMPTY, from, Observable, of } from 'rxjs';
 import { map, switchMap, tap } from 'rxjs/operators';
@@ -36,49 +38,45 @@ export class UserService {
       map((docSnapshot) => {
         if (!docSnapshot.exists()) {
           return {
-            profile: {picture: null, firstName: '', lastName: '', email: ''},
-            links: []
-          }
+            profile: { firstName: '', lastName: '', email: '' },
+            links: [],
+          };
         }
-        return docSnapshot.data() as FirebaseData;
+        return docSnapshot.data();
+      }),
+      switchMap((data) => {
+        return this.combineDataWithProfilePic(userId, data);
       })
     );
   }
 
-  // private fetchProfilePicture(userId: string): Observable<File | null> {
-  //    "../../assets/test.png"
-  //   // const profilePicRef = ref(this.storage, `profilePictures/${userId}`);
-  //   // return from(listAll(profilePicRef)).pipe(
-  //   //   switchMap((res) => {
-  //   //     if (res.items.length > 0) {
-  //   //       return from(getDownloadURL(res.items[0])).pipe(
-  //   //         switchMap((url) => fetch(url)),
-  //   //         switchMap((response) => response.blob()),
-  //   //         map(
-  //   //           (blob) => new File([blob], res.items[0].name, { type: blob.type })
-  //   //         )
-  //   //       );
-  //   //     }
-  //   //     return of(null);
-  //   //   })
-  //   // );
-  // }
-
-  private fetchProfilePicture(userId: string): Observable<File | null> {
-    const imageUrl = '../../assets/test.png'; // Adjust the path as needed
-
-    return this.fetchImageAsBlob(imageUrl).pipe(
-      map((blob) => new File([blob], 'test.png', { type: blob.type }))
-    );
-  }
-
-  private fetchImageAsBlob(url: string): Observable<Blob> {
-    return from(fetch(url)).pipe(
-      switchMap((response) => {
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
+  private combineDataWithProfilePic(
+    userId: string,
+    data: DocumentData
+  ): Observable<FirebaseData> {
+    const profilePicRef = ref(this.storage, `profilePictures/${userId}`);
+    return from(listAll(profilePicRef)).pipe(
+      switchMap((res) => {
+        if (res.items.length > 0) {
+          return getBlob(res.items[0]);
         }
-        return response.blob();
+        return of(null);
+      }),
+      map((blob) => {
+        let picture = null;
+        if (blob) {
+          picture = new File([blob], 'profileImg', { type: blob.type });
+        }
+        const outputData: FirebaseData = {
+          profile: {
+            firstName: data['profile'].firstName,
+            lastName: data['profile'].lastName,
+            email: data['profile'].email,
+            picture,
+          },
+          links: data['links'],
+        };
+        return outputData;
       })
     );
   }
@@ -91,7 +89,7 @@ export class UserService {
           firstName: profileData.firstName || '',
           lastName: profileData.lastName || '',
           email: profileData.email || '',
-          picture: null, // Handle picture separately as needed
+          picture: profileData.picture, // Handle picture separately as needed
         };
       })
     );

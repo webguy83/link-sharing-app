@@ -1,6 +1,5 @@
 import { FormStateService } from './../services/form-state.service';
 import { AppStateService } from './../services/state.service';
-import { UnsavedChangesComponent } from './../shared/models/unsaved-changes.interface';
 import { Component, OnDestroy, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -12,7 +11,7 @@ import {
 import { SharedModule } from '../shared/shared.module';
 import { ResponsiveService } from '../services/responsive.service';
 import { getErrorId } from '../shared/constants/error-id';
-import { Subscription, forkJoin } from 'rxjs';
+import { Subscription, finalize, forkJoin } from 'rxjs';
 import { ImageUploadComponent } from '../image-upload/image-upload.component';
 import { Profile } from '../shared/models/basics.model';
 import { ProfileDetailsService } from './profile-details.service';
@@ -52,6 +51,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
   alphaOnly = this.profileDetailsService.alphaOnly;
   initialProfilePicture: File | null = null;
   userId: string | null = null;
+  formSaving = false;
 
   private subscriptions = new Subscription();
   constructor() {
@@ -129,6 +129,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
   onSubmit() {
     this.formSubmitted = true;
     if (this.profileDetailsForm.valid && this.userId) {
+      this.formSaving = true;
       const profileData = this.profileDetailsForm.value as Profile;
 
       // Observable for uploading profile picture
@@ -144,22 +145,28 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
       );
 
       // Use forkJoin to wait for both observables to complete
-      forkJoin([uploadProfilePicture$, updateUserProfile$]).subscribe({
-        next: () => {
-          this.notificationService.showNotification(
-            'Your changes have been successfully saved!'
-          );
-          this.appStateService.saveProfile(profileData);
-          this.formSubmitted = false;
-          this.formStateService.setFormChanged(false);
-        },
-        error: () => {
-          this.notificationService.showNotification(
-            'Error saving changes! Please try again later.',
-            '../../assets/images/icon-changes-saved.svg'
-          );
-        },
-      });
+      forkJoin([uploadProfilePicture$, updateUserProfile$])
+        .pipe(
+          finalize(() => {
+            this.formSaving = false;
+          })
+        )
+        .subscribe({
+          next: () => {
+            this.notificationService.showNotification(
+              'Your changes have been successfully saved!'
+            );
+            this.appStateService.saveProfile(profileData);
+            this.formSubmitted = false;
+            this.formStateService.setFormChanged(false);
+          },
+          error: () => {
+            this.notificationService.showNotification(
+              'Error saving changes! Please try again later.',
+              '../../assets/images/icon-changes-saved.svg'
+            );
+          },
+        });
     }
   }
 }

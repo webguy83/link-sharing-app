@@ -62,7 +62,7 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
     this.activatedRoute.data.subscribe((data) => {
       const { links, profile } = data['backendData'];
       this.appStateService.saveLinks(links);
-      //this.appStateService.updateProfile(profile);
+      this.appStateService.updateProfile(profile);
       this.cdRef.detectChanges();
     });
 
