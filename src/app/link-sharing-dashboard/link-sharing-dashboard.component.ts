@@ -43,6 +43,13 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   private cdRef = inject(ChangeDetectorRef);
   private authService = inject(AuthService);
 
+  private dialogData = {
+    heading: 'Unsaved Changes',
+    description:
+      'You have unsaved changes! Are you sure you want to discard changes?',
+    showDiscardButton: true,
+  };
+
   selectedSection = 'links';
   isMaxWidth700$ = this.responsiveService.isCustomMax700;
   isMaxWidth900$ = this.responsiveService.isCustomMax900;
@@ -118,19 +125,21 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
     const userId = this.activatedRoute.snapshot.params['id'];
     if (this.formStateService.formChanged()) {
       this.subscriptions.add(
-        this.confirmDialogService.openConfirmDialog().subscribe((status) => {
-          if (status === 'discard') {
-            switch (this.selectedSection) {
-              case 'links':
-                this.appStateService.synchronizeLinksToInitial();
-                break;
-              default:
-                this.appStateService.synchronizeProfileToInitial();
+        this.confirmDialogService
+          .openConfirmDialog(this.dialogData)
+          .subscribe((status) => {
+            if (status === 'discard') {
+              switch (this.selectedSection) {
+                case 'links':
+                  this.appStateService.synchronizeLinksToInitial();
+                  break;
+                default:
+                  this.appStateService.synchronizeProfileToInitial();
+              }
+              this.formStateService.setFormChanged(false);
+              this.router.navigate(['/preview', userId]);
             }
-            this.formStateService.setFormChanged(false);
-            this.router.navigate(['/preview', userId]);
-          }
-        })
+          })
       );
     } else {
       this.router.navigate(['/preview', userId]);
@@ -144,18 +153,20 @@ export class LinkSharingDashboardComponent implements OnInit, OnDestroy {
   toggleSelection(section: 'profile' | 'links'): void {
     if (this.formStateService.formChanged()) {
       this.subscriptions.add(
-        this.confirmDialogService.openConfirmDialog().subscribe((status) => {
-          if (status === 'discard') {
-            switch (section) {
-              case 'links':
-                this.appStateService.synchronizeProfileToInitial();
-                break;
-              default:
-                this.appStateService.synchronizeLinksToInitial();
+        this.confirmDialogService
+          .openConfirmDialog(this.dialogData)
+          .subscribe((status) => {
+            if (status === 'discard') {
+              switch (section) {
+                case 'links':
+                  this.appStateService.synchronizeProfileToInitial();
+                  break;
+                default:
+                  this.appStateService.synchronizeLinksToInitial();
+              }
+              this.moveToSection(section);
             }
-            this.moveToSection(section);
-          }
-        })
+          })
       );
     } else {
       this.moveToSection(section);

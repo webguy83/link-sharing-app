@@ -1,3 +1,4 @@
+import { ConfirmDialogService } from './../services/confirm-dialog.service';
 import { NotificationService } from './../services/notification.service';
 import { AppStateService } from '../services/state.service';
 import {
@@ -71,7 +72,8 @@ export class LinksComponent implements OnDestroy, OnInit {
   private userService = inject(UserService);
   private notificationService = inject(NotificationService);
   private router = inject(Router);
-  formStateService = inject(FormStateService);
+  private formStateService = inject(FormStateService);
+  private confirmDialogService = inject(ConfirmDialogService);
   userId: string | null = null;
   formSubmitted = false;
   linksForm!: FormGroup;
@@ -233,6 +235,31 @@ export class LinksComponent implements OnDestroy, OnInit {
         this.linksService.getAdditionalLinkState(platformValue);
       this.updateLinksState(this.linkItems);
     }
+  }
+
+  onSignOut() {
+    this.confirmDialogService
+      .openConfirmDialog({
+        heading: 'Sign Out',
+        description: 'Are you sure you want to sign out?',
+        showDiscardButton: true,
+        confirmBtnText: 'Yes',
+        cancelBtnText: 'No',
+      })
+      .subscribe((status) => {
+        if (status === 'discard') {
+          this.authService.signOut().subscribe({
+            next: () => {
+              this.notificationService.showNotification(
+                'You have been successfully signed out!'
+              );
+            },
+            error: () => {
+              this.notificationService.showNotification('Unable to sign out!');
+            },
+          });
+        }
+      });
   }
 
   onSubmit(): void {

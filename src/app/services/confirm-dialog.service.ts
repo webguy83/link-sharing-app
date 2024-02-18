@@ -3,20 +3,22 @@ import { MatDialog } from '@angular/material/dialog';
 import { Observable } from 'rxjs';
 import { ConfirmDialogComponent } from '../confirm-dialog/confirm-dialog.component';
 
+interface DialogData {
+  heading: string;
+  description: string;
+  showDiscardButton: boolean;
+  confirmBtnText?: string;
+  cancelBtnText?: string;
+}
 @Injectable({
   providedIn: 'root',
 })
 export class ConfirmDialogService {
   private dialog = inject(MatDialog);
 
-  openConfirmDialog(): Observable<string> {
+  openConfirmDialog(data: DialogData): Observable<string> {
     const dialogRef = this.dialog.open(ConfirmDialogComponent, {
-      data: {
-        heading: 'Unsaved Changes',
-        description:
-          'You have unsaved changes! Are you sure you want to discard changes?',
-        showDiscardButton: true,
-      },
+      data,
     });
 
     return dialogRef.afterClosed();

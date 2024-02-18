@@ -95,7 +95,7 @@
 
 .footer {
   display: flex;
-  justify-content: end;
+  justify-content: space-between;
   padding: 2.4rem 4rem;
   border-top: 0.1rem solid var(--light-gray);
 }
@@ -156,6 +156,8 @@
   }
 
   .footer {
+    flex-direction: column;
+    gap: 2.4rem;
     padding: 1.6rem;
   }
 

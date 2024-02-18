@@ -10,6 +10,8 @@ interface DialogData {
   heading: string;
   description: string;
   showDiscardButton: boolean;
+  confirmBtnText?: string;
+  cancelBtnText?: string;
 }
 
 @Component({

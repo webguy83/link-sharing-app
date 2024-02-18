@@ -18,6 +18,7 @@ import { ProfileDetailsService } from './profile-details.service';
 import { UserService } from '../services/user.service';
 import { AuthService } from '../services/auth.service';
 import { NotificationService } from '../services/notification.service';
+import { ConfirmDialogService } from '../services/confirm-dialog.service';
 
 @Component({
   selector: 'app-profile-details',
@@ -41,6 +42,7 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
   userService = inject(UserService);
   authService = inject(AuthService);
   formStateService = inject(FormStateService);
+  confirmDialogService = inject(ConfirmDialogService);
   profileDetailsForm: FormGroup;
   formSubmitted = false;
   hasFormChanged = this.formStateService.formChanged;
@@ -124,6 +126,31 @@ export class ProfileDetailsComponent implements OnInit, OnDestroy {
       }
     }
     return '';
+  }
+
+  onSignOut() {
+    this.confirmDialogService
+      .openConfirmDialog({
+        heading: 'Sign Out',
+        description: 'Are you sure you want to sign out?',
+        showDiscardButton: true,
+        confirmBtnText: 'Yes',
+        cancelBtnText: 'No',
+      })
+      .subscribe((status) => {
+        if (status === 'discard') {
+          this.authService.signOut().subscribe({
+            next: () => {
+              this.notificationService.showNotification(
+                'You have been successfully signed out!'
+              );
+            },
+            error: () => {
+              this.notificationService.showNotification('Unable to sign out!');
+            },
+          });
+        }
+      });
   }
 
   onSubmit() {

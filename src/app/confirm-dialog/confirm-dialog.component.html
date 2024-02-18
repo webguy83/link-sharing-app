@@ -6,7 +6,7 @@
   [ngClass]="{
     'mobile-420': mobile420$ | async
   }"
-  >
+>
   <h2 mat-dialog-title id="dialog-title">
     <span class="heading">{{ data.heading }}</span>
   </h2>
@@ -14,15 +14,14 @@
     <p>{{ data.description }}</p>
   </mat-dialog-content>
   <mat-dialog-actions class="actions" align="end">
-    <button type="button" appOutlineBtn (click)="onCancel()">Close</button>
+    <button type="button" appOutlineBtn (click)="onCancel()">
+      @if (data.cancelBtnText) { {{ data.cancelBtnText }} } @else {Close}
+    </button>
     @if (data.showDiscardButton) {
-      <button
-        type="button"
-        appPrimaryBtn
-        (click)="onDiscard()"
-        >
-        Discard Changes
-      </button>
+    <button type="button" appPrimaryBtn (click)="onDiscard()">
+      @if (data.confirmBtnText) { {{ data.confirmBtnText }} } @else { Discard
+      Changes }
+    </button>
     }
   </mat-dialog-actions>
 </div>
