@@ -6,23 +6,24 @@ export const platformOptions: PlatformOption[] = [
     label: 'GitHub',
     value: 'github',
     iconFileName: 'icon-github.svg',
-    urlPattern: /^https?:\/\/(www\.)?github\.com(\/.*)?$/,
-    placeholder: 'https://github.com/username/repository',
+    urlPattern: /^https?:\/\/(www\.)?github\.com\/[a-zA-Z0-9_-]+$/,
+    placeholder: 'https://github.com/username',
   },
   {
     bgColour: '#FFFFFF',
     label: 'Frontend Mentor',
     value: 'frontend_mentor',
     iconFileName: 'icon-frontend-mentor.svg',
-    urlPattern: /^https?:\/\/(www\.)?frontendmentor\.io(\/.*)?$/,
-    placeholder: 'https://www.frontendmentor.io/challenges',
+    urlPattern:
+      /^https?:\/\/(www\.)?frontendmentor\.io\/profile\/[a-zA-Z0-9_-]+$/,
+    placeholder: 'https://www.frontendmentor.io/profile/username',
   },
   {
     bgColour: '#43B7E9',
     label: 'Twitter',
     value: 'twitter',
     iconFileName: 'icon-twitter.svg',
-    urlPattern: /^https?:\/\/(www\.)?twitter\.com(\/.*)?$/,
+    urlPattern: /^https?:\/\/(www\.)?twitter\.com\/[a-zA-Z0-9_]+$/,
     placeholder: 'https://twitter.com/username',
   },
   {
@@ -30,7 +31,7 @@ export const platformOptions: PlatformOption[] = [
     label: 'LinkedIn',
     value: 'linkedin',
     iconFileName: 'icon-linkedin.svg',
-    urlPattern: /^https?:\/\/(www\.)?linkedin\.com(\/.*)?$/,
+    urlPattern: /^https?:\/\/(www\.)?linkedin\.com\/in\/[a-zA-Z0-9_-]+(?:\/)?$/,
     placeholder: 'https://www.linkedin.com/in/username',
   },
   {
@@ -38,7 +39,8 @@ export const platformOptions: PlatformOption[] = [
     label: 'YouTube',
     value: 'youtube',
     iconFileName: 'icon-youtube.svg',
-    urlPattern: /^https?:\/\/(www\.)?youtube\.com(\/.*)?$/,
+    urlPattern:
+      /^https?:\/\/(www\.)?youtube\.com\/(channel\/[a-zA-Z0-9_-]+|c\/[a-zA-Z0-9_-]+|user\/[a-zA-Z0-9_-]+)(\/.*)?$/,
     placeholder: 'https://www.youtube.com/channel/CHANNEL_ID',
   },
   {
@@ -46,7 +48,8 @@ export const platformOptions: PlatformOption[] = [
     label: 'Facebook',
     value: 'facebook',
     iconFileName: 'icon-facebook.svg',
-    urlPattern: /^https?:\/\/(www\.)?facebook\.com(\/.*)?$/,
+    urlPattern:
+      /^https?:\/\/(www\.)?facebook\.com\/[a-zA-Z0-9.]+[a-zA-Z0-9-]{5,}\/?$/,
     placeholder: 'https://www.facebook.com/username',
   },
   {
@@ -54,7 +57,7 @@ export const platformOptions: PlatformOption[] = [
     label: 'Twitch',
     value: 'twitch',
     iconFileName: 'icon-twitch.svg',
-    urlPattern: /^https?:\/\/(www\.)?twitch\.tv(\/.*)?$/,
+    urlPattern: /^https?:\/\/(www\.)?twitch\.tv\/[a-zA-Z0-9_]+[a-zA-Z0-9_-]*$/,
     placeholder: 'https://www.twitch.tv/username',
   },
   {
@@ -62,7 +65,7 @@ export const platformOptions: PlatformOption[] = [
     label: 'Dev.to',
     value: 'dev_to',
     iconFileName: 'icon-devto.svg',
-    urlPattern: /^https?:\/\/(www\.)?dev\.to(\/.*)?$/,
+    urlPattern: /^https?:\/\/dev\.to\/[a-zA-Z0-9_-]+$/,
     placeholder: 'https://dev.to/username',
   },
   {
@@ -70,7 +73,7 @@ export const platformOptions: PlatformOption[] = [
     label: 'Codewars',
     value: 'codewars',
     iconFileName: 'icon-codewars.svg',
-    urlPattern: /^https?:\/\/(www\.)?codewars\.com(\/.*)?$/,
+    urlPattern: /^https?:\/\/(www\.)?codewars\.com\/users\/[a-zA-Z0-9_-]+$/,
     placeholder: 'https://www.codewars.com/users/username',
   },
   {
@@ -78,7 +81,7 @@ export const platformOptions: PlatformOption[] = [
     label: 'Codepen',
     value: 'codepen',
     iconFileName: 'icon-codepen.svg',
-    urlPattern: /^https?:\/\/(www\.)?codepen\.io(\/.*)?$/,
+    urlPattern: /^https?:\/\/codepen\.io\/[a-zA-Z0-9_-]+$/,
     placeholder: 'https://codepen.io/username',
   },
   {
@@ -86,7 +89,7 @@ export const platformOptions: PlatformOption[] = [
     label: 'freeCodeCamp',
     value: 'freecodecamp',
     iconFileName: 'icon-freecodecamp.svg',
-    urlPattern: /^https?:\/\/(www\.)?freecodecamp\.org(\/.*)?$/,
+    urlPattern: /^https?:\/\/(www\.)?freecodecamp\.org\/[a-zA-Z0-9_-]+$/,
     placeholder: 'https://www.freecodecamp.org/username',
   },
   {
@@ -94,7 +97,7 @@ export const platformOptions: PlatformOption[] = [
     label: 'GitLab',
     value: 'gitlab',
     iconFileName: 'icon-gitlab.svg',
-    urlPattern: /^https?:\/\/(www\.)?gitlab\.com(\/.*)?$/,
+    urlPattern: /^https?:\/\/(www\.)?gitlab\.com\/[a-zA-Z0-9_-]+$/,
     placeholder: 'https://gitlab.com/username',
   },
   {
@@ -102,7 +105,7 @@ export const platformOptions: PlatformOption[] = [
     label: 'Hashnode',
     value: 'hashnode',
     iconFileName: 'icon-hashnode.svg',
-    urlPattern: /^https?:\/\/(www\.)?hashnode\.com(\/.*)?$/,
+    urlPattern: /^https?:\/\/hashnode\.com\/@?[a-zA-Z0-9_-]+$/,
     placeholder: 'https://hashnode.com/@username',
   },
   {
@@ -110,8 +113,8 @@ export const platformOptions: PlatformOption[] = [
     label: 'Stack Overflow',
     value: 'stack_overflow',
     iconFileName: 'icon-stack-overflow.svg',
-    urlPattern: /^https?:\/\/(www\.)?stackoverflow\.com(\/.*)?$/,
-    placeholder: 'https://stackoverflow.com/users/userId/username',
+    urlPattern: /^https?:\/\/stackoverflow\.com\/users\/\d+\/?[a-zA-Z0-9_-]*$/,
+    placeholder: 'https://stackoverflow.com/users/USER_ID/username',
   },
 ];
 
