@@ -41,7 +41,7 @@ Users should be able to:
 
 ### Links
 
-- Solution URL: [Add solution URL here](https://your-solution-url.com)
+- Solution URL: [Solution](https://www.frontendmentor.io/solutions/linksharing-app-built-in-angular-17-and-firebase-PrzOvLiE_W)
 - Live Site URL: [App](https://frontendmentor-linksharing.web.app/)
 
 ## My process
