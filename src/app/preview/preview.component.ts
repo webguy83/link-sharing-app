@@ -13,7 +13,7 @@ import {
   inject,
 } from '@angular/core';
 import { AppStateService } from '../services/state.service';
-import { Subscription, map, switchMap, tap } from 'rxjs';
+import { Subscription, map, switchMap } from 'rxjs';
 import { AuthService } from '../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { CommonModule, Location } from '@angular/common';

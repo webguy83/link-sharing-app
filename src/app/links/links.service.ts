@@ -1,5 +1,5 @@
 import { LinkBlock } from '../shared/models/basics.model';
-import { Injectable } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
 import {
   AbstractControl,
   FormArray,
@@ -22,10 +22,7 @@ interface AdditionalLinkState {
 
 @Injectable()
 export class LinksService {
-
-  constructor(private fb: FormBuilder) {
-
-  }
+  private fb = inject(FormBuilder);
 
   createLinkFormGroup(link?: LinkData): FormGroup {
     const platform = link?.platform || platformOptions[0].value;

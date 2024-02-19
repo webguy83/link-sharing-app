@@ -6,6 +6,7 @@ import {
   OnInit,
   OnDestroy,
   Input,
+  inject,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ResponsiveService } from '../../services/responsive.service';
@@ -14,6 +15,9 @@ import { ResponsiveService } from '../../services/responsive.service';
   selector: '[appOutlineBtn]',
 })
 export class OutlineBtnDirective implements OnInit, OnDestroy {
+  private el = inject(ElementRef);
+  private renderer = inject(Renderer2);
+  private responsiveService = inject(ResponsiveService);
   private _isDisabled: boolean = false;
   @Input()
   set disabled(value: string | boolean) {
@@ -21,12 +25,6 @@ export class OutlineBtnDirective implements OnInit, OnDestroy {
     this.updateDisabledState();
   }
   private subscription = new Subscription();
-
-  constructor(
-    private el: ElementRef,
-    private renderer: Renderer2,
-    private responsiveService: ResponsiveService
-  ) {}
 
   ngOnInit(): void {
     this.setupStyles();

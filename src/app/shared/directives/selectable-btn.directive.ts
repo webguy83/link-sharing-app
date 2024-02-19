@@ -8,6 +8,7 @@ import {
   OnDestroy,
   SimpleChanges,
   OnChanges,
+  inject,
 } from '@angular/core';
 import { Subscription } from 'rxjs';
 import { ResponsiveService } from '../../services/responsive.service';
@@ -16,15 +17,14 @@ import { ResponsiveService } from '../../services/responsive.service';
   selector: '[appSelectableButton]',
 })
 export class SelectableButtonDirective implements OnInit, OnDestroy, OnChanges {
+  private el = inject(ElementRef);
+  private renderer = inject(Renderer2);
+  private responsiveService = inject(ResponsiveService);
   @Input() isSelected: boolean = false;
   private isMax350 = false;
   private subscription: Subscription;
 
-  constructor(
-    private el: ElementRef,
-    private renderer: Renderer2,
-    private responsiveService: ResponsiveService
-  ) {
+  constructor() {
     this.subscription = new Subscription();
   }
 

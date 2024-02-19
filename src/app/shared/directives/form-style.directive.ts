@@ -6,18 +6,17 @@ import {
   Renderer2,
   OnInit,
   OnDestroy,
+  inject,
 } from '@angular/core';
 
 @Directive({
   selector: '[appFormStyle]',
 })
 export class FormStyleDirective implements OnInit, OnDestroy {
+  private el = inject(ElementRef);
+  private renderer = inject(Renderer2);
+  private responsiveService = inject(ResponsiveService);
   private subscription = new Subscription();
-  constructor(
-    private el: ElementRef,
-    private renderer: Renderer2,
-    private responsiveService: ResponsiveService
-  ) {}
 
   ngOnInit(): void {
     this.applyStyleToInputs();

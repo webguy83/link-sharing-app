@@ -1,11 +1,18 @@
-import { Directive, ElementRef, Renderer2, OnInit } from '@angular/core';
+import {
+  Directive,
+  ElementRef,
+  Renderer2,
+  OnInit,
+  inject,
+} from '@angular/core';
 
 @Directive({
   selector: '[appSelectStyle]',
   standalone: true,
 })
 export class SelectStyleDirective implements OnInit {
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
+  private el = inject(ElementRef);
+  private renderer = inject(Renderer2);
 
   ngOnInit(): void {
     this.setStyle();

@@ -1,4 +1,4 @@
-import { Component, ViewChild, inject } from '@angular/core';
+import { Component, OnDestroy, ViewChild, inject } from '@angular/core';
 import {
   FormGroup,
   FormBuilder,
@@ -9,7 +9,7 @@ import { SharedModule } from '../shared/shared.module';
 import { AuthService } from '../services/auth.service';
 import { passwordMatchValidator } from '../validators/validators';
 import { Router } from '@angular/router';
-import { finalize } from 'rxjs';
+import { finalize, Subscription } from 'rxjs';
 import { PrimaryBtnDirective } from '../shared/directives/primary-btn.directive';
 import { getErrorId } from '../shared/constants/error-id';
 import { NotificationService } from '../services/notification.service';
@@ -21,11 +21,12 @@ import { NotificationService } from '../services/notification.service';
   templateUrl: './create-account-form.component.html',
   styleUrl: './create-account-form.component.scss',
 })
-export class CreateAccountFormComponent {
+export class CreateAccountFormComponent implements OnDestroy {
   createAccountForm: FormGroup;
   formSubmitted = false;
   isLoggingIn = false;
   getErrorId = getErrorId;
+  subscriptions = new Subscription();
 
   @ViewChild(PrimaryBtnDirective) primaryButtonDirective!: PrimaryBtnDirective;
 
@@ -51,6 +52,9 @@ export class CreateAccountFormComponent {
         validators: passwordMatchValidator,
       }
     );
+  }
+  ngOnDestroy(): void {
+    this.subscriptions.unsubscribe();
   }
 
   ngOnInit(): void {}
@@ -100,32 +104,33 @@ export class CreateAccountFormComponent {
       this.isLoggingIn = true;
       const email = createAccountForm.value.email;
       const password = createAccountForm.value.createPassword;
+      this.subscriptions.add(
+        this.authService
+          .signUp(email, password)
+          .pipe(
+            finalize(() => {
+              this.isLoggingIn = false;
+              this.updateButtonState();
+            })
+          )
+          .subscribe({
+            next: (userCredential) => {
+              const userId = userCredential.user.uid;
 
-      this.authService
-        .signUp(email, password)
-        .pipe(
-          finalize(() => {
-            this.isLoggingIn = false;
-            this.updateButtonState();
+              this.notificationService.showNotification(
+                'Account created successfully'
+              );
+              this.router.navigate(['/link-sharing-dashboard', userId]);
+            },
+            error: (error) => {
+              let errorMessage = 'Failed to create an account!';
+              if (error.code === 'auth/email-already-in-use') {
+                errorMessage = 'Email already in use!';
+              }
+              this.notificationService.showNotification(errorMessage);
+            },
           })
-        )
-        .subscribe({
-          next: (userCredential) => {
-            const userId = userCredential.user.uid;
-
-            this.notificationService.showNotification(
-              'Account created successfully'
-            );
-            this.router.navigate(['/link-sharing-dashboard', userId]);
-          },
-          error: (error) => {
-            let errorMessage = 'Failed to create an account!';
-            if (error.code === 'auth/email-already-in-use') {
-              errorMessage = 'Email already in use!';
-            }
-            this.notificationService.showNotification(errorMessage);
-          },
-        });
+      );
     } else {
       this.isLoggingIn = false;
       this.updateButtonState();

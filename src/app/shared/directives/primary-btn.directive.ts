@@ -5,14 +5,17 @@ import {
   HostListener,
   OnDestroy,
   OnInit,
+  inject,
 } from '@angular/core';
 
 @Directive({
   selector: '[appPrimaryBtn]',
 })
 export class PrimaryBtnDirective implements OnInit, OnDestroy {
+  private el = inject(ElementRef);
+  private renderer = inject(Renderer2);
+
   private mutationObserver!: MutationObserver;
-  constructor(private el: ElementRef, private renderer: Renderer2) {}
 
   ngOnInit(): void {
     this.mutationObserver = new MutationObserver(
