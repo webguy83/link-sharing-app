@@ -1,6 +1,9 @@
 [
   {
-    "origin": ["http://localhost:4200"],
+    "origin": [
+      "https://frontendmentor-linksharing.web.app",
+      "http://localhost:4200"
+    ],
     "method": ["GET"],
     "maxAgeSeconds": 3600
   }
